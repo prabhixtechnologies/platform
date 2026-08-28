@@ -1,0 +1,104 @@
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { Suspense } from "react";
+import { ChatWidgetLazy } from "@/components/chat/chat-widget-lazy";
+import { ConsentBanner } from "@/components/consent-banner";
+import { JsonLd } from "@/components/json-ld";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { SkipLink } from "@/components/skip-link";
+import { VisitorTrackerProvider } from "@/components/visitor-tracker-provider";
+import { organizationJsonLd } from "@/lib/seo";
+import { siteConfig } from "@/lib/utils";
+import "./globals.css";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.name} — ${siteConfig.tagline}`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.tagline,
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: siteConfig.name,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.tagline,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.tagline,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b12" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
+const themeScript = `
+(function() {
+  try {
+    var stored = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = stored || (prefersDark ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+    var consent = localStorage.getItem('prabhix_cookie_consent');
+    if (consent === 'accepted' || consent === 'declined') {
+      window.prabhixConsent = consent;
+    } else {
+      window.prabhixConsent = 'pending';
+    }
+  } catch (e) {}
+})();
+`;
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="flex min-h-[100dvh] flex-col overflow-x-hidden">
+        <JsonLd data={organizationJsonLd()} />
+        <SkipLink />
+        <SiteHeader />
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
+        <SiteFooter />
+        <ConsentBanner />
+        <Suspense fallback={null}>
+          <VisitorTrackerProvider />
+        </Suspense>
+        <ChatWidgetLazy />
+      </body>
+    </html>
+  );
+}

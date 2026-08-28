@@ -1,0 +1,235 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  addCartItem,
+  createCart,
+  getCart,
+  removeCartItem,
+  updateCartItem,
+  applyDiscount,
+  clearDiscount,
+  resolveVisitorId,
+} from "@/lib/commerce/api";
+import {
+  clearCartToken,
+  readCartToken,
+  rememberVariant,
+  writeCartToken,
+  readVariantMeta,
+  cartHasPhysical,
+  type VariantMeta,
+} from "@/lib/commerce/cart-storage";
+import { CommerceApiError, friendlyCommerceError } from "@/lib/commerce/errors";
+import type { CartView, ProductType } from "@/lib/commerce/schemas";
+import { allowsAnalytics } from "@/lib/visitor/consent";
+import { readUiConsent } from "@/lib/visitor/consent";
+import { trackEvent } from "@/lib/visitor/tracker";
+
+type CartContextValue = {
+  cart: CartView | null;
+  isLoading: boolean;
+  error: string | null;
+  itemCount: number;
+  hasPhysical: boolean;
+  variantMeta: VariantMeta;
+  refresh: () => Promise<void>;
+  addItem: (
+    variantId: string,
+    quantity: number,
+    meta: { productType: ProductType; slug: string; productName: string },
+  ) => Promise<void>;
+  setQuantity: (itemId: string, quantity: number) => Promise<void>;
+  removeItem: (itemId: string) => Promise<void>;
+  applyCode: (code: string) => Promise<void>;
+  removeCode: () => Promise<void>;
+  clearError: () => void;
+};
+
+const CartContext = createContext<CartContextValue | null>(null);
+
+async function ensureCartToken(): Promise<string> {
+  const existing = readCartToken();
+  if (existing) return existing;
+  const visitorId = resolveVisitorId();
+  const created = await createCart(visitorId);
+  writeCartToken(created.cartToken);
+  return created.cartToken;
+}
+
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cart, setCart] = useState<CartView | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [variantMeta, setVariantMeta] = useState<VariantMeta>({});
+
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const token = readCartToken();
+      if (!token) {
+        setCart(null);
+        setVariantMeta(readVariantMeta());
+        return;
+      }
+      const next = await getCart(token);
+      setCart(next);
+      setVariantMeta(readVariantMeta());
+    } catch (err) {
+      if (err instanceof CommerceApiError && err.code === "CART_NOT_FOUND") {
+        clearCartToken();
+        setCart(null);
+      } else {
+        setError(friendlyCommerceError(err));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  const trackCommerce = useCallback(
+    (name: string, properties?: Record<string, unknown>) => {
+      if (!allowsAnalytics(readUiConsent())) return;
+      trackEvent(name, properties);
+    },
+    [],
+  );
+
+  const addItem = useCallback(
+    async (
+      variantId: string,
+      quantity: number,
+      meta: { productType: ProductType; slug: string; productName: string },
+    ) => {
+      setError(null);
+      try {
+        const token = await ensureCartToken();
+        const next = await addCartItem(token, variantId, quantity);
+        rememberVariant(variantId, meta.productType, meta.slug);
+        setVariantMeta(readVariantMeta());
+        setCart(next);
+        trackCommerce("commerce_add_to_cart", {
+          variantId,
+          slug: meta.slug,
+          quantity,
+        });
+      } catch (err) {
+        setError(friendlyCommerceError(err));
+        throw err;
+      }
+    },
+    [trackCommerce],
+  );
+
+  const setQuantity = useCallback(async (itemId: string, quantity: number) => {
+    setError(null);
+    const token = readCartToken();
+    if (!token) return;
+    try {
+      const next =
+        quantity < 1
+          ? await removeCartItem(token, itemId)
+          : await updateCartItem(token, itemId, quantity);
+      setCart(next);
+    } catch (err) {
+      setError(friendlyCommerceError(err));
+      throw err;
+    }
+  }, []);
+
+  const removeItem = useCallback(async (itemId: string) => {
+    setError(null);
+    const token = readCartToken();
+    if (!token) return;
+    try {
+      const next = await removeCartItem(token, itemId);
+      setCart(next);
+    } catch (err) {
+      setError(friendlyCommerceError(err));
+      throw err;
+    }
+  }, []);
+
+  const applyCode = useCallback(async (code: string) => {
+    setError(null);
+    const token = readCartToken();
+    if (!token) throw new Error("Cart not ready");
+    try {
+      const next = await applyDiscount(token, code.trim());
+      setCart(next);
+    } catch (err) {
+      setError(friendlyCommerceError(err));
+      throw err;
+    }
+  }, []);
+
+  const removeCode = useCallback(async () => {
+    setError(null);
+    const token = readCartToken();
+    if (!token) return;
+    try {
+      const next = await clearDiscount(token);
+      setCart(next);
+    } catch (err) {
+      setError(friendlyCommerceError(err));
+    }
+  }, []);
+
+  const value = useMemo<CartContextValue>(
+    () => ({
+      cart,
+      isLoading,
+      error,
+      itemCount: cart?.items.reduce((n, i) => n + i.quantity, 0) ?? 0,
+      hasPhysical: cart
+        ? cartHasPhysical(
+            variantMeta,
+            cart.items.map((i) => i.variantId),
+          )
+        : false,
+      variantMeta,
+      refresh,
+      addItem,
+      setQuantity,
+      removeItem,
+      applyCode,
+      removeCode,
+      clearError: () => setError(null),
+    }),
+    [
+      cart,
+      isLoading,
+      error,
+      variantMeta,
+      refresh,
+      addItem,
+      setQuantity,
+      removeItem,
+      applyCode,
+      removeCode,
+    ],
+  );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+export function useCart(): CartContextValue {
+  const ctx = useContext(CartContext);
+  if (!ctx) {
+    throw new Error("useCart must be used within CartProvider");
+  }
+  return ctx;
+}

@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ink: #0b0b12;
+  --color-primary: #7c3aed;
+  --color-primary-strong: #6d28d9;
+  --color-accent: #22d3ee;
+
+  --color-background: #fafafa;
+  --color-foreground: #0b0b12;
+  --color-muted: #64748b;
+  --color-muted-foreground: #475569;
+  --color-border: rgb(11 11 18 / 0.08);
+  --color-card: rgb(255 255 255 / 0.72);
+  --color-card-border: rgb(11 11 18 / 0.06);
+  --color-surface: #ffffff;
+
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+}
+
+.dark {
+  --color-background: #0b0b12;
+  --color-foreground: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-muted-foreground: #cbd5e1;
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-card: rgb(255 255 255 / 0.04);
+  --color-card-border: rgb(255 255 255 / 0.08);
+  --color-surface: rgb(255 255 255 / 0.03);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-card backdrop-blur-xl border border-card-border;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-linear-to-r from-primary via-primary-strong to-accent;
+  }
+
+  .mesh-glow {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgb(124 58 237 / 0.18), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgb(34 211 238 / 0.12), transparent 45%),
+      radial-gradient(ellipse 50% 30% at 50% 100%, rgb(124 58 237 / 0.08), transparent 40%);
+  }
+
+  .dark .mesh-glow {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgb(124 58 237 / 0.25), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgb(34 211 238 / 0.15), transparent 45%),
+      radial-gradient(ellipse 50% 30% at 50% 100%, rgb(124 58 237 / 0.12), transparent 40%);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sr-only:focus,
+  .sr-only:focus-visible,
+  .focus\:not-sr-only:focus {
+    position: fixed;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
