@@ -207,9 +207,11 @@ export default function HomePage() {
                   <li>• Multi-location with role-based access</li>
                 </ul>
                 <div className="mt-8 flex flex-wrap gap-4">
-                  <Button href="/products/mobistack">Learn more</Button>
+                  <Button href="/products/mobistack">
+                    Explore MobiStack features
+                  </Button>
                   <Button href={appUrls.mobistack} variant="secondary" external>
-                    Visit MobiStack
+                    Sign in to MobiStack
                   </Button>
                 </div>
               </div>

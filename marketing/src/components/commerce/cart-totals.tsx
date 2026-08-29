@@ -10,48 +10,53 @@ interface CartTotalsProps {
 
 export function CartTotals({ cart, className }: CartTotalsProps) {
   return (
-    <dl className={className ?? "space-y-2 text-sm"}>
-      <div className="flex justify-between gap-4">
-        <dt className="text-muted-foreground">Subtotal</dt>
-        <dd>
-          <Money amountMinor={cart.subtotalMinor} currency={cart.currency} />
-        </dd>
-      </div>
-      {cart.discountMinor > 0 && (
-        <div className="flex justify-between gap-4 text-emerald-600 dark:text-emerald-400">
-          <dt>
-            Discount{cart.discountCode ? ` (${cart.discountCode})` : ""}
-          </dt>
+    // The GST note is a caveat about the figures, not a term or a definition, so it sits beside the
+    // <dl> rather than inside it: a <dl> may only contain <dt>/<dd> pairs and the <div>s grouping
+    // them, and one stray <p> invalidates the whole list for a screen reader.
+    <div className={className ?? "space-y-2 text-sm"}>
+      <dl className="space-y-2">
+        <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">Subtotal</dt>
           <dd>
-            −<Money amountMinor={cart.discountMinor} currency={cart.currency} />
+            <Money amountMinor={cart.subtotalMinor} currency={cart.currency} />
           </dd>
         </div>
-      )}
-      <div className="flex justify-between gap-4">
-        <dt className="text-muted-foreground">GST</dt>
-        <dd>
-          <Money amountMinor={cart.taxMinor} currency={cart.currency} />
-        </dd>
-      </div>
-      <div className="flex justify-between gap-4">
-        <dt className="text-muted-foreground">Shipping</dt>
-        <dd>
-          {cart.shippingMinor === 0 ? (
-            "Free"
-          ) : (
-            <Money amountMinor={cart.shippingMinor} currency={cart.currency} />
-          )}
-        </dd>
-      </div>
-      <div className="flex justify-between gap-4 border-t border-border pt-2 text-base font-semibold">
-        <dt>Total</dt>
-        <dd>
-          <Money amountMinor={cart.totalMinor} currency={cart.currency} />
-        </dd>
-      </div>
+        {cart.discountMinor > 0 && (
+          <div className="flex justify-between gap-4 text-emerald-600 dark:text-emerald-400">
+            <dt>
+              Discount{cart.discountCode ? ` (${cart.discountCode})` : ""}
+            </dt>
+            <dd>
+              −<Money amountMinor={cart.discountMinor} currency={cart.currency} />
+            </dd>
+          </div>
+        )}
+        <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">GST</dt>
+          <dd>
+            <Money amountMinor={cart.taxMinor} currency={cart.currency} />
+          </dd>
+        </div>
+        <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">Shipping</dt>
+          <dd>
+            {cart.shippingMinor === 0 ? (
+              "Free"
+            ) : (
+              <Money amountMinor={cart.shippingMinor} currency={cart.currency} />
+            )}
+          </dd>
+        </div>
+        <div className="flex justify-between gap-4 border-t border-border pt-2 text-base font-semibold">
+          <dt>Total</dt>
+          <dd>
+            <Money amountMinor={cart.totalMinor} currency={cart.currency} />
+          </dd>
+        </div>
+      </dl>
       <p className="text-xs text-muted-foreground">
         Prices include applicable GST. Final tax split shown on your invoice.
       </p>
-    </dl>
+    </div>
   );
 }

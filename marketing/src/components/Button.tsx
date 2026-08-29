@@ -58,6 +58,9 @@ export function Button({
           onClick={onClick}
         >
           {children}
+          {/* target="_blank" moves the user to a new tab with no warning, which is disorienting for
+              anyone who cannot see it happen and leaves the back button dead. Announce it. */}
+          <span className="sr-only"> (opens in a new tab)</span>
         </a>
       );
     }
