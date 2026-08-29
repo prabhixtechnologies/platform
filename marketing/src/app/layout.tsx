@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { headers } from "next/headers";
 import { Suspense } from "react";
 import { ChatWidgetLazy } from "@/components/chat/chat-widget-lazy";
 import { ConsentBanner } from "@/components/consent-banner";
@@ -75,15 +76,20 @@ const themeScript = `
 })();
 `;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Set by src/middleware.ts. Reading it here is also what opts the tree into dynamic rendering,
+  // which a nonce requires: a page prerendered at build time would carry a nonce from some earlier
+  // request, and every script on it would be refused.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex min-h-[100dvh] flex-col overflow-x-hidden">
         <JsonLd data={organizationJsonLd()} />
