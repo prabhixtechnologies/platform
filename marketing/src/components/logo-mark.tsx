@@ -11,7 +11,11 @@ export function LogoMark({ className, showWordmark = true }: LogoMarkProps) {
     <Link
       href="/"
       className={cn("inline-flex items-center gap-2.5 group", className)}
-      aria-label="Prabhix Technologies home"
+      // Named by the wordmark when it is on screen, so the accessible name contains the words a
+      // visitor can read and voice control can act on them. A fixed aria-label of "Prabhix
+      // Technologies home" used to override it, and WCAG's label-in-name rule failed: the visible
+      // text is not a part of that string. Only the icon-only form needs a name supplied.
+      aria-label={showWordmark ? undefined : "Prabhix Technologies"}
     >
       <svg
         width="36"

@@ -3,6 +3,7 @@ import axe from "axe-core";
 import { describe, expect, it } from "vitest";
 import { Button } from "@/components/Button";
 import { CartTotals } from "@/components/commerce/cart-totals";
+import { LogoMark } from "@/components/logo-mark";
 import { StatBand } from "@/components/stat-band";
 import type { CartView } from "@/lib/commerce/schemas";
 
@@ -17,6 +18,7 @@ const STRUCTURE_RULES = [
   "listitem",
   "link-name",
   "button-name",
+  "label-content-name-mismatch",
   "aria-required-children",
   "aria-required-parent",
 ];
@@ -62,6 +64,22 @@ describe("structural accessibility", () => {
   it("renders cart totals as a definition list containing only terms and definitions", async () => {
     const { container } = render(<CartTotals cart={cart} />);
 
+    expect(await structuralViolations(container)).toEqual([]);
+  });
+
+  it("names the logo link with the wordmark a visitor can actually read", async () => {
+    const { container, getByRole } = render(<LogoMark />);
+
+    // WCAG's label-in-name: someone using voice control says what they see. An aria-label that
+    // omits the visible words leaves them with nothing to say.
+    expect(getByRole("link", { name: /Prabhix\s*Technologies/ })).toBeInTheDocument();
+    expect(await structuralViolations(container)).toEqual([]);
+  });
+
+  it("still names the logo link when the wordmark is hidden", async () => {
+    const { container, getByRole } = render(<LogoMark showWordmark={false} />);
+
+    expect(getByRole("link", { name: "Prabhix Technologies" })).toBeInTheDocument();
     expect(await structuralViolations(container)).toEqual([]);
   });
 
