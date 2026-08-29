@@ -33,7 +33,7 @@ Open [http://localhost:3000](http://localhost:3000).
 |---|---|
 | `npm run dev` | Start development server |
 | `npm run build` | Production build (standalone output) |
-| `npm run start` | Start production server |
+| `npm run start` | Start the production server, the same way the container does |
 | `npm run lint` | ESLint via Next.js |
 | `npm run typecheck` | TypeScript strict check (`tsc --noEmit`) |
 
