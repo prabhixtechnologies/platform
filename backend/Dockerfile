@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 # Stage 1 — build the Spring Boot fat JAR with a cacheable dependency layer.
 # ---------------------------------------------------------------------------
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3-eclipse-temurin-26 AS build
 WORKDIR /build
 
 # Resolve dependencies first so code-only changes reuse this layer.
