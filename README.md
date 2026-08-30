@@ -14,7 +14,7 @@ so a single organization can hold **100,000 users**.
 
 | Directory | What it is | Stack |
 |---|---|---|
-| `backend/` | The API and all business logic | Java 21 · Spring Boot 3.5 · PostgreSQL 16 · Redis 7 · Flyway |
+| `backend/` | The API and all business logic | Java 25 · Spring Boot 4.1 · PostgreSQL 16 · Valkey · Flyway |
 | `web/` | Authenticated customer console | React 19 · Vite 7 · Tailwind 4 · shadcn/ui · TanStack Query |
 | `marketing/` | Public website | Next.js 15 · React 19 · Tailwind 4 |
 | `mail-server/` | Self-hosted mail transport | Postfix · Dovecot · Rspamd |
@@ -69,8 +69,9 @@ read an invoice without configuring a mail provider.
 
 ### Running pieces natively
 
-The backend targets Java 21 for production (it enables virtual threads), but nothing in the
-code needs 21 to compile. On a JDK 17 machine:
+The backend targets Java 25 in production — virtual threads need 21 or newer, and 25 is the current
+LTS — but nothing in the code needs a language level above 17 to compile. `-Djava.version=17` only
+lowers `--release`, so an older local JDK still builds and tests everything:
 
 ```bash
 cd backend

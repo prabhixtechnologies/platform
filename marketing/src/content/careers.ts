@@ -20,8 +20,8 @@ export const roles: CareerRole[] = [
     summary:
       "Build the core platform services — multi-tenant APIs, mail ingestion, billing integrations — that power Prabhix products at scale.",
     responsibilities: [
-      "Design and implement REST APIs in Java 21 / Spring Boot with strict tenant isolation",
-      "Own performance-critical paths: cursor pagination, outbox workers, Redis caching",
+      "Design and implement REST APIs in Java 25 / Spring Boot with strict tenant isolation",
+      "Own performance-critical paths: cursor pagination, outbox workers, Valkey caching",
       "Write Flyway migrations that are safe to run against live production tables",
       "Participate in architecture reviews and mentor mid-level engineers",
     ],
