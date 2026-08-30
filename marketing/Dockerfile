@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-alpine AS base
+# Base images come from AWS's public gallery rather than Docker Hub. These are the same
+# Docker Official Images, mirrored by AWS, and the move takes Docker Hub's anonymous pull
+# limit off the build path: a rate-limited base image fails the build for a reason that has
+# nothing to do with the change being built.
+FROM public.ecr.aws/docker/library/node:22-alpine AS base
 WORKDIR /app
 
 FROM base AS deps
