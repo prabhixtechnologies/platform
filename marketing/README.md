@@ -79,4 +79,4 @@ Forms degrade gracefully when the API is unreachable.
 
 ## Architecture context
 
-See [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the full Prabhix platform architecture. This app is the public surface at `prabhixtechnologies.com`.
+See [`Infra/docs/ARCHITECTURE.md`](../../Infra/docs/ARCHITECTURE.md) for the full Prabhix platform architecture. This app is the public surface at `prabhixtechnologies.com`.
