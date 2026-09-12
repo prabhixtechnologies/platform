@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PRODUCT_LINKS, RESOURCE_LINKS } from "@/lib/constants";
+import { PRODUCT_LINKS, RESOURCE_LINKS, STORE_URL } from "@/lib/constants";
 import { useActionState, useEffect, useRef } from "react";
 import { subscribeNewsletter } from "@/app/actions";
 import { siteConfig } from "@/lib/utils";
@@ -12,9 +12,10 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      { href: "/platform", label: "Platform" },
+      { href: "/platform", label: "How we build" },
       ...PRODUCT_LINKS.map((l) => ({ href: l.href, label: l.label })),
       { href: "/pricing", label: "Pricing" },
+      { href: STORE_URL, label: "Get the apps" },
     ],
   },
   {

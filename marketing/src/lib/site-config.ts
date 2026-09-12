@@ -1,12 +1,11 @@
 /**
  * The single source of truth for identity and every outbound URL on the marketing site.
  *
- * Nothing else in `marketing/` should read `process.env.NEXT_PUBLIC_*` for a URL. Two modules used
- * to declare `SITE_URL`, `API_BASE_URL` and `CONSOLE_URL` independently, which is how the console
- * link and the site URL drifted apart between them.
+ * Nothing else in `marketing/` should read `process.env.NEXT_PUBLIC_*` for a URL.
  *
- * These are `NEXT_PUBLIC_*`, so they are inlined at build time, not read at runtime. A Docker image
- * therefore has to be built with the right values — see `docker-compose.prod.yml`.
+ * These are `NEXT_PUBLIC_*`, so they are inlined at **build** time. Docker local compose must
+ * pass localhost values; production compose must pass https://… hostnames. Defaults below are
+ * laptop-safe so a missing env cannot silently send visitors to production.
  */
 
 function trimTrailingSlash(value: string): string {
@@ -19,23 +18,18 @@ export const siteConfig = {
   acronym:
     "Progressive Research & Automation Business Hub for Innovation & eXperience",
   url: trimTrailingSlash(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://prabhixtechnologies.com",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
   apiUrl: trimTrailingSlash(
     process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
   ),
-  /**
-   * OneOps, the operator console. Historically `app.prabhixtechnologies.com`; `oneops.` is the
-   * name now and the old host redirects to it in `deploy/Caddyfile`.
-   */
   consoleUrl: trimTrailingSlash(
-    process.env.NEXT_PUBLIC_CONSOLE_URL ?? "https://oneops.prabhixtechnologies.com",
+    process.env.NEXT_PUBLIC_CONSOLE_URL ?? "http://localhost:5173",
   ),
-  /**
-   * Prabhix's own tenant. The storefront, chat widget and visitor beacon are public API clients
-   * addressed by organization, so the public site has to say which organization it belongs to.
-   * Blank disables those features rather than breaking the page.
-   */
+  /** Hosted Identity login (OIDC). Products redirect here; marketing links products, not this bare. */
+  identityIssuer: trimTrailingSlash(
+    process.env.NEXT_PUBLIC_IDENTITY_ISSUER ?? "http://localhost:8081",
+  ),
   orgSlug: process.env.NEXT_PUBLIC_ORG_SLUG ?? "",
   orgId: process.env.NEXT_PUBLIC_ORG_ID ?? "",
   email: "hello@prabhixtechnologies.com",
@@ -45,16 +39,19 @@ export const siteConfig = {
 /**
  * Where each shipped application actually lives.
  *
- * This is what makes "Open app" honest. A product entry in `content/products.ts` marked
- * `kind: "app"` points at one of these; anything that is a capability *inside* OneOps is marked
- * `kind: "module"` and must not offer an "Open app" link, because there is no separate app to open.
+ * A product entry in `content/products.ts` marked `kind: "app"` points at one of these.
  */
 export const appUrls = {
   oneops: siteConfig.consoleUrl,
   mobistack: trimTrailingSlash(
-    process.env.NEXT_PUBLIC_MOBISTACK_URL ??
-      "https://mobistack.prabhixtechnologies.com",
+    process.env.NEXT_PUBLIC_MOBISTACK_URL ?? "http://localhost:5176",
+  ),
+  mailroom: trimTrailingSlash(
+    process.env.NEXT_PUBLIC_MAILROOM_URL ?? "http://localhost:5175",
+  ),
+  store: trimTrailingSlash(
+    process.env.NEXT_PUBLIC_STORE_URL ?? "http://localhost:8090",
   ),
 } as const;
 
-export type AppKey = keyof typeof appUrls;
+export type AppKey = Exclude<keyof typeof appUrls, "store">;

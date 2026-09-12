@@ -11,7 +11,7 @@ import { productAppUrl, products } from "@/content/products";
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "Prabhix Technologies products — vertical SaaS built on the enterprise platform. Starting with MobiStack for mobile repair businesses.",
+    "Prabhix Technologies products — OneOps for operations teams, MobiStack for mobile repair shops, and modules like Helpdesk.",
 };
 
 export default function ProductsPage() {
@@ -19,8 +19,8 @@ export default function ProductsPage() {
     <>
       <Section
         eyebrow="Products"
-        title="Vertical SaaS on a shared foundation"
-        description="Each Prabhix product inherits multi-tenancy, billing, RBAC, and mail from the platform — so we ship faster without compromising enterprise requirements."
+        title="Products from Prabhix Technologies"
+        description="Each product solves a specific job. Shared identity and engineering practices underneath — distinct experiences on top."
         centered
         className="pt-24"
       />
@@ -95,7 +95,7 @@ export default function ProductsPage() {
 
       <CTABand
         title="Need something custom?"
-        description="We build vertical products and custom enterprise software on the Prabhix platform."
+        description="We build vertical products and custom enterprise software for teams that need more than an off-the-shelf fit."
         primaryLabel="Talk to sales"
         primaryHref="/contact"
         secondaryLabel="View services"

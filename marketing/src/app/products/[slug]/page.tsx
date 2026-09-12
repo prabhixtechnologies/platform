@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Check } from "lucide-react";
+import {
+  Check,
+  CreditCard,
+  Lock,
+  Mail,
+  Server,
+  Shield,
+  Users,
+} from "lucide-react";
 import { ProductViewTracker } from "@/components/product-view-tracker";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
@@ -28,6 +36,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/products/${slug}`,
   });
 }
+
+const oneOpsModules = [
+  {
+    icon: Users,
+    title: "Multi-tenant workspaces",
+    description:
+      "Each customer organization has isolated data boundaries. Members, teams, roles, and invites — scoped by organization_id.",
+  },
+  {
+    icon: Mail,
+    title: "Unified email & helpdesk",
+    description:
+      "Shared inboxes with IMAP ingestion, conversation threading, agent assignment, SLA tracking, and canned replies.",
+  },
+  {
+    icon: CreditCard,
+    title: "Razorpay billing",
+    description:
+      "Plans, subscriptions, seat-based proration, GST invoicing, and webhook-driven entitlements.",
+  },
+  {
+    icon: Lock,
+    title: "RBAC",
+    description:
+      "Fine-grained permissions bundled into system and custom roles with team scoping.",
+  },
+  {
+    icon: Shield,
+    title: "Audit logging",
+    description:
+      "Append-only audit trail for sensitive operations, with archival for long-term retention.",
+  },
+  {
+    icon: Server,
+    title: "Built to scale",
+    description:
+      "Cursor pagination, Redis caches, and outbox workers so a single organization can grow large.",
+  },
+];
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
@@ -72,7 +119,6 @@ export default async function ProductDetailPage({ params }: Props) {
             <Button href={primaryHref} external={Boolean(appUrl)} size="lg">
               {ctaLabel}
             </Button>
-            {/* Only offer a second CTA when it says something different to the first. */}
             {appUrl && (
               <Button
                 href={`/contact?intent=${slug === "mobistack" ? "mobistack" : "demo"}`}
@@ -82,11 +128,16 @@ export default async function ProductDetailPage({ params }: Props) {
                 Request demo
               </Button>
             )}
+            {slug === "oneops" && (
+              <Button href="/pricing" variant="ghost" size="lg">
+                OneOps pricing
+              </Button>
+            )}
           </div>
         </Reveal>
       </Section>
 
-      <Section eyebrow="Features" title="Capabilities" className="bg-surface/30">
+      <Section eyebrow="Features" title="Capabilities" className="bg-surface/40">
         <div className="grid gap-4 sm:grid-cols-2">
           {product.features.map((feature, i) => (
             <Reveal key={feature} delay={i * 0.05}>
@@ -98,6 +149,60 @@ export default async function ProductDetailPage({ params }: Props) {
           ))}
         </div>
       </Section>
+
+      {slug === "oneops" && (
+        <>
+          <Section
+            eyebrow="Architecture"
+            title="What sits inside OneOps"
+            description="Module detail for the operator console — not a company-wide platform pitch."
+          >
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {oneOpsModules.map((mod, i) => (
+                <Reveal key={mod.title} delay={i * 0.05}>
+                  <Card hover>
+                    <mod.icon className="size-6 text-primary" aria-hidden />
+                    <h3 className="mt-4 font-semibold">{mod.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {mod.description}
+                    </p>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
+          </Section>
+
+          <Section
+            eyebrow="Isolation"
+            title="Tenant boundaries"
+            description="Shared-schema multi-tenancy with redundant isolation layers so one organization never sees another’s data."
+            className="bg-surface/40"
+          >
+            <Reveal>
+              <Card>
+                <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+                  <li>
+                    <span className="font-medium text-foreground">JWT claims — </span>
+                    organization membership carried in the access token
+                  </li>
+                  <li>
+                    <span className="font-medium text-foreground">Request filters — </span>
+                    tenant context applied on every API call
+                  </li>
+                  <li>
+                    <span className="font-medium text-foreground">ORM filters — </span>
+                    Hibernate query filters scoped by organization_id
+                  </li>
+                  <li>
+                    <span className="font-medium text-foreground">Postgres RLS — </span>
+                    row-level security on high-risk tables
+                  </li>
+                </ul>
+              </Card>
+            </Reveal>
+          </Section>
+        </>
+      )}
 
       {slug === "mobistack" && (
         <Section eyebrow="Offline-first" title="Built for the shop floor">

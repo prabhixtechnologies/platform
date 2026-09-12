@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, LogIn, Menu, X } from "lucide-react";
+import { ChevronDown, ExternalLink, LogIn, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  CONSOLE_URL,
   NAV_LINKS,
   PRODUCT_LINKS,
+  SIGN_IN_LINKS,
 } from "@/lib/constants";
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Container } from "./Container";
 import { LogoMark } from "./logo-mark";
@@ -23,7 +24,9 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const signInRef = useRef<HTMLDivElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -39,15 +42,17 @@ export function SiteHeader() {
   useEffect(() => {
     closeMobile();
     setProductsOpen(false);
+    setSignInOpen(false);
   }, [pathname, closeMobile]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      const target = e.target as Node;
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setProductsOpen(false);
+      }
+      if (signInRef.current && !signInRef.current.contains(target)) {
+        setSignInOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -144,7 +149,10 @@ export function SiteHeader() {
                 )}
                 aria-expanded={productsOpen}
                 aria-haspopup="true"
-                onClick={() => setProductsOpen(!productsOpen)}
+                onClick={() => {
+                  setProductsOpen(!productsOpen);
+                  setSignInOpen(false);
+                }}
               >
                 Products
                 <ChevronDown
@@ -192,14 +200,70 @@ export function SiteHeader() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
-            <Link
-              href={CONSOLE_URL}
-              title="Sign in to OneOps, the Prabhix operator console"
-              className="hidden items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:inline-flex lg:px-3"
-            >
-              <LogIn className="size-4" aria-hidden />
-              Sign in
-            </Link>
+            <div className="relative hidden md:block" ref={signInRef}>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary lg:px-3"
+                aria-expanded={signInOpen}
+                aria-haspopup="true"
+                onClick={() => {
+                  setSignInOpen(!signInOpen);
+                  setProductsOpen(false);
+                }}
+              >
+                <LogIn className="size-4" aria-hidden />
+                Sign in
+                <ChevronDown
+                  className={cn(
+                    "size-4 transition-transform",
+                    signInOpen && "rotate-180",
+                  )}
+                  aria-hidden
+                />
+              </button>
+              {signInOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-border bg-background p-2 shadow-xl"
+                >
+                  <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Choose a product
+                  </p>
+                  {SIGN_IN_LINKS.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      role="menuitem"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-surface"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium text-foreground">
+                          {link.label}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                          {link.description}
+                        </span>
+                      </div>
+                      <ExternalLink
+                        className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
+                        aria-hidden
+                      />
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  ))}
+                  <div className="my-1 border-t border-border" />
+                  <a
+                    href={`${siteConfig.identityIssuer}/signup`}
+                    role="menuitem"
+                    className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+                  >
+                    Create an account
+                  </a>
+                </div>
+              )}
+            </div>
             <Button href="/contact" size="sm" className="hidden sm:inline-flex">
               Contact
             </Button>
@@ -254,13 +318,28 @@ export function SiteHeader() {
                 </Link>
               ))}
               <hr className="my-2 border-border" />
-              <Link
-                href={CONSOLE_URL}
-                className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-surface hover:text-foreground"
+              <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Sign in
+              </p>
+              {SIGN_IN_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-surface hover:text-foreground"
+                >
+                  <LogIn className="size-4" aria-hidden />
+                  Sign in to {link.label}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              ))}
+              <a
+                href={`${siteConfig.identityIssuer}/signup`}
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-surface"
               >
-                <LogIn className="size-4" aria-hidden />
-                Sign in to OneOps
-              </Link>
+                Create an account
+              </a>
               <div className="flex items-center gap-3 px-3 py-2">
                 <ThemeToggle />
                 <Button href="/contact" size="sm" className="flex-1">

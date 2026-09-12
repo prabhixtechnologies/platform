@@ -7,7 +7,7 @@ export const contentType = "image/png";
 
 export default function OpenGraphImage() {
   return createOgImage({
-    title: "Plans that scale with your organization",
-    subtitle: "Starter · Growth · Business · Enterprise",
+    title: "Plans by product",
+    subtitle: "OneOps · MobiStack — priced separately",
   });
 }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Source_Sans_3 } from "next/font/google";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { ChatWidgetLazy } from "@/components/chat/chat-widget-lazy";
@@ -13,9 +13,15 @@ import { organizationJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/utils";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  variable: "--font-source-sans",
   display: "swap",
 });
 
@@ -52,8 +58,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b12" },
+    { media: "(prefers-color-scheme: light)", color: "#f3f6fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#071018" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -87,7 +93,11 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    <html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${sourceSans.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

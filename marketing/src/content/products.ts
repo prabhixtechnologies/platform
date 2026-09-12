@@ -43,9 +43,9 @@ export const products: Product[] = [
     app: "oneops",
     slug: "oneops",
     name: "OneOps",
-    tagline: "One console to run the whole business.",
+    tagline: "Operator console for inbox, chat, storefront, and staff.",
     description:
-      "OneOps is the operator console for the Prabhix platform. Shared team inbox, live chat with everyone on your site, customer and order management, staff and permissions, billing, and a full audit trail — in one place, on every screen size, with native apps for iOS and Android.",
+      "OneOps is Prabhix's operator console — shared team inbox, live chat with visitors on your site, customer and order management, staff and permissions, billing, and an audit trail. Built for day-to-day operations across web and native apps, not a catch-all for every business system.",
     features: [
       "Shared team inbox with assignment, SLA tracking and canned replies",
       "Live chat with visitors, plus who is on your site right now",
@@ -73,6 +73,22 @@ export const products: Product[] = [
       "Multi-location support with role-based access",
     ],
     status: "live",
+  },
+  {
+    kind: "app",
+    app: "mailroom",
+    slug: "mailroom",
+    name: "Mailroom",
+    tagline: "Personal mail for hosted Prabhix addresses.",
+    description:
+      "Mailroom is the personal mailbox product for addresses on Prabhix-hosted domains — folders, threads, and reading on web and Android. Helpdesk and shared team inbox stay in OneOps; Mailroom is for the individual inbox.",
+    features: [
+      "Mailbox sidebar with folders and starred threads",
+      "Thread and message reading with Identity sign-in",
+      "Android client via the company app store",
+      "Backend API extracted to its own service on :8083 locally",
+    ],
+    status: "coming-soon",
   },
   {
     kind: "module",

@@ -1,4 +1,4 @@
-import { siteConfig } from "./site-config";
+import { appUrls, siteConfig } from "./site-config";
 
 // Aliases over siteConfig, not a second declaration. These used to read the environment
 // themselves, which let them drift from siteConfig for the same variable.
@@ -18,7 +18,7 @@ export const PRABHIX_ACRONYM = [
 
 export const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
-  { href: "/platform", label: "Platform" },
+  { href: "/platform", label: "How we build" },
   { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/case-studies", label: "Case Studies" },
@@ -32,6 +32,30 @@ export const PRODUCT_LINKS = [
   { href: "/products/oneops", label: "OneOps" },
   { href: "/products/mobistack", label: "MobiStack" },
   { href: "/products/helpdesk", label: "Helpdesk" },
+  { href: "/products/mailroom", label: "Mailroom" },
+] as const;
+
+/** Public APK downloads — company store, not Admin. */
+export const STORE_URL = appUrls.store;
+
+/** Apps a visitor can sign into — never treat OneOps as the only company CTA. */
+/** Apps a visitor can sign into — each starts OIDC against Identity (never a local password form). */
+export const SIGN_IN_LINKS = [
+  {
+    href: `${appUrls.oneops}/login`,
+    label: "OneOps",
+    description: "Operator console — redirects to Prabhix Identity",
+  },
+  {
+    href: `${appUrls.mobistack}/login`,
+    label: "MobiStack",
+    description: "Repair shop app — redirects to Prabhix Identity",
+  },
+  {
+    href: `${appUrls.mailroom}/sign-in`,
+    label: "Mailroom",
+    description: "Personal mail — redirects to Prabhix Identity",
+  },
 ] as const;
 
 export const RESOURCE_LINKS = [
@@ -43,4 +67,5 @@ export const RESOURCE_LINKS = [
 
 export const API_BASE_URL = siteConfig.apiUrl;
 
+/** @deprecated Prefer SIGN_IN_LINKS — OneOps is a product, not the company sign-in. */
 export const CONSOLE_URL = siteConfig.consoleUrl;

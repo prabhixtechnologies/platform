@@ -111,7 +111,7 @@ export function CheckoutClient() {
         description: `Order ${checkout.orderNumber}`,
         order_id: checkout.razorpayOrderId,
         prefill: { name, email, contact: phone || undefined },
-        theme: { color: "#7c3aed" },
+        theme: { color: "#0e7490" },
       });
 
       if (result.status === "dismissed") {

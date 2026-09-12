@@ -40,7 +40,7 @@ export default async function ContactPage({ searchParams }: Props) {
         title={isDemo ? "Book a demo" : "Get in touch"}
         description={
           isDemo
-            ? "See the Prabhix platform or MobiStack in a live walkthrough tailored to your use case."
+            ? "See OneOps, MobiStack, or another Prabhix product in a live walkthrough tailored to your use case."
             : "Sales inquiries, partnerships, and general questions — we respond within one business day."
         }
         centered

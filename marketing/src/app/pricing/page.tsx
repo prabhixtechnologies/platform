@@ -7,7 +7,7 @@ import { PricingContent } from "./pricing-content";
 export const metadata: Metadata = pageMetadata({
   title: "Pricing",
   description:
-    "Prabhix platform pricing — Starter (free), Growth (₹2,499/mo), Business (₹7,999/mo), and Enterprise (custom). Annual billing saves 20%.",
+    "Prabhix product pricing — OneOps plans from free Starter through Enterprise, plus MobiStack shop and multi-shop plans. Annual billing saves 20%.",
   path: "/pricing",
 });
 

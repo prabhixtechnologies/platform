@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-primary text-white hover:bg-primary-strong shadow-lg shadow-primary/25",
+    "bg-primary text-primary-foreground hover:bg-primary-strong shadow-lg shadow-primary/25",
   secondary:
     "bg-surface text-foreground border border-border hover:bg-card",
   ghost: "text-foreground hover:bg-surface",
   accent:
-    "bg-accent text-ink hover:brightness-110 shadow-lg shadow-accent/20",
+    "bg-accent text-primary-foreground hover:brightness-110 shadow-lg shadow-accent/20",
 } as const;
 
 const sizes = {

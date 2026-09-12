@@ -16,7 +16,7 @@ export const LEAD_INTEREST_OPTIONS: ReadonlyArray<{
   label: string;
   value: LeadInterest;
 }> = [
-  { label: "Platform demo", value: "PLATFORM" },
+  { label: "Product demo", value: "PLATFORM" },
   { label: "Starter plan", value: "PLATFORM" },
   { label: "Growth plan", value: "PLATFORM" },
   { label: "Business plan", value: "PLATFORM" },
@@ -40,7 +40,7 @@ export function leadInterestLabel(value: LeadInterest): string {
 }
 
 export const CONTACT_INTENT_MAP: Record<string, string> = {
-  demo: "Platform demo",
+  demo: "Product demo",
   mobistack: "MobiStack",
   starter: "Starter plan",
   growth: "Growth plan",
