@@ -19,6 +19,25 @@ async function postJson<T>(
   }
 }
 
+async function postJsonSameOrigin<T>(
+  path: string,
+  body: unknown,
+): Promise<T | null> {
+  try {
+    const response = await fetch(path, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      keepalive: true,
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 export function ingestBatch(
   orgSlug: string,
   body: BatchIngestRequest,
@@ -29,8 +48,13 @@ export function ingestBatch(
   );
 }
 
+/** Browser ingest goes through the same-origin BFF so the visitor key stays httpOnly. */
+export function ingestViaBff(body: BatchIngestRequest): Promise<IngestAck | null> {
+  return postJsonSameOrigin("/api/visitor/ingest", body);
+}
+
 export function sendBeaconIngest(
-  orgSlug: string,
+  _orgSlug: string,
   body: BatchIngestRequest,
 ): boolean {
   if (typeof navigator === "undefined" || !navigator.sendBeacon) {
@@ -40,8 +64,7 @@ export function sendBeaconIngest(
     const blob = new Blob([JSON.stringify(body)], {
       type: "application/json",
     });
-    const path = `/v1/visitor/public/${encodeURIComponent(orgSlug)}/ingest`;
-    return navigator.sendBeacon(`${getApiBaseUrl()}${path}`, blob);
+    return navigator.sendBeacon("/api/visitor/ingest", blob);
   } catch {
     return false;
   }
@@ -51,6 +74,9 @@ export function identifyVisitor(
   orgSlug: string,
   body: IdentifyRequest,
 ): Promise<boolean> {
+  if (typeof window !== "undefined") {
+    return postJsonSameOrigin("/api/visitor/identify", body).then((result) => result !== null);
+  }
   return postJson<unknown>(
     `/v1/visitor/public/${encodeURIComponent(orgSlug)}/identify`,
     body,

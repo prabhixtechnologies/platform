@@ -32,7 +32,7 @@ function originOf(value: string | undefined): string | null {
   }
 }
 
-function buildPolicy(nonce: string): string {
+function buildPolicyParts(nonce: string): string[] {
   const scriptSrc = [
     "'self'",
     `'nonce-${nonce}'`,
@@ -54,20 +54,23 @@ function buildPolicy(nonce: string): string {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob:",
-    `connect-src 'self' ${apiOrigin} https://api.razorpay.com https://*.prabhixtechnologies.com`,
+    `connect-src 'self' ${apiOrigin} https://api.prabhixtechnologies.com https://id.prabhixtechnologies.com https://api.razorpay.com`,
     "frame-src https://checkout.razorpay.com",
-    "frame-ancestors 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-  ].join("; ");
+  ];
 }
 
 export function middleware(request: NextRequest) {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   const nonce = btoa(String.fromCharCode(...bytes));
-  const policy = buildPolicy(nonce);
+  const checkout = request.nextUrl.pathname.startsWith("/checkout");
+  const policy = [
+    ...buildPolicyParts(nonce),
+    checkout ? "frame-ancestors 'none'" : "frame-ancestors 'self'",
+  ].join("; ");
 
   // Next reads the nonce back out of the policy on the *request* headers and stamps it onto the
   // script tags it generates. Setting it only on the response would leave those tags unnonced and
@@ -78,6 +81,12 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("content-security-policy", policy);
+  response.headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  response.headers.set("x-content-type-options", "nosniff");
+  response.headers.set("permissions-policy", "camera=(), microphone=(), geolocation=()");
+  if (isProduction) {
+    response.headers.set("strict-transport-security", "max-age=63072000; includeSubDomains; preload");
+  }
   return response;
 }
 

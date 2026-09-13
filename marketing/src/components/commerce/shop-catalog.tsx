@@ -127,7 +127,7 @@ export function ShopCatalog() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search products…"
             aria-label="Search products"
-            className="w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm"
+            className="min-h-11 w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm"
           />
         </div>
         <div className="flex flex-wrap gap-3">
@@ -140,7 +140,7 @@ export function ShopCatalog() {
                 setTypeFilter(e.target.value as ProductType | "ALL")
               }
               aria-label="Filter by product type"
-              className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              className="min-h-11 rounded-lg border border-border bg-background px-3 py-2 text-sm"
             >
               {TYPE_FILTERS.map((f) => (
                 <option key={f.value} value={f.value}>
@@ -155,7 +155,7 @@ export function ShopCatalog() {
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
               aria-label="Sort products"
-              className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              className="min-h-11 rounded-lg border border-border bg-background px-3 py-2 text-sm"
             >
               <option value="featured">Featured first</option>
               <option value="price-asc">Price: low to high</option>

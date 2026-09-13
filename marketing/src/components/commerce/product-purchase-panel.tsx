@@ -260,7 +260,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
                 max={selected.trackInventory ? selected.stockAvailable ?? 99 : 99}
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
-                className="w-20 rounded-lg border border-border px-3 py-2"
+                className="min-h-11 w-20 rounded-lg border border-border bg-background px-3 py-2 text-foreground"
                 aria-label="Quantity"
               />
             </label>

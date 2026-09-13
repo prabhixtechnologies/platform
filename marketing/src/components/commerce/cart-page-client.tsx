@@ -14,6 +14,7 @@ export function CartPageClient() {
     cart,
     isLoading,
     error,
+    variantMeta,
     setQuantity,
     removeItem,
     applyCode,
@@ -40,7 +41,13 @@ export function CartPageClient() {
   }
 
   if (isLoading && !cart) {
-    return <p className="text-muted-foreground">Loading cart…</p>;
+    return (
+      <div className="space-y-3" aria-busy="true" aria-label="Loading cart">
+        <div className="h-24 animate-pulse rounded-xl bg-muted" />
+        <div className="h-24 animate-pulse rounded-xl bg-muted" />
+        <div className="h-40 animate-pulse rounded-xl bg-muted" />
+      </div>
+    );
   }
 
   if (!cart || cart.items.length === 0) {
@@ -72,7 +79,7 @@ export function CartPageClient() {
               <Card className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="flex-1 min-w-0">
                   <Link
-                    href={`/shop`}
+                    href={variantMeta[item.variantId]?.slug ? `/shop/${variantMeta[item.variantId].slug}` : "/shop"}
                     className="font-medium hover:text-primary"
                   >
                     {item.productName}
@@ -129,7 +136,7 @@ export function CartPageClient() {
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 placeholder="Enter code"
-                className="mt-1 w-full rounded-lg border border-border px-3 py-2 uppercase"
+                className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2 uppercase text-foreground"
                 aria-describedby={codeError ? "code-error" : undefined}
               />
             </label>

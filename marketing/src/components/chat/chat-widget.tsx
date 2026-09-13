@@ -3,15 +3,13 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
 import { z } from "zod";
-import { fetchMessages, sendMessage, startConversation } from "@/lib/chat/api";
-import { readChatSession, writeChatSession } from "@/lib/chat/storage";
+import { fetchMessages, sendMessage, startConversation } from "@/lib/chat/chat-client";
+import { migrateLegacyChatToken, readChatSession, writeChatSession } from "@/lib/chat/storage";
 import { ChatStream } from "@/lib/chat/stream";
-import type {
-  ConnectionState,
-  MessageView,
-  StoredChatSession,
-} from "@/lib/chat/types";
+import type { ConnectionState, MessageView } from "@/lib/chat/types";
+import type { PublicChatSession } from "@/lib/chat/storage";
 import { getVisitorKeyForChat } from "@/lib/visitor/api";
+import { trapTab } from "@/lib/focus-trap";
 import { cn } from "@/lib/utils";
 
 const preChatSchema = z.object({
@@ -26,7 +24,7 @@ type ChatWidgetProps = {
 
 export function ChatWidget({ enabled }: ChatWidgetProps) {
   const [open, setOpen] = useState(false);
-  const [session, setSession] = useState<StoredChatSession | null>(null);
+  const [session, setSession] = useState<PublicChatSession | null>(null);
   const [messages, setMessages] = useState<MessageView[]>([]);
   const [connectionState, setConnectionState] = useState<ConnectionState>("idle");
   const [unread, setUnread] = useState(0);
@@ -45,8 +43,8 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
   const titleId = useId();
   const descId = useId();
 
-  const loadHistory = useCallback(async (active: StoredChatSession) => {
-    const page = await fetchMessages(active.conversationId, active.conversationToken);
+  const loadHistory = useCallback(async (active: PublicChatSession) => {
+    const page = await fetchMessages(active.conversationId);
     if (!page?.items) return [];
     const sorted = [...page.items].sort(
       (a, b) =>
@@ -63,7 +61,6 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
     if (!session) return [];
     const page = await fetchMessages(
       session.conversationId,
-      session.conversationToken,
     );
     if (!page?.items) return [];
     const fresh = page.items.filter((item) => !knownIds.current.has(item.id));
@@ -92,11 +89,10 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
   );
 
   const startStream = useCallback(
-    (active: StoredChatSession) => {
+    (active: PublicChatSession) => {
       streamRef.current?.disconnect();
       streamRef.current = new ChatStream(
         active.conversationId,
-        active.conversationToken,
         {
           onMessage: appendMessage,
           onTyping: setAgentTyping,
@@ -116,11 +112,13 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
 
   useEffect(() => {
     if (!enabled) return;
-    const stored = readChatSession();
-    if (stored) {
-      setSession(stored);
-      void loadHistory(stored).then(() => startStream(stored));
-    }
+    void migrateLegacyChatToken().then(() => {
+      const stored = readChatSession();
+      if (stored) {
+        setSession(stored);
+        void loadHistory(stored).then(() => startStream(stored));
+      }
+    });
     return () => {
       streamRef.current?.disconnect();
     };
@@ -148,7 +146,9 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         event.preventDefault();
         setOpen(false);
         launcherRef.current?.focus();
+        return;
       }
+      if (panelRef.current) trapTab(panelRef.current, event);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -176,9 +176,8 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         setFormErrors({ form: "Unable to start chat. Please try again." });
         return;
       }
-      const nextSession: StoredChatSession = {
+      const nextSession: PublicChatSession = {
         conversationId: response.conversationId,
-        conversationToken: response.conversationToken,
         name: parsed.data.name,
         email: parsed.data.email,
         agentsAvailable: response.agentsAvailable,
@@ -204,7 +203,6 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
     try {
       const sent = await sendMessage(
         session.conversationId,
-        session.conversationToken,
         { body },
       );
       if (sent) {
@@ -243,7 +241,8 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
       <div
         ref={panelRef}
         role="dialog"
-        aria-modal="true"
+        aria-modal={open}
+        aria-hidden={!open}
         aria-labelledby={titleId}
         aria-describedby={descId}
         className={cn(

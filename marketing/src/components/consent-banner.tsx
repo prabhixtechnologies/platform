@@ -15,7 +15,8 @@ declare global {
 function setConsent(value: "accepted" | "declined") {
   try {
     localStorage.setItem(CONSENT_KEY, value);
-    document.cookie = `prabhix_consent=${value};path=/;max-age=31536000;SameSite=Lax`;
+    const secure = window.location.protocol === "https:" ? ";Secure" : "";
+    document.cookie = `prabhix_consent=${value};path=/;max-age=31536000;SameSite=Lax${secure}`;
     window.prabhixConsent = value;
     window.dispatchEvent(new Event("prabhix-consent-change"));
   } catch {
@@ -24,6 +25,10 @@ function setConsent(value: "accepted" | "declined") {
   }
 }
 
+/**
+ * In-document strip, not a modal. Tab must reach the rest of the page; trapping
+ * focus here used to be correct only while this sat over the hero as a dialog.
+ */
 export function ConsentBanner() {
   const [visible, setVisible] = useState(false);
 
@@ -48,10 +53,10 @@ export function ConsentBanner() {
 
   return (
     <div
-      role="dialog"
+      role="region"
       aria-labelledby="consent-title"
       aria-describedby="consent-desc"
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-border bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)]"
+      className="shrink-0 border-b border-border bg-surface/90 backdrop-blur-xl"
     >
       <Container className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-2xl">
@@ -74,12 +79,11 @@ export function ConsentBanner() {
               setConsent("declined");
               setVisible(false);
             }}
-            className="h-10 rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+            className="min-h-11 rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-surface"
           >
             Decline optional
           </button>
           <Button
-            size="sm"
             onClick={() => {
               setConsent("accepted");
               setVisible(false);

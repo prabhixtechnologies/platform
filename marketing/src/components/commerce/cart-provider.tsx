@@ -9,27 +9,26 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { resolveVisitorId } from "@/lib/commerce/api";
 import {
-  addCartItem,
-  createCart,
-  getCart,
-  removeCartItem,
-  updateCartItem,
-  applyDiscount,
-  clearDiscount,
-  resolveVisitorId,
-} from "@/lib/commerce/api";
-import {
-  clearCartToken,
-  readCartToken,
+  clearVariantMeta,
   rememberVariant,
-  writeCartToken,
   readVariantMeta,
   cartHasPhysical,
   type VariantMeta,
 } from "@/lib/commerce/cart-storage";
 import { CommerceApiError, friendlyCommerceError } from "@/lib/commerce/errors";
 import type { CartView, ProductType } from "@/lib/commerce/schemas";
+import {
+  migrateLegacySecrets,
+  shopAddItem,
+  shopApplyCode,
+  shopClearCart,
+  shopClearCode,
+  shopGetCart,
+  shopRemoveItem,
+  shopUpdateItem,
+} from "@/lib/commerce/shop-client";
 import { allowsAnalytics } from "@/lib/visitor/consent";
 import { readUiConsent } from "@/lib/visitor/consent";
 import { trackEvent } from "@/lib/visitor/tracker";
@@ -56,15 +55,6 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-async function ensureCartToken(): Promise<string> {
-  const existing = readCartToken();
-  if (existing) return existing;
-  const visitorId = resolveVisitorId();
-  const created = await createCart(visitorId);
-  writeCartToken(created.cartToken);
-  return created.cartToken;
-}
-
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartView | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,18 +65,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const token = readCartToken();
-      if (!token) {
-        setCart(null);
-        setVariantMeta(readVariantMeta());
-        return;
-      }
-      const next = await getCart(token);
+      await migrateLegacySecrets();
+      const next = await shopGetCart();
       setCart(next);
       setVariantMeta(readVariantMeta());
     } catch (err) {
       if (err instanceof CommerceApiError && err.code === "CART_NOT_FOUND") {
-        clearCartToken();
+        await shopClearCart().catch(() => undefined);
+        clearVariantMeta();
         setCart(null);
       } else {
         setError(friendlyCommerceError(err));
@@ -116,8 +102,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     ) => {
       setError(null);
       try {
-        const token = await ensureCartToken();
-        const next = await addCartItem(token, variantId, quantity);
+        const next = await shopAddItem(variantId, quantity, resolveVisitorId());
         rememberVariant(variantId, meta.productType, meta.slug);
         setVariantMeta(readVariantMeta());
         setCart(next);
@@ -136,15 +121,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const setQuantity = useCallback(async (itemId: string, quantity: number) => {
     setError(null);
-    const token = readCartToken();
-    if (!token) return;
     try {
       const next =
-        quantity < 1
-          ? await removeCartItem(token, itemId)
-          : await updateCartItem(token, itemId, quantity);
+        quantity < 1 ? await shopRemoveItem(itemId) : await shopUpdateItem(itemId, quantity);
       setCart(next);
     } catch (err) {
+      if (err instanceof CommerceApiError && err.code === "CART_NOT_FOUND") {
+        clearVariantMeta();
+        setCart(null);
+        return;
+      }
       setError(friendlyCommerceError(err));
       throw err;
     }
@@ -152,12 +138,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeItem = useCallback(async (itemId: string) => {
     setError(null);
-    const token = readCartToken();
-    if (!token) return;
     try {
-      const next = await removeCartItem(token, itemId);
+      const next = await shopRemoveItem(itemId);
       setCart(next);
     } catch (err) {
+      if (err instanceof CommerceApiError && err.code === "CART_NOT_FOUND") {
+        clearVariantMeta();
+        setCart(null);
+        return;
+      }
       setError(friendlyCommerceError(err));
       throw err;
     }
@@ -165,10 +154,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const applyCode = useCallback(async (code: string) => {
     setError(null);
-    const token = readCartToken();
-    if (!token) throw new Error("Cart not ready");
     try {
-      const next = await applyDiscount(token, code.trim());
+      const next = await shopApplyCode(code.trim());
       setCart(next);
     } catch (err) {
       setError(friendlyCommerceError(err));
@@ -178,10 +165,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeCode = useCallback(async () => {
     setError(null);
-    const token = readCartToken();
-    if (!token) return;
     try {
-      const next = await clearDiscount(token);
+      const next = await shopClearCode();
       setCart(next);
     } catch (err) {
       setError(friendlyCommerceError(err));

@@ -6,11 +6,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Money } from "@/components/commerce/money";
 import { ProductTypeBadge } from "@/components/commerce/product-type-badge";
-import {
-  clearOrderAccessToken,
-  readOrderAccessToken,
-} from "@/lib/commerce/cart-storage";
-import { getOrder } from "@/lib/commerce/api";
+import { migrateLegacySecrets, shopClearOrder, shopGetOrder } from "@/lib/commerce/shop-client";
 import { friendlyCommerceError } from "@/lib/commerce/errors";
 import type { OrderDetail } from "@/lib/commerce/schemas";
 
@@ -20,17 +16,26 @@ export function OrderConfirmationClient() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = readOrderAccessToken();
-    if (!token) {
-      setError("No order found. If you completed a purchase, use the link from your confirmation email.");
-      setLoading(false);
-      return;
-    }
-
-    void getOrder(token)
-      .then(setOrder)
-      .catch((err) => setError(friendlyCommerceError(err)))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    void (async () => {
+      await migrateLegacySecrets();
+      try {
+        const next = await shopGetOrder();
+        if (!cancelled) setOrder(next);
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            friendlyCommerceError(err) ||
+              "No order found. If you completed a purchase, use the link from your confirmation email.",
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
@@ -221,7 +226,7 @@ export function OrderConfirmationClient() {
         <Button
           variant="secondary"
           onClick={() => {
-            clearOrderAccessToken();
+            void shopClearOrder();
           }}
         >
           Clear saved order

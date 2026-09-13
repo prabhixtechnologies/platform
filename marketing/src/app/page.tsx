@@ -55,17 +55,17 @@ export default function HomePage() {
   return (
     <>
       {/* First viewport: brand, one headline, one sentence, CTAs, atmosphere — nothing else. */}
-      <section className="relative flex min-h-[min(100dvh,52rem)] flex-col justify-center overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32">
+      <section className="relative flex min-h-[min(100dvh,52rem)] flex-col justify-center overflow-hidden px-0 pt-20 pb-24 sm:pt-28 sm:pb-32">
         <GradientMesh />
         <Container>
           <div className="mx-auto max-w-4xl text-center">
             <Reveal>
-              <p className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+              <p className="font-display text-2xl font-semibold tracking-tight break-words text-foreground sm:text-4xl md:text-5xl">
                 Prabhix Technologies
               </p>
             </Reveal>
             <Reveal delay={0.1}>
-              <h1 className="mt-7 text-4xl font-bold tracking-tight sm:text-5xl lg:text-7xl lg:leading-[1.02]">
+              <h1 className="mt-7 text-[1.7rem] font-bold leading-tight tracking-tight break-words sm:text-5xl lg:text-7xl lg:leading-[1.02]">
                 Building software that{" "}
                 <span className="text-gradient">simplifies business</span>
               </h1>

@@ -9,6 +9,7 @@ type SectionProps = {
   title?: string;
   description?: string;
   centered?: boolean;
+  titleAs?: "h1" | "h2";
 };
 
 export function Section({
@@ -19,6 +20,7 @@ export function Section({
   title,
   description,
   centered = false,
+  titleAs: TitleTag = "h2",
 }: SectionProps) {
   return (
     <section id={id} className={cn("py-16 sm:py-24", className)}>
@@ -36,9 +38,9 @@ export function Section({
               </p>
             )}
             {title && (
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <TitleTag className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {title}
-              </h2>
+              </TitleTag>
             )}
             {description && (
               <p className="mt-4 text-lg text-muted-foreground">{description}</p>

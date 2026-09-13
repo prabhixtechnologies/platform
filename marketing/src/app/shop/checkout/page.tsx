@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
 
 export default function CheckoutPage() {
   return (
-    <Section title="Checkout" description="Secure payment powered by Razorpay" className="pt-24">
+    <Section title="Checkout" titleAs="h1" description="Secure payment powered by Razorpay" className="pt-24">
       <CheckoutClient />
     </Section>
   );

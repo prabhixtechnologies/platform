@@ -49,7 +49,7 @@ export type IngestAck = {
 };
 
 export type IdentifyRequest = {
-  visitorKey: string;
+  visitorKey?: string;
   name?: string;
   email?: string;
 };

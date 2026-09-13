@@ -1,5 +1,5 @@
 import { siteConfig } from "@/lib/site-config";
-import { buildStreamUrl } from "./api";
+import { chatStreamUrl } from "./chat-client";
 import type { ConnectionState, MessageView } from "./types";
 
 export type StreamHandlers = {
@@ -27,7 +27,6 @@ export class ChatStream {
 
   constructor(
     private conversationId: string,
-    private token: string,
     private handlers: StreamHandlers,
     private pollFn: () => Promise<MessageView[]>,
   ) {}
@@ -35,7 +34,7 @@ export class ChatStream {
   connect(): void {
     if (this.closed) return;
     this.closeSource();
-    const url = buildStreamUrl(this.conversationId, this.token);
+    const url = chatStreamUrl(this.conversationId);
     if (!url || !siteConfig.orgId) {
       this.handlers.onStateChange("polling");
       this.startPolling();
@@ -106,8 +105,25 @@ export class ChatStream {
     this.retryAttempt += 1;
     this.handlers.onStateChange("connecting");
     this.retryTimer = setTimeout(() => {
-      this.connect();
+      void this.waitUntilVisible().then(() => {
+        if (!this.closed) this.connect();
+      });
     }, delay);
+  }
+
+  private waitUntilVisible(): Promise<void> {
+    if (typeof document === "undefined" || !document.hidden) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      const onVisible = () => {
+        if (!document.hidden) {
+          document.removeEventListener("visibilitychange", onVisible);
+          resolve();
+        }
+      };
+      document.addEventListener("visibilitychange", onVisible);
+    });
   }
 
   private fallbackToPolling(): void {
@@ -120,6 +136,7 @@ export class ChatStream {
     this.polling = true;
     void this.pollOnce();
     this.pollTimer = setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
       void this.pollOnce();
     }, 5_000);
   }

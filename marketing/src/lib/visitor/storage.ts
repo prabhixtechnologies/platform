@@ -44,6 +44,12 @@ export function writeVisitorKey(key: string, fullConsent: boolean): void {
   safeSet(sessionStorage, VISITOR_KEY_MINIMAL, key);
 }
 
+/** After the BFF cookie is set, drop keys that used to live in web storage. */
+export function dropLegacyVisitorKeys(): void {
+  safeRemove(localStorage, VISITOR_KEY_FULL);
+  safeRemove(sessionStorage, VISITOR_KEY_MINIMAL);
+}
+
 export function readSessionId(): string | null {
   return safeGet(sessionStorage, SESSION_ID_KEY);
 }

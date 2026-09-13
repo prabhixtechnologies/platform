@@ -27,6 +27,7 @@ const FRIENDLY: Record<string, string> = {
   DOWNLOAD_LINK_EXPIRED: "This download link has expired or reached its download limit.",
   PRODUCT_NOT_FOUND: "That product could not be found.",
   CART_NOT_FOUND: "Your cart has expired. Please start again.",
+  ORDER_NOT_FOUND: "No order found. If you completed a purchase, use the link from your confirmation email.",
   VARIANT_NOT_FOUND: "That product variant is no longer available.",
   RATE_LIMITED: "Too many requests. Please wait a moment and try again.",
   ORIGIN_NOT_ALLOWED: "This store cannot be accessed from this site.",

@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
 
 export default function CartPage() {
   return (
-    <Section title="Your cart" className="pt-24">
+    <Section title="Your cart" titleAs="h1" className="pt-24">
       <CartPageClient />
     </Section>
   );

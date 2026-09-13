@@ -7,18 +7,18 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { CartTotals } from "@/components/commerce/cart-totals";
 import { useCart } from "@/components/commerce/cart-provider";
+import { resolveVisitorId } from "@/lib/commerce/api";
 import {
-  resolveVisitorId,
-  startCheckout,
-  verifyPayment,
-} from "@/lib/commerce/api";
-import {
-  clearCartToken,
   clearPendingCheckout,
+  clearVariantMeta,
   readPendingCheckout,
-  writeOrderAccessToken,
   writePendingCheckout,
 } from "@/lib/commerce/cart-storage";
+import {
+  shopCheckout,
+  shopClearCart,
+  shopVerifyPayment,
+} from "@/lib/commerce/shop-client";
 import { INDIAN_STATES } from "@/lib/commerce/constants";
 import { friendlyCommerceError } from "@/lib/commerce/errors";
 import { openRazorpayCheckout } from "@/lib/commerce/razorpay";
@@ -137,7 +137,7 @@ export function CheckoutClient() {
       setStatusMessage("Confirming payment — please wait…");
 
       try {
-        await verifyPayment({
+        await shopVerifyPayment({
           razorpayOrderId: result.orderId,
           razorpayPaymentId: result.paymentId,
           razorpaySignature: result.signature,
@@ -152,8 +152,8 @@ export function CheckoutClient() {
       }
 
       clearPendingCheckout();
-      clearCartToken();
-      writeOrderAccessToken(checkout.accessToken);
+      await shopClearCart().catch(() => undefined);
+      clearVariantMeta();
 
       if (allowsAnalytics(readUiConsent())) {
         trackEvent("commerce_purchase", {
@@ -188,12 +188,6 @@ export function CheckoutClient() {
     setStatusMessage(null);
 
     try {
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("prabhix_cart_token")
-          : null;
-      if (!token) throw new Error("Cart not found");
-
       const payload = {
         email: email.trim(),
         name: name.trim() || undefined,
@@ -223,10 +217,9 @@ export function CheckoutClient() {
             : undefined,
       };
 
-      const checkout = await startCheckout(token, payload);
+      const checkout = await shopCheckout(payload);
       const pendingCheckout = {
         razorpayOrderId: checkout.razorpayOrderId,
-        accessToken: checkout.accessToken,
         orderNumber: checkout.orderNumber,
         orderId: checkout.orderId,
         totalMinor: checkout.totalMinor,
@@ -245,8 +238,11 @@ export function CheckoutClient() {
 
   if (!cart) {
     return (
-      <Card>
-        <p className="text-muted-foreground">Loading checkout…</p>
+      <Card className="space-y-3" aria-busy="true" aria-label="Loading checkout">
+        <div className="h-5 w-40 animate-pulse rounded-md bg-muted" />
+        <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
+        <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
+        <div className="h-24 w-full animate-pulse rounded-md bg-muted" />
       </Card>
     );
   }
@@ -281,7 +277,7 @@ export function CheckoutClient() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+                className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
               />
               {fieldErrors.email && (
                 <span className="text-xs text-destructive">{fieldErrors.email}</span>
@@ -294,7 +290,7 @@ export function CheckoutClient() {
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+                className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
               />
             </label>
             <label className="block text-sm">
@@ -304,7 +300,7 @@ export function CheckoutClient() {
                 autoComplete="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+                className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
               />
             </label>
           </div>
@@ -432,7 +428,7 @@ function AddressFields({
         <input
           value={value.name}
           onChange={(e) => set("name", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
         {errors[`${prefix}Name`] && (
           <span className="text-xs text-destructive">{errors[`${prefix}Name`]}</span>
@@ -443,7 +439,7 @@ function AddressFields({
         <input
           value={value.line1}
           onChange={(e) => set("line1", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
         {errors[`${prefix}Line1`] && (
           <span className="text-xs text-destructive">{errors[`${prefix}Line1`]}</span>
@@ -454,7 +450,7 @@ function AddressFields({
         <input
           value={value.line2}
           onChange={(e) => set("line2", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
       </label>
       <label className="block text-sm">
@@ -462,7 +458,7 @@ function AddressFields({
         <input
           value={value.city}
           onChange={(e) => set("city", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
       </label>
       <label className="block text-sm">
@@ -470,7 +466,7 @@ function AddressFields({
         <select
           value={value.state}
           onChange={(e) => set("state", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         >
           {INDIAN_STATES.map((s) => (
             <option key={s} value={s}>
@@ -486,7 +482,7 @@ function AddressFields({
           maxLength={6}
           value={value.pincode}
           onChange={(e) => set("pincode", e.target.value.replace(/\D/g, ""))}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
         {errors[`${prefix}Pincode`] && (
           <span className="text-xs text-destructive">{errors[`${prefix}Pincode`]}</span>
@@ -498,7 +494,7 @@ function AddressFields({
           type="tel"
           value={value.phone}
           onChange={(e) => set("phone", e.target.value)}
-          className="mt-1 min-h-11 w-full rounded-lg border border-border px-3 py-2.5"
+          className="mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-foreground"
         />
       </label>
     </div>

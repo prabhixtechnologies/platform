@@ -137,12 +137,12 @@ export function SiteHeader() {
         <div className="flex h-16 items-center justify-between">
           <LogoMark />
 
-          <div className="hidden items-center gap-0.5 md:flex">
+          <div className="hidden items-center gap-0.5 lg:flex">
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
+                  "inline-flex min-h-11 items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
                   pathname.startsWith("/products")
                     ? "text-primary"
                     : "text-muted-foreground",
@@ -187,7 +187,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
+                  "inline-flex min-h-11 items-center rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
                   pathname === link.href || pathname.startsWith(`${link.href}/`)
                     ? "text-primary"
                     : "text-muted-foreground",
@@ -200,7 +200,7 @@ export function SiteHeader() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
-            <div className="relative hidden md:block" ref={signInRef}>
+            <div className="relative hidden lg:block" ref={signInRef}>
               <button
                 type="button"
                 className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary lg:px-3"
@@ -270,7 +270,7 @@ export function SiteHeader() {
             <button
               ref={menuButtonRef}
               type="button"
-              className="inline-flex size-10 items-center justify-center rounded-lg border border-border md:hidden"
+              className="inline-flex size-10 items-center justify-center rounded-lg border border-border lg:hidden"
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -290,7 +290,7 @@ export function SiteHeader() {
         <div
           id="mobile-nav"
           ref={mobileNavRef}
-          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-border bg-background md:hidden"
+          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-border bg-background lg:hidden"
           style={{ height: "calc(100dvh - 4rem - env(safe-area-inset-top, 0px))" }}
         >
           <Container className="py-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">

@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { CartTotals } from "@/components/commerce/cart-totals";
 import { Money } from "@/components/commerce/money";
 import { useCart } from "@/components/commerce/cart-provider";
+import { trapTab } from "@/lib/focus-trap";
 
 interface CartDrawerProps {
   open: boolean;
@@ -24,7 +25,11 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     closeBtnRef.current?.focus();
 
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (panelRef.current) trapTab(panelRef.current, e);
     }
     document.addEventListener("keydown", onKey);
     return () => {
@@ -84,7 +89,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           )}
 
           {isLoading && !cart && (
-            <p className="text-sm text-muted-foreground">Loading cart…</p>
+            <div className="space-y-3" aria-busy="true" aria-label="Loading cart">
+              <div className="h-16 animate-pulse rounded-lg bg-muted" />
+              <div className="h-16 animate-pulse rounded-lg bg-muted" />
+            </div>
           )}
 
           {!isLoading && (!cart || cart.items.length === 0) && (

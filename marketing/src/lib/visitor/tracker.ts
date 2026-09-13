@@ -1,5 +1,5 @@
 import { siteConfig } from "@/lib/site-config";
-import { ingestBatch, sendBeaconIngest } from "./api";
+import { ingestViaBff, sendBeaconIngest } from "./api";
 import {
   allowsAnalytics,
   allowsPresence,
@@ -18,7 +18,7 @@ import {
   writeFirstTouchReferrer,
   writeFirstTouchUtm,
   writeSessionId,
-  writeVisitorKey,
+  dropLegacyVisitorKeys,
 } from "./storage";
 import type {
   BatchIngestRequest,
@@ -89,12 +89,12 @@ export class VisitorTracker {
 
   identify(name: string, email: string): void {
     if (!allowsAnalytics(readUiConsent()) || !siteConfig.orgSlug) return;
-    const visitorKey = readVisitorKey(true);
-    if (!visitorKey) return;
     void import("./api").then(({ identifyVisitor }) =>
-      identifyVisitor(siteConfig.orgSlug, { visitorKey, name, email }).catch(
-        () => undefined,
-      ),
+      identifyVisitor(siteConfig.orgSlug, {
+        visitorKey: readVisitorKey(true) ?? undefined,
+        name,
+        email,
+      }).catch(() => undefined),
     );
   }
 
@@ -236,6 +236,7 @@ export class VisitorTracker {
   private startTimers(): void {
     if (this.intervalTimer) return;
     this.intervalTimer = setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
       void this.flush({});
     }, FLUSH_INTERVAL_MS);
     this.startHeartbeat();
@@ -256,6 +257,7 @@ export class VisitorTracker {
   private startHeartbeat(): void {
     if (this.heartbeatTimer || !allowsPresence(readUiConsent())) return;
     this.heartbeatTimer = setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
       void this.flush({ presenceOnly: true });
     }, HEARTBEAT_MS);
   }
@@ -283,15 +285,11 @@ export class VisitorTracker {
     };
   }
 
-  private ensureIds(fullConsent: boolean): {
-    visitorKey: string;
+  private ensureIds(): {
+    visitorKey?: string;
     sessionId: string;
   } {
-    let visitorKey = readVisitorKey(fullConsent);
-    if (!visitorKey) {
-      visitorKey = createEphemeralKey();
-      writeVisitorKey(visitorKey, fullConsent);
-    }
+    const visitorKey = readVisitorKey(true) ?? readVisitorKey(false) ?? undefined;
 
     let sessionId = readSessionId();
     if (!sessionId) {
@@ -339,12 +337,14 @@ export class VisitorTracker {
       return;
     }
 
-    const { visitorKey, sessionId } = this.ensureIds(fullConsent);
+    const { visitorKey, sessionId } = this.ensureIds();
     const batch: BatchIngestRequest = {
       consent,
-      visitorKey,
       sessionId,
     };
+    if (visitorKey) {
+      batch.visitorKey = visitorKey;
+    }
 
     if (analytics) {
       if (hasPageViews) {
@@ -381,13 +381,11 @@ export class VisitorTracker {
         return;
       }
 
-      const ack = await ingestBatch(siteConfig.orgSlug, batch);
-      if (ack?.visitorKey) {
-        writeVisitorKey(ack.visitorKey, fullConsent);
-      }
+      const ack = await ingestViaBff(batch);
       if (ack?.sessionId) {
         writeSessionId(ack.sessionId);
       }
+      dropLegacyVisitorKeys();
     } catch {
       /* fail silently */
     } finally {

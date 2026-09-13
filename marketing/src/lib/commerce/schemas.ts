@@ -78,7 +78,8 @@ export const cartItemSchema = z.object({
 });
 
 export const cartViewSchema = z.object({
-  cartToken: z.string(),
+  // Present on the commerce API; the shop BFF strips it before the browser sees the cart.
+  cartToken: z.string().optional(),
   currency: z.string(),
   items: z.array(cartItemSchema),
   subtotalMinor: z.number(),
@@ -98,7 +99,8 @@ export const createCartResponseSchema = z.object({
 export const checkoutResponseSchema = z.object({
   orderId: z.string().uuid(),
   orderNumber: z.string(),
-  accessToken: z.string(),
+  // Present on the commerce API; the shop BFF stores it in an httpOnly cookie instead.
+  accessToken: z.string().optional(),
   totalMinor: z.number(),
   currency: z.string(),
   razorpayOrderId: z.string(),
@@ -127,7 +129,7 @@ export const orderDetailSchema = z.object({
   id: z.string().uuid(),
   orderNumber: z.string(),
   status: z.string(),
-  accessToken: z.string(),
+  accessToken: z.string().optional(),
   subtotalMinor: z.number(),
   discountMinor: z.number(),
   cgstMinor: z.number(),

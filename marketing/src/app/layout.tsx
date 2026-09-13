@@ -105,11 +105,11 @@ export default async function RootLayout({
         <JsonLd data={organizationJsonLd()} />
         <SkipLink />
         <SiteHeader />
+        <ConsentBanner />
         <main id="main-content" className="flex-1">
           {children}
         </main>
         <SiteFooter />
-        <ConsentBanner />
         <Suspense fallback={null}>
           <VisitorTrackerProvider />
         </Suspense>

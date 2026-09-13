@@ -97,7 +97,7 @@ export default async function ShopProductPage({ params }: Props) {
 
           <Reveal delay={0.05}>
             <ProductTypeBadge type={product.productType} />
-            <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
               {product.name}
             </h1>
             {product.tagline && (
@@ -110,7 +110,7 @@ export default async function ShopProductPage({ params }: Props) {
                 </p>
               </div>
             )}
-            <div className="mt-8 lg:hidden">
+            <div className="mt-8 lg:sticky lg:top-24">
               <ProductPurchasePanel product={product} />
             </div>
           </Reveal>
@@ -119,12 +119,6 @@ export default async function ShopProductPage({ params }: Props) {
 
       <Section eyebrow="Details" title="What to expect">
         <ProductTypeSection product={product} />
-      </Section>
-
-      <Section className="hidden lg:block">
-        <div className="mx-auto max-w-md">
-          <ProductPurchasePanel product={product} />
-        </div>
       </Section>
     </>
   );

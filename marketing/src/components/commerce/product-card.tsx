@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </div>
-        <h2 className="mt-3 text-lg font-semibold group-hover:text-primary">
+        <h2 className="mt-3 font-display text-xl font-semibold tracking-tight group-hover:text-primary">
           {product.name}
         </h2>
         {product.tagline && (

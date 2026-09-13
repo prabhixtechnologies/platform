@@ -123,7 +123,7 @@ export function SiteFooter() {
           {state && (
             <p
               id="newsletter-error"
-              className={`mt-3 text-sm ${state.ok ? "text-primary" : "text-red-500"}`}
+              className={`mt-3 text-sm ${state.ok ? "text-primary" : "text-danger"}`}
               role={state.ok ? "status" : "alert"}
               aria-live="polite"
             >

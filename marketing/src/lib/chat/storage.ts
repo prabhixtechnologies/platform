@@ -7,12 +7,16 @@ function storageKey(): string {
   return `prabhix_chat_${siteConfig.orgSlug || "default"}`;
 }
 
-export function readChatSession(): StoredChatSession | null {
+export type PublicChatSession = Omit<StoredChatSession, "conversationToken"> & {
+  conversationToken?: string;
+};
+
+export function readChatSession(): PublicChatSession | null {
   if (typeof sessionStorage === "undefined") return null;
   try {
     const raw = sessionStorage.getItem(storageKey());
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as StoredChatSession;
+    const parsed = JSON.parse(raw) as PublicChatSession;
     if (parsed.expiresAt < Date.now()) {
       sessionStorage.removeItem(storageKey());
       return null;
@@ -24,14 +28,15 @@ export function readChatSession(): StoredChatSession | null {
 }
 
 export function writeChatSession(
-  session: Omit<StoredChatSession, "expiresAt">,
+  session: Omit<PublicChatSession, "expiresAt" | "conversationToken">,
 ): void {
   if (typeof sessionStorage === "undefined") return;
   try {
-    const payload: StoredChatSession = {
+    const payload: PublicChatSession = {
       ...session,
       expiresAt: Date.now() + TOKEN_TTL_MS,
     };
+    delete payload.conversationToken;
     sessionStorage.setItem(storageKey(), JSON.stringify(payload));
   } catch {
     /* ignore */
@@ -47,8 +52,24 @@ export function clearChatSession(): void {
   }
 }
 
-export function touchChatSession(): void {
-  const current = readChatSession();
-  if (!current) return;
-  writeChatSession(current);
+export async function migrateLegacyChatToken(): Promise<void> {
+  const stored = readChatSession();
+  const token = stored?.conversationToken;
+  if (!token) return;
+  try {
+    await fetch("/api/chat/adopt", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationToken: token }),
+    });
+    writeChatSession({
+      conversationId: stored.conversationId,
+      name: stored.name,
+      email: stored.email,
+      agentsAvailable: stored.agentsAvailable,
+    });
+  } catch {
+    /* retry next load */
+  }
 }
