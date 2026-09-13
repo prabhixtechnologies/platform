@@ -3,27 +3,36 @@ import { getApiBaseUrl } from "@/lib/api-url";
 import { siteConfig } from "@/lib/site-config";
 import {
   CHAT_COOKIE,
+  VISITOR_COOKIE,
   chatCookieOptions,
+  hostedCookieName,
   isChatJwt,
+  isVisitorKey,
 } from "@/lib/chat/bff-cookies";
-import { isVisitorKey } from "@/lib/chat/bff-cookies";
+import { readHostCookie } from "@/lib/commerce/shop-cookies";
 
 export const runtime = "nodejs";
 
 type RouteCtx = { params: Promise<{ path?: string[] }> };
 
 function readChatCookie(request: NextRequest): string | null {
-  const value = request.cookies.get(CHAT_COOKIE)?.value ?? null;
+  const value = readHostCookie(request.cookies, CHAT_COOKIE) ?? null;
   return isChatJwt(value) ? value : null;
 }
 
 function withChatCookie(response: NextResponse, token: string) {
-  response.cookies.set({ name: CHAT_COOKIE, value: token, ...chatCookieOptions() });
+  response.cookies.set({
+    name: hostedCookieName(CHAT_COOKIE),
+    value: token,
+    ...chatCookieOptions(),
+  });
   return response;
 }
 
 function clearChatCookie(response: NextResponse) {
-  response.cookies.set({ name: CHAT_COOKIE, value: "", ...chatCookieOptions(), maxAge: 0 });
+  const options = { ...chatCookieOptions(), maxAge: 0 };
+  response.cookies.set({ name: CHAT_COOKIE, value: "", ...options });
+  response.cookies.set({ name: `__Host-${CHAT_COOKIE}`, value: "", ...options, secure: true });
   return response;
 }
 
@@ -80,7 +89,7 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
   try {
     if (path === "conversations") {
       const body = (await request.json()) as Record<string, unknown>;
-      const visitor = request.cookies.get("pbx_vk")?.value;
+      const visitor = readHostCookie(request.cookies, VISITOR_COOKIE);
       if (isVisitorKey(visitor) && !body.visitorKey) {
         body.visitorKey = visitor;
       }

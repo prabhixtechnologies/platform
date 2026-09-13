@@ -1,11 +1,16 @@
 import { siteConfig } from "@/lib/site-config";
-import { secretCookieOptions } from "@/lib/commerce/shop-cookies";
+import {
+  hostedCookieName,
+  secretCookieOptions,
+} from "@/lib/commerce/shop-cookies";
 
 export const CHAT_COOKIE = "pbx_chat";
 export const VISITOR_COOKIE = "pbx_vk";
+export const SESSION_COOKIE = "pbx_sid";
 
 const CHAT_MAX_AGE = 60 * 60 * 24 * 7;
 const VISITOR_MAX_AGE = 60 * 60 * 24 * 365;
+const SESSION_MAX_AGE = 60 * 60 * 24;
 
 /** Visitor chat tokens are compact JWTs, not the commerce opaque tokens. */
 export function isChatJwt(value: string | null | undefined): value is string {
@@ -24,8 +29,11 @@ export function isVisitorKey(value: string | null | undefined): value is string 
   return typeof value === "string" && VISITOR_UUID.test(value);
 }
 
-export const chatCookieOptions = () => secretCookieOptions(CHAT_MAX_AGE);
-export const visitorCookieOptions = () => secretCookieOptions(VISITOR_MAX_AGE);
+export const chatCookieOptions = () => secretCookieOptions(CHAT_MAX_AGE, "strict");
+export const visitorCookieOptions = () => secretCookieOptions(VISITOR_MAX_AGE, "strict");
+export const sessionCookieOptions = () => secretCookieOptions(SESSION_MAX_AGE, "strict");
+
+export { hostedCookieName };
 
 export function publicChatStreamPath(conversationId: string): string | null {
   if (!siteConfig.orgId) return null;

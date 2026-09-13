@@ -87,7 +87,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Set by src/middleware.ts. Reading it here is also what opts the tree into dynamic rendering,
+  // Set by src/proxy.ts. Reading it here is also what opts the tree into dynamic rendering,
   // which a nonce requires: a page prerendered at build time would carry a nonce from some earlier
   // request, and every script on it would be refused.
   const nonce = (await headers()).get("x-nonce") ?? undefined;

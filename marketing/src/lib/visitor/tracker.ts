@@ -10,14 +10,11 @@ import {
 import { buildSessionContext, captureUtmParams } from "./session-context";
 import {
   clearTrackingIdentifiers,
-  createEphemeralKey,
   readFirstTouchReferrer,
   readFirstTouchUtm,
-  readSessionId,
   readVisitorKey,
   writeFirstTouchReferrer,
   writeFirstTouchUtm,
-  writeSessionId,
   dropLegacyVisitorKeys,
 } from "./storage";
 import type {
@@ -287,17 +284,9 @@ export class VisitorTracker {
 
   private ensureIds(): {
     visitorKey?: string;
-    sessionId: string;
   } {
     const visitorKey = readVisitorKey(true) ?? readVisitorKey(false) ?? undefined;
-
-    let sessionId = readSessionId();
-    if (!sessionId) {
-      sessionId = createEphemeralKey();
-      writeSessionId(sessionId);
-    }
-
-    return { visitorKey, sessionId };
+    return { visitorKey };
   }
 
   private async flush(options: {
@@ -337,10 +326,9 @@ export class VisitorTracker {
       return;
     }
 
-    const { visitorKey, sessionId } = this.ensureIds();
+    const { visitorKey } = this.ensureIds();
     const batch: BatchIngestRequest = {
       consent,
-      sessionId,
     };
     if (visitorKey) {
       batch.visitorKey = visitorKey;
@@ -381,10 +369,7 @@ export class VisitorTracker {
         return;
       }
 
-      const ack = await ingestViaBff(batch);
-      if (ack?.sessionId) {
-        writeSessionId(ack.sessionId);
-      }
+      await ingestViaBff(batch);
       dropLegacyVisitorKeys();
     } catch {
       /* fail silently */

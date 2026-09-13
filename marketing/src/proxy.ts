@@ -3,19 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 /**
  * Issues a per-request nonce and the site's Content-Security-Policy.
  *
- * The policy used to come from deploy/Caddyfile, shared with the console, and it carried
- * `script-src 'unsafe-inline'` because Next's streaming payload arrives as inline `<script>` tags
- * that nothing can predict the contents of. With `'unsafe-inline'` present, script-src permits any
- * injected script and the policy stops almost nothing — so the shared string was as weak as its
- * weakest tenant, and the console inherited that weakness. Each app now sets its own.
- *
- * A nonce is the only mechanism Next's inline payload can use, and it has a cost worth stating: the
- * value differs per request, so pages cannot be prerendered at build time. Reading `headers()` in
- * the root layout is what makes that switch explicit rather than accidental — without it, a
- * prerendered page would ship scripts carrying no nonce at all and the browser would block them,
- * which looks like the site being broken rather than like a caching decision. Every response is
- * rendered by the Node process either way here, since nothing sits in front of it caching HTML, so
- * the loss is a render per request rather than a round trip to an origin.
+ * Next.js 16 renamed this file from middleware.ts to proxy.ts (Node runtime only).
+ * Reading headers() in the root layout still opts the tree into dynamic rendering,
+ * which a nonce requires: a page prerendered at build time would carry a nonce from
+ * some earlier request, and every script on it would be refused.
  */
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -49,17 +40,19 @@ function buildPolicyParts(nonce: string): string[] {
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
+    "script-src-attr 'none'",
+    ...(isProduction ? ["upgrade-insecure-requests"] : []),
   ];
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   const nonce = btoa(String.fromCharCode(...bytes));
   const path = request.nextUrl.pathname;
   const checkout = path.startsWith("/shop/checkout");
   const capabilityLanding =
-    path.startsWith("/download/") || path.startsWith("/shop/order/claim/");
+    path.startsWith("/download") || path.startsWith("/shop/order/claim/");
   const policy = [
     ...buildPolicyParts(nonce),
     checkout ? "frame-ancestors 'none'" : "frame-ancestors 'self'",

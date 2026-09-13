@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getOrder } from "@/lib/commerce/api";
-import { isOpaqueToken, ORDER_COOKIE, orderCookieOptions } from "@/lib/commerce/shop-cookies";
+import { isOpaqueToken, ORDER_COOKIE, hostedCookieName, orderCookieOptions } from "@/lib/commerce/shop-cookies";
 
 export const metadata = {
   referrer: "no-referrer" as const,
@@ -29,6 +29,6 @@ export default async function ClaimOrderPage({
     redirect("/shop/order");
   }
   const jar = await cookies();
-  jar.set({ name: ORDER_COOKIE, value: token, ...orderCookieOptions() });
+  jar.set({ name: hostedCookieName(ORDER_COOKIE), value: token, ...orderCookieOptions() });
   redirect("/shop/order");
 }

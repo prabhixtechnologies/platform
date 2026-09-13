@@ -2,11 +2,12 @@ import { type NextRequest } from "next/server";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { siteConfig } from "@/lib/site-config";
 import { CHAT_COOKIE, isChatJwt } from "@/lib/chat/bff-cookies";
+import { readHostCookie } from "@/lib/commerce/shop-cookies";
 
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
-  const token = request.cookies.get(CHAT_COOKIE)?.value;
+  const token = readHostCookie(request.cookies, CHAT_COOKIE);
   const conversationId = request.nextUrl.searchParams.get("conversationId");
   if (!isChatJwt(token) || !conversationId || !siteConfig.orgId) {
     return new Response("Unauthorized", { status: 401 });

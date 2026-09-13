@@ -1,6 +1,6 @@
-import { issueDownload } from "@/lib/commerce/api";
-import { isOpaqueToken } from "@/lib/commerce/shop-cookies";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { isOpaqueToken, DOWNLOAD_COOKIE, downloadCookieOptions, hostedCookieName } from "@/lib/commerce/shop-cookies";
 
 export const metadata = {
   referrer: "no-referrer" as const,
@@ -9,10 +9,12 @@ export const metadata = {
 };
 
 /**
- * Email links land here. The token is consumed on the server and the browser is
- * sent to the short-lived storage URL. Client JS never sees the capability token.
+ * Email links land here. The token is parked in an httpOnly cookie and the
+ * browser is sent to /download with no capability in the URL. Client JS never
+ * sees the token. The first GET still appears in logs — that is inherent to a
+ * clickable email link.
  */
-export default async function DownloadPage({
+export default async function DownloadTokenPage({
   params,
 }: {
   params: Promise<{ token: string }>;
@@ -21,10 +23,11 @@ export default async function DownloadPage({
   if (!isOpaqueToken(token)) {
     redirect("/shop?download=invalid");
   }
-  try {
-    const link = await issueDownload(token);
-    redirect(link.downloadUrl);
-  } catch {
-    redirect("/shop?download=expired");
-  }
+  const jar = await cookies();
+  jar.set({
+    name: hostedCookieName(DOWNLOAD_COOKIE),
+    value: token,
+    ...downloadCookieOptions(),
+  });
+  redirect("/download");
 }

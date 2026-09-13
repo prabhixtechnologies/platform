@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/utils";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = siteConfig.name;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -22,7 +22,7 @@ export function createOgImage({ title, subtitle }: OgImageProps) {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          background: "#0B0B12",
+          background: "#0C1524",
           padding: "80px",
         }}
       >
@@ -39,7 +39,7 @@ export function createOgImage({ title, subtitle }: OgImageProps) {
               width: 56,
               height: 56,
               borderRadius: 14,
-              background: "#7C3AED",
+              background: "#0e7490",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

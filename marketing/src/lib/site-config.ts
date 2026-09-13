@@ -13,6 +13,7 @@ function trimTrailingSlash(value: string): string {
 }
 
 export const siteConfig = {
+  house: "Prabhix",
   name: "Prabhix Technologies",
   tagline: "Building software that simplifies business.",
   acronym:

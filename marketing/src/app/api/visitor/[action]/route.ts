@@ -3,20 +3,38 @@ import { ingestBatch, identifyVisitor } from "@/lib/visitor/api";
 import { siteConfig } from "@/lib/site-config";
 import type { BatchIngestRequest, IdentifyRequest } from "@/lib/visitor/types";
 import {
+  SESSION_COOKIE,
   VISITOR_COOKIE,
+  hostedCookieName,
   isVisitorKey,
+  sessionCookieOptions,
   visitorCookieOptions,
 } from "@/lib/chat/bff-cookies";
+import { readHostCookie } from "@/lib/commerce/shop-cookies";
 
 export const runtime = "nodejs";
 
 function readVisitor(request: NextRequest): string | null {
-  const value = request.cookies.get(VISITOR_COOKIE)?.value ?? null;
+  const value = readHostCookie(request.cookies, VISITOR_COOKIE) ?? null;
   return isVisitorKey(value) ? value : null;
 }
 
-function withVisitorCookie(response: NextResponse, key: string) {
-  response.cookies.set({ name: VISITOR_COOKIE, value: key, ...visitorCookieOptions() });
+function resolveSession(request: NextRequest): string {
+  const existing = readHostCookie(request.cookies, SESSION_COOKIE);
+  return isVisitorKey(existing) ? existing : crypto.randomUUID();
+}
+
+function withTrackingCookies(response: NextResponse, visitorKey: string, sessionId: string) {
+  response.cookies.set({
+    name: hostedCookieName(VISITOR_COOKIE),
+    value: visitorKey,
+    ...visitorCookieOptions(),
+  });
+  response.cookies.set({
+    name: hostedCookieName(SESSION_COOKIE),
+    value: sessionId,
+    ...sessionCookieOptions(),
+  });
   return response;
 }
 
@@ -32,21 +50,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 503 });
   }
   const url = request.nextUrl.pathname;
+  const sessionId = resolveSession(request);
   try {
     if (url.endsWith("/identify")) {
       const body = (await request.json()) as IdentifyRequest;
       const key = resolveKey(request, body.visitorKey);
       const ok = await identifyVisitor(siteConfig.orgSlug, { ...body, visitorKey: key });
       const response = NextResponse.json({ ok });
-      return withVisitorCookie(response, key);
+      return withTrackingCookies(response, key, sessionId);
     }
     const body = (await request.json()) as BatchIngestRequest;
     const key = resolveKey(request, body.visitorKey);
-    const ack = await ingestBatch(siteConfig.orgSlug, { ...body, visitorKey: key });
-    const response = NextResponse.json({
-      sessionId: ack?.sessionId,
-    });
-    return withVisitorCookie(response, ack?.visitorKey && isVisitorKey(ack.visitorKey) ? ack.visitorKey : key);
+    // Session id is minted on the BFF, not taken from the browser.
+    const ack = await ingestBatch(siteConfig.orgSlug, { ...body, visitorKey: key, sessionId });
+    const response = NextResponse.json({ ok: true });
+    return withTrackingCookies(
+      response,
+      ack?.visitorKey && isVisitorKey(ack.visitorKey) ? ack.visitorKey : key,
+      sessionId,
+    );
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }

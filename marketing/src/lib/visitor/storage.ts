@@ -48,6 +48,7 @@ export function writeVisitorKey(key: string, fullConsent: boolean): void {
 export function dropLegacyVisitorKeys(): void {
   safeRemove(localStorage, VISITOR_KEY_FULL);
   safeRemove(sessionStorage, VISITOR_KEY_MINIMAL);
+  safeRemove(sessionStorage, SESSION_ID_KEY);
 }
 
 export function readSessionId(): string | null {

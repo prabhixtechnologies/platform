@@ -19,8 +19,10 @@ import {
   CART_COOKIE,
   ORDER_COOKIE,
   cartCookieOptions,
+  hostedCookieName,
   isOpaqueToken,
   orderCookieOptions,
+  readHostCookie,
 } from "@/lib/commerce/shop-cookies";
 
 export const runtime = "nodejs";
@@ -53,23 +55,33 @@ function fail(err: unknown): NextResponse {
   return NextResponse.json({ code: "UNKNOWN", message: "Request failed" }, { status: 500 });
 }
 
-function readCookie(request: NextRequest, name: string): string | null {
-  const value = request.cookies.get(name)?.value ?? null;
+function readCookie(request: NextRequest, short: string): string | null {
+  const value = readHostCookie(request.cookies, short) ?? null;
   return isOpaqueToken(value) ? value : null;
 }
 
 function withCartCookie(response: NextResponse, token: string) {
-  response.cookies.set({ name: CART_COOKIE, value: token, ...cartCookieOptions() });
+  response.cookies.set({
+    name: hostedCookieName(CART_COOKIE),
+    value: token,
+    ...cartCookieOptions(),
+  });
   return response;
 }
 
 function withOrderCookie(response: NextResponse, token: string) {
-  response.cookies.set({ name: ORDER_COOKIE, value: token, ...orderCookieOptions() });
+  response.cookies.set({
+    name: hostedCookieName(ORDER_COOKIE),
+    value: token,
+    ...orderCookieOptions(),
+  });
   return response;
 }
 
-function clearCookie(response: NextResponse, name: string) {
-  response.cookies.set({ name, value: "", ...cartCookieOptions(), maxAge: 0 });
+function clearCookie(response: NextResponse, short: string) {
+  const options = { ...cartCookieOptions(), maxAge: 0 };
+  response.cookies.set({ name: short, value: "", ...options });
+  response.cookies.set({ name: `__Host-${short}`, value: "", ...options, secure: true });
   return response;
 }
 

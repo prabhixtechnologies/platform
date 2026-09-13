@@ -39,4 +39,8 @@ describe("secretCookieOptions", () => {
     expect(options.sameSite).toBe("lax");
     expect(options.path).toBe("/");
   });
+
+  it("can mint Strict cookies for same-origin capability hops", () => {
+    expect(secretCookieOptions(60, "strict").sameSite).toBe("strict");
+  });
 });
