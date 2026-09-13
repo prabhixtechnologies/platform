@@ -20,18 +20,6 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-/** Origin the browser talks to directly for the visitor beacon, chat widget and shop. */
-const apiOrigin = originOf(process.env.NEXT_PUBLIC_API_URL) ?? "http://localhost:8080";
-
-function originOf(value: string | undefined): string | null {
-  if (!value) return null;
-  try {
-    return new URL(value).origin;
-  } catch {
-    return null;
-  }
-}
-
 function buildPolicyParts(nonce: string): string[] {
   const scriptSrc = [
     "'self'",
@@ -54,7 +42,9 @@ function buildPolicyParts(nonce: string): string[] {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob:",
-    `connect-src 'self' ${apiOrigin} https://api.prabhixtechnologies.com https://id.prabhixtechnologies.com https://api.razorpay.com`,
+    // Shop, chat, and visitor beacons are same-origin BFFs (and /api/backend rewrite). Razorpay
+    // still talks to its own API from the checkout iframe's parent.
+    "connect-src 'self' https://api.razorpay.com",
     "frame-src https://checkout.razorpay.com",
     "object-src 'none'",
     "base-uri 'self'",
@@ -66,7 +56,10 @@ export function middleware(request: NextRequest) {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   const nonce = btoa(String.fromCharCode(...bytes));
-  const checkout = request.nextUrl.pathname.startsWith("/checkout");
+  const path = request.nextUrl.pathname;
+  const checkout = path.startsWith("/shop/checkout");
+  const capabilityLanding =
+    path.startsWith("/download/") || path.startsWith("/shop/order/claim/");
   const policy = [
     ...buildPolicyParts(nonce),
     checkout ? "frame-ancestors 'none'" : "frame-ancestors 'self'",
@@ -81,7 +74,12 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("content-security-policy", policy);
-  response.headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  // Capability URLs live in the path. The HTML meta is no-referrer too, but redirects never
+  // render that document — the header on this response is what the next hop sees.
+  response.headers.set(
+    "referrer-policy",
+    capabilityLanding ? "no-referrer" : "strict-origin-when-cross-origin",
+  );
   response.headers.set("x-content-type-options", "nosniff");
   response.headers.set("permissions-policy", "camera=(), microphone=(), geolocation=()");
   if (isProduction) {
