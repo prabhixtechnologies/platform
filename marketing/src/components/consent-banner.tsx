@@ -66,7 +66,7 @@ export function ConsentBanner() {
           <p id="consent-desc" className="mt-1 text-sm text-muted-foreground">
             We use essential cookies for site functionality and optional analytics
             to improve our services. See our{" "}
-            <a href="/legal/privacy" className="text-primary hover:underline">
+            <a href="/legal/privacy" className="text-primary underline">
               Privacy Policy
             </a>
             .

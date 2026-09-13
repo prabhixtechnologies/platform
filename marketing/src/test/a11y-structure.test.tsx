@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import axe from "axe-core";
 import { describe, expect, it } from "vitest";
+import ErrorPage from "@/app/error";
 import { Button } from "@/components/Button";
 import { CartTotals } from "@/components/commerce/cart-totals";
 import { LogoMark } from "@/components/logo-mark";
@@ -80,6 +81,15 @@ describe("structural accessibility", () => {
     const { container, getByRole } = render(<LogoMark showWordmark={false} />);
 
     expect(getByRole("link", { name: "Prabhix Technologies" })).toBeInTheDocument();
+    expect(await structuralViolations(container)).toEqual([]);
+  });
+
+  it("names recovery actions on the error page", async () => {
+    const { container, getByRole } = render(
+      <ErrorPage error={Object.assign(new Error("boom"), { digest: "test" })} reset={() => undefined} />,
+    );
+    expect(getByRole("heading", { name: "Something went wrong" })).toBeInTheDocument();
+    expect(getByRole("button", { name: "Try again" })).toBeInTheDocument();
     expect(await structuralViolations(container)).toEqual([]);
   });
 

@@ -64,7 +64,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             ref={closeBtnRef}
             type="button"
             onClick={onClose}
-            className="inline-flex size-10 items-center justify-center rounded-lg border border-border"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border"
             aria-label="Close cart drawer"
           >
             <X className="size-5" aria-hidden />
@@ -89,7 +89,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           )}
 
           {isLoading && !cart && (
-            <div className="space-y-3" aria-busy="true" aria-label="Loading cart">
+            <div className="space-y-3" role="status" aria-busy="true" aria-label="Loading cart">
               <div className="h-16 animate-pulse rounded-lg bg-muted" />
               <div className="h-16 animate-pulse rounded-lg bg-muted" />
             </div>
@@ -193,12 +193,12 @@ export function CartButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="relative inline-flex size-10 items-center justify-center rounded-lg border border-border transition-colors hover:border-primary hover:text-primary"
+        className="relative inline-flex size-11 items-center justify-center rounded-lg border border-border transition-colors hover:border-primary hover:text-primary"
         aria-label={`Open cart${itemCount > 0 ? `, ${itemCount} items` : ""}`}
       >
         <ShoppingBag className="size-5" aria-hidden />
         {itemCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+          <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
             {itemCount > 9 ? "9+" : itemCount}
           </span>
         )}

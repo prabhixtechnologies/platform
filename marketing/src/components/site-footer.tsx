@@ -114,7 +114,7 @@ export function SiteFooter() {
               <button
                 type="submit"
                 disabled={pending}
-                className="h-11 shrink-0 rounded-lg bg-primary px-6 text-sm font-semibold text-white transition-colors hover:bg-primary-strong disabled:opacity-50"
+                className="h-11 shrink-0 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong disabled:opacity-50"
               >
                 {pending ? "Subscribing…" : "Subscribe"}
               </button>

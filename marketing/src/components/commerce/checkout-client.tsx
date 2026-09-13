@@ -238,12 +238,14 @@ export function CheckoutClient() {
 
   if (!cart) {
     return (
-      <Card className="space-y-3" aria-busy="true" aria-label="Loading checkout">
-        <div className="h-5 w-40 animate-pulse rounded-md bg-muted" />
-        <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
-        <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
-        <div className="h-24 w-full animate-pulse rounded-md bg-muted" />
-      </Card>
+      <div role="status" aria-busy="true" aria-label="Loading checkout">
+        <Card className="space-y-3">
+          <div className="h-5 w-40 animate-pulse rounded-md bg-muted" />
+          <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
+          <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
+          <div className="h-24 w-full animate-pulse rounded-md bg-muted" />
+        </Card>
+      </div>
     );
   }
 

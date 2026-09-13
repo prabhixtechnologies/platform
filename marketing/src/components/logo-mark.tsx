@@ -15,7 +15,7 @@ export function LogoMark({ className, showWordmark = true }: LogoMarkProps) {
       // visitor can read and voice control can act on them. A fixed aria-label of "Prabhix
       // Technologies home" used to override it, and WCAG's label-in-name rule failed: the visible
       // text is not a part of that string. Only the icon-only form needs a name supplied.
-      aria-label={showWordmark ? undefined : "Prabhix Technologies"}
+      aria-label="Prabhix Technologies"
     >
       <svg
         width="36"
@@ -37,11 +37,11 @@ export function LogoMark({ className, showWordmark = true }: LogoMarkProps) {
         />
       </svg>
       {showWordmark && (
-        <span className="flex flex-col leading-none">
+        <span className="hidden min-[360px]:flex flex-col leading-none">
           <span className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
             Prabhix
           </span>
-          <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+          <span className="text-[11px] font-medium uppercase tracking-widest text-foreground/70">
             Technologies
           </span>
         </span>

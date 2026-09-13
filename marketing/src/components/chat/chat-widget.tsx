@@ -242,7 +242,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         ref={panelRef}
         role="dialog"
         aria-modal={open}
-        aria-hidden={!open}
+        inert={!open}
         aria-labelledby={titleId}
         aria-describedby={descId}
         className={cn(
@@ -322,7 +322,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
             <button
               type="submit"
               disabled={starting}
-              className="mt-auto h-11 rounded-lg bg-primary text-sm font-semibold text-white transition-colors hover:bg-primary-strong disabled:opacity-50"
+              className="mt-auto h-11 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong disabled:opacity-50"
             >
               {starting ? "Starting…" : "Start chat"}
             </button>
@@ -369,7 +369,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
                 <button
                   type="submit"
                   disabled={sending || !draft.trim()}
-                  className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-primary-strong disabled:opacity-50"
+                  className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-colors hover:bg-primary-strong disabled:opacity-50"
                   aria-label="Send message"
                 >
                   <Send className="size-4" aria-hidden />
@@ -385,7 +385,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className={cn(
-          "fixed z-[75] flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/30 transition-transform hover:bg-primary-strong",
+          "fixed z-[75] flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:bg-primary-strong",
           "bottom-[max(1rem,env(safe-area-inset-bottom,0px))] right-[max(1rem,env(safe-area-inset-right,0px))]",
           "sm:bottom-6 sm:right-6",
         )}
@@ -420,7 +420,7 @@ function MessageBubble({ message }: { message: MessageView }) {
         className={cn(
           "max-w-[85%] rounded-2xl px-3 py-2 text-sm",
           isVisitor
-            ? "rounded-br-md bg-primary text-white"
+            ? "rounded-br-md bg-primary text-primary-foreground"
             : "rounded-bl-md border border-border bg-surface text-foreground",
         )}
       >

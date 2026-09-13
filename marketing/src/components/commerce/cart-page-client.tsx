@@ -42,7 +42,7 @@ export function CartPageClient() {
 
   if (isLoading && !cart) {
     return (
-      <div className="space-y-3" aria-busy="true" aria-label="Loading cart">
+      <div className="space-y-3" role="status" aria-busy="true" aria-label="Loading cart">
         <div className="h-24 animate-pulse rounded-xl bg-muted" />
         <div className="h-24 animate-pulse rounded-xl bg-muted" />
         <div className="h-40 animate-pulse rounded-xl bg-muted" />

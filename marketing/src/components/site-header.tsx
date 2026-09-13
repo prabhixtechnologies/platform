@@ -134,8 +134,8 @@ export function SiteHeader() {
       )}
     >
       <Container as="nav" aria-label="Main navigation">
-        <div className="flex h-16 items-center justify-between">
-          <LogoMark />
+        <div className="flex h-16 min-w-0 items-center justify-between gap-2">
+          <LogoMark className="min-w-0" />
 
           <div className="hidden items-center gap-0.5 lg:flex">
             <div className="relative" ref={dropdownRef}>
@@ -270,7 +270,7 @@ export function SiteHeader() {
             <button
               ref={menuButtonRef}
               type="button"
-              className="inline-flex size-10 items-center justify-center rounded-lg border border-border lg:hidden"
+              className="inline-flex size-11 items-center justify-center rounded-lg border border-border lg:hidden"
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
               aria-label={mobileOpen ? "Close menu" : "Open menu"}

@@ -28,7 +28,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       <button
         type="button"
         className={cn(
-          "inline-flex size-10 items-center justify-center rounded-lg border border-border bg-surface text-muted-foreground",
+          "inline-flex size-11 items-center justify-center rounded-lg border border-border bg-surface text-muted-foreground",
           className,
         )}
         aria-label="Toggle theme"
@@ -44,7 +44,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       type="button"
       onClick={toggle}
       className={cn(
-        "inline-flex size-10 items-center justify-center rounded-lg border border-border bg-surface text-muted-foreground transition-colors hover:text-foreground hover:border-primary/30",
+        "inline-flex size-11 items-center justify-center rounded-lg border border-border bg-surface text-muted-foreground transition-colors hover:text-foreground hover:border-primary/30",
         className,
       )}
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}

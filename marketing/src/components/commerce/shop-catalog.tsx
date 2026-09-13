@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "@/components/commerce/product-card";
 import { listProducts } from "@/lib/commerce/api";
@@ -183,16 +184,32 @@ export function ShopCatalog() {
       )}
 
       {filtered.length === 0 && !loading && (
-        <p className="py-12 text-center text-muted-foreground">
-          No products match your filters.
-        </p>
+        <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center">
+          <h2 className="font-display text-xl font-semibold tracking-tight">No products match</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Nothing in the catalog matches these filters. Try a different search or type, or browse the full shop.
+          </p>
+          <Link
+            href="/shop"
+            className="mt-6 inline-flex min-h-11 items-center justify-center font-semibold text-primary hover:underline"
+            onClick={() => {
+              setSearch("");
+              setTypeFilter("ALL");
+              setSort("featured");
+            }}
+          >
+            Back to shop
+          </Link>
+        </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {filtered.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      ) : null}
 
       <div ref={sentinelRef} className="h-8" aria-hidden />
       {loadingMore && (

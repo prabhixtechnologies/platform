@@ -4,6 +4,8 @@ const apiOrigin = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Allow a parallel dist when Cursor/tsserver locks `.next/standalone` on Windows.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
   poweredByHeader: false,
   // Put <title>, the description, og: tags, canonical and the manifest link in <head> for every
