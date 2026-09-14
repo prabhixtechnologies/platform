@@ -27,6 +27,8 @@ type ButtonProps = {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?: () => void;
+  /** Playwright and other tests target this; forwarded onto the real control. */
+  "data-testid"?: string;
 };
 
 export function Button({
@@ -39,6 +41,7 @@ export function Button({
   type = "button",
   disabled,
   onClick,
+  "data-testid": testId,
 }: ButtonProps) {
   const classes = cn(
     "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-50",
@@ -56,6 +59,7 @@ export function Button({
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClick}
+          data-testid={testId}
         >
           {children}
           {/* target="_blank" moves the user to a new tab with no warning, which is disorienting for
@@ -65,7 +69,7 @@ export function Button({
       );
     }
     return (
-      <Link href={href} className={classes} onClick={onClick}>
+      <Link href={href} className={classes} onClick={onClick} data-testid={testId}>
         {children}
       </Link>
     );
@@ -77,6 +81,7 @@ export function Button({
       className={classes}
       disabled={disabled}
       onClick={onClick}
+      data-testid={testId}
     >
       {children}
     </button>

@@ -12,7 +12,7 @@ Public marketing website for [Prabhix Technologies](https://prabhixtechnologies.
 ## Setup
 
 ```bash
-cd marketing
+# From the platform repository root (this folder is the marketing site).
 cp .env.example .env.local
 npm install
 npm run dev

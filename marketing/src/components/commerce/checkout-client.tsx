@@ -368,6 +368,7 @@ export function CheckoutClient() {
           size="lg"
           className="w-full sm:w-auto"
           disabled={busy}
+          data-testid="shop-pay"
         >
           {busy ? (
             <>

@@ -39,22 +39,22 @@ export const PRODUCT_LINKS = [
 export const STORE_URL = appUrls.store;
 
 /** Apps a visitor can sign into — never treat OneOps as the only company CTA. */
-/** Apps a visitor can sign into — each starts OIDC against Identity (never a local password form). */
+/** Apps a visitor can sign into. Each product starts OIDC; Identity is not a menu item. */
 export const SIGN_IN_LINKS = [
   {
     href: `${appUrls.oneops}/login`,
     label: "OneOps",
-    description: "Operator console — redirects to Prabhix Identity",
+    description: "Operator console",
   },
   {
     href: `${appUrls.mobistack}/login`,
     label: "MobiStack",
-    description: "Repair shop app — redirects to Prabhix Identity",
+    description: "Repair shop app",
   },
   {
     href: `${appUrls.mailroom}/sign-in`,
     label: "Mailroom",
-    description: "Personal mail — redirects to Prabhix Identity",
+    description: "Personal mail",
   },
 ] as const;
 

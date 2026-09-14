@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
   poweredByHeader: false,
+  transpilePackages: ["@prabhix/oneops-api", "@prabhix/brand"],
   // Put <title>, the description, og: tags, canonical and the manifest link in <head> for every
   // request instead of streaming them into <body>.
   //

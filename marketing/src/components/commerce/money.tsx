@@ -1,4 +1,4 @@
-import { formatMoney } from "@/lib/commerce/money";
+import { formatMoney } from "@prabhix/oneops-api";
 
 interface MoneyProps {
   amountMinor: number;

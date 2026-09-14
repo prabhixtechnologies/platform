@@ -6,14 +6,20 @@
 # nothing to do with the change being built.
 FROM public.ecr.aws/docker/library/node:22-alpine AS base
 WORKDIR /app
+# Marketing only needs brand tokens. Copying all of web-kit pulls @prabhix/ui into tsc.
+COPY --from=webkit packages/brand ./vendor/web-kit/packages/brand
 
 FROM base AS deps
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json ./
+# Host lockfiles are npm 8 / lockfileVersion 2. node:22-alpine ships npm 10, which
+# rejects those on `npm ci` and crashes on `npm install` if the old lock is present.
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));if(p.dependencies?.['@prabhix/brand']?.startsWith('file:'))p.dependencies['@prabhix/brand']='file:./vendor/web-kit/packages/brand';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+RUN npm install --no-audit --no-fund
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));if(p.dependencies?.['@prabhix/brand']?.startsWith('file:'))p.dependencies['@prabhix/brand']='file:./vendor/web-kit/packages/brand';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Next inlines NEXT_PUBLIC_* at build time, so these have to be present here — setting them on the

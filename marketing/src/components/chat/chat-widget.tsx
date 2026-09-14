@@ -322,6 +322,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
             <button
               type="submit"
               disabled={starting}
+              data-testid="chat-start"
               className="mt-auto h-11 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong disabled:opacity-50"
             >
               {starting ? "Starting…" : "Start chat"}
@@ -333,6 +334,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
               className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-3"
               aria-live="polite"
               aria-relevant="additions"
+              data-testid="chat-visitor-messages"
             >
               {messages.length === 0 && (
                 <p className="text-sm text-muted-foreground">
@@ -364,11 +366,13 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder="Type your message…"
+                  data-testid="chat-visitor-composer"
                   className="max-h-32 min-h-[44px] flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
                 />
                 <button
                   type="submit"
                   disabled={sending || !draft.trim()}
+                  data-testid="chat-visitor-send"
                   className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-colors hover:bg-primary-strong disabled:opacity-50"
                   aria-label="Send message"
                 >
@@ -391,7 +395,8 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         )}
         aria-expanded={open}
         aria-controls={titleId}
-        aria-label={open ? "Close chat" : "Open chat"}
+            aria-label={open ? "Close chat" : "Open chat"}
+        data-testid="chat-launcher"
       >
         <MessageCircle className="size-6" aria-hidden />
         {unread > 0 && (

@@ -30,3 +30,5 @@ Caddyfile text eol=lf
 *.pdf binary
 *.zip binary
 *.keystore binary
+
+marketing/vendor/oneops-api/src/schema.ts linguist-generated=true

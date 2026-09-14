@@ -29,7 +29,7 @@ const productTabs: { id: ProductTab; label: string; blurb: string }[] = [
   {
     id: "oneops",
     label: "OneOps",
-    blurb: "Operator console — inbox, chat, storefront, and staff.",
+    blurb: "OneOps is the operations console for a small online business: website visitors and live chat, a shared helpdesk inbox, storefront and orders, team and billing.",
   },
   {
     id: "mobistack",

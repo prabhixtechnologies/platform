@@ -58,7 +58,7 @@ export default function HomePage() {
       <section className="relative flex min-h-[min(100dvh,52rem)] flex-col justify-center overflow-hidden px-0 pt-20 pb-24 sm:pt-28 sm:pb-32">
         <GradientMesh />
         <Container>
-          <div className="mx-auto max-w-4xl text-center">
+          <div className="text-center">
             <Reveal>
               <p className="font-display text-2xl font-semibold tracking-tight break-words text-foreground sm:text-4xl md:text-5xl">
                 Prabhix Technologies
@@ -71,7 +71,7 @@ export default function HomePage() {
               </h1>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              <p className="mx-auto mt-7 max-w-3xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
                 Focused products for real operations — not a single platform pretending to be everything.
               </p>
             </Reveal>
@@ -95,7 +95,7 @@ export default function HomePage() {
         title="What we ship"
         description="Each product solves a specific job. Shared identity and engineering practices underneath — distinct experiences on top."
       >
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {productApps.map((product, i) => (
             <Reveal key={product.slug} delay={i * 0.1}>
               <Card hover className="h-full">

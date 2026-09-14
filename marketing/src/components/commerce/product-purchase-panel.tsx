@@ -272,6 +272,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
         size="lg"
         className="w-full"
         disabled={busy || outOfStock || !selected}
+        data-testid="shop-add-to-cart"
         onClick={() => void handleAdd()}
       >
         {busy ? (

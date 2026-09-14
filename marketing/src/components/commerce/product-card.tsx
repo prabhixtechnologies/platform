@@ -16,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card hover className="flex h-full flex-col">
-      <Link href={href} className="group flex flex-1 flex-col focus-visible:outline-none">
+      <Link href={href} className="group flex flex-1 flex-col focus-visible:outline-none" data-testid="shop-product">
         <div
           className="mb-4 flex aspect-[4/3] items-center justify-center rounded-xl bg-linear-to-br from-primary/10 via-surface to-accent/10"
           aria-hidden

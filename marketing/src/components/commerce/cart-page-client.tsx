@@ -164,7 +164,7 @@ export function CartPageClient() {
         <Card className="space-y-4 lg:sticky lg:top-24">
           <h2 className="text-lg font-semibold">Summary</h2>
           <CartTotals cart={cart} />
-          <Button href="/shop/checkout" size="lg" className="w-full">
+          <Button href="/shop/checkout" size="lg" className="w-full" data-testid="shop-checkout">
             Proceed to checkout
           </Button>
           <Button href="/shop" variant="secondary" className="w-full">

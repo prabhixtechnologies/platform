@@ -43,9 +43,9 @@ export const products: Product[] = [
     app: "oneops",
     slug: "oneops",
     name: "OneOps",
-    tagline: "Operator console for inbox, chat, storefront, and staff.",
+    tagline: "Operations console for a small online business.",
     description:
-      "OneOps is Prabhix's operator console — shared team inbox, live chat with visitors on your site, customer and order management, staff and permissions, billing, and an audit trail. Built for day-to-day operations across web and native apps, not a catch-all for every business system.",
+      "OneOps is the operations console for a small online business: website visitors and live chat, a shared helpdesk inbox, storefront and orders, team and billing. Sold per organization, on web and mobile.",
     features: [
       "Shared team inbox with assignment, SLA tracking and canned replies",
       "Live chat with visitors, plus who is on your site right now",
@@ -81,12 +81,12 @@ export const products: Product[] = [
     name: "Mailroom",
     tagline: "Personal mail for hosted Prabhix addresses.",
     description:
-      "Mailroom is the personal mailbox product for addresses on Prabhix-hosted domains — folders, threads, and reading on web and Android. Helpdesk and shared team inbox stay in OneOps; Mailroom is for the individual inbox.",
+      "Mailroom is a person's own mail on a Prabhix-hosted address, with folders, stars and drafts. Helpdesk and shared team inbox stay in OneOps; Mailroom is the individual inbox, with a Company mail view for organization admins.",
     features: [
       "Mailbox sidebar with folders and starred threads",
       "Thread and message reading with Identity sign-in",
-      "Android client via the company app store",
-      "Backend API extracted to its own service on :8083 locally",
+      "Compose, drafts, aliases and signature",
+      "Company mail for members who can read every mailbox the organization owns",
     ],
     status: "coming-soon",
   },
@@ -97,7 +97,7 @@ export const products: Product[] = [
     name: "Helpdesk",
     tagline: "Shared inbox and SLA tracking, built into OneOps.",
     description:
-      "The email and helpdesk capability of OneOps — shared mailboxes, conversation threading, agent assignment, SLA tracking, and automation rules for support teams. Included with OneOps rather than deployed separately.",
+      "The helpdesk module of OneOps — shared mailboxes, conversation threading, agent assignment, SLA tracking, and automation rules for support teams. Reached at /inbox in the OneOps console, not a separate product.",
     features: [
       "IMAP ingestion with MIME parsing and thread reconstruction",
       "Agent assignment with team-scoped visibility",
