@@ -1,6 +1,6 @@
 # Prabhix Technologies — Marketing Site
 
-Public marketing website for [Prabhix Technologies](https://prabhixtechnologies.com), built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4.
+Public marketing website for [Prabhix Technologies](https://prabhixtechnologies.com), built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4.
 
 **Tagline:** Building software that simplifies business.
 
