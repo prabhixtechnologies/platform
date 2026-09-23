@@ -14,10 +14,10 @@ jobs:
       run:
         working-directory: marketing
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -50,10 +50,10 @@ jobs:
       # which is a confusing way to find out.
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # Prints the claims AWS compares the trust policy against, and nothing else.
       #
@@ -70,7 +70,7 @@ jobs:
       # Only the decoded payload is echoed. The token itself is a bearer credential and is never
       # printed; the claims are identifiers, and the job is already restricted to pushes on main.
       - name: Show the OIDC claims AWS will see
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const token = await core.getIDToken('sts.amazonaws.com');
@@ -89,7 +89,7 @@ jobs:
       # The role ARN is written here rather than read from a variable for the same reason. The
       # account ID is already committed in Infra/deploy/aws/*.json and is not a secret.
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::029096972251:role/prabhix-github-ecr-push
           # ap-south-1 because the EC2 instance is there. Pulling across regions is charged as
@@ -116,7 +116,7 @@ jobs:
           echo "base=${{ steps.ecr.outputs.registry }}/prabhix" >> "$GITHUB_OUTPUT"
 
       - name: Build and push marketing
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./marketing
           file: ./marketing/Dockerfile
