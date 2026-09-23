@@ -24,7 +24,9 @@ jobs:
           cache-dependency-path: marketing/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          git clone --depth 1 https://github.com/prabhixtechnologies/web-kit.git "$GITHUB_WORKSPACE/../web-kit"
+          npm ci
 
       - name: Typecheck
         run: npx tsc --noEmit
@@ -118,6 +120,8 @@ jobs:
         with:
           context: ./marketing
           file: ./marketing/Dockerfile
+          build-contexts: |
+            webkit=https://github.com/prabhixtechnologies/web-kit.git#main
           push: true
           # NEXT_PUBLIC_* is inlined at build time, so this is the only place the production
           # values can be set. ORG_SLUG and ORG_ID identify Prabhix's own tenant and are what
