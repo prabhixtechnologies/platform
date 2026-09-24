@@ -1,26 +1,26 @@
 import { formatMoney } from "@prabhix/oneops-api";
 
 interface MoneyProps {
-  amountMinor: number;
+  amountPaise: number;
   currency?: string;
   className?: string;
-  compareAtMinor?: number | null;
+  compareAtPaise?: number | null;
 }
 
 export function Money({
-  amountMinor,
+  amountPaise,
   currency = "INR",
   className,
-  compareAtMinor,
+  compareAtPaise,
 }: MoneyProps) {
   return (
     <span className={className}>
-      {compareAtMinor != null && compareAtMinor > amountMinor && (
+      {compareAtPaise != null && compareAtPaise > amountPaise && (
         <span className="mr-2 text-sm text-muted-foreground line-through">
-          {formatMoney(compareAtMinor, currency)}
+          {formatMoney(compareAtPaise, currency)}
         </span>
       )}
-      <span>{formatMoney(amountMinor, currency)}</span>
+      <span>{formatMoney(amountPaise, currency)}</span>
     </span>
   );
 }

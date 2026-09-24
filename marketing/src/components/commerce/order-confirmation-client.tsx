@@ -59,7 +59,7 @@ export function OrderConfirmationClient() {
   }
 
   const paid = order.status === "PAID" || order.status === "FULFILLED";
-  const taxTotal = order.cgstMinor + order.sgstMinor + order.igstMinor;
+  const taxTotal = order.cgstPaise + order.sgstPaise + order.igstPaise;
   const digitalItems = order.items.filter((i) => i.productType === "DIGITAL");
   const physicalItems = order.items.filter((i) => i.productType === "PHYSICAL");
 
@@ -98,7 +98,7 @@ export function OrderConfirmationClient() {
               <div className="text-right text-sm">
                 <p>Qty {item.quantity}</p>
                 <p className="font-medium">
-                  <Money amountMinor={item.lineSubtotalMinor} currency={order.currency} />
+                  <Money amountPaise={item.lineSubtotalPaise} currency={order.currency} />
                 </p>
               </div>
             </li>
@@ -112,46 +112,46 @@ export function OrderConfirmationClient() {
           <dl className="mt-3 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted-foreground">Subtotal</dt>
-              <dd><Money amountMinor={order.subtotalMinor} currency={order.currency} /></dd>
+              <dd><Money amountPaise={order.subtotalPaise} currency={order.currency} /></dd>
             </div>
-            {order.discountMinor > 0 && (
+            {order.discountPaise > 0 && (
               <div className="flex justify-between text-emerald-600">
                 <dt>Discount</dt>
-                <dd>−<Money amountMinor={order.discountMinor} currency={order.currency} /></dd>
+                <dd>−<Money amountPaise={order.discountPaise} currency={order.currency} /></dd>
               </div>
             )}
             <div className="flex justify-between">
               <dt className="text-muted-foreground">GST</dt>
-              <dd><Money amountMinor={taxTotal} currency={order.currency} /></dd>
+              <dd><Money amountPaise={taxTotal} currency={order.currency} /></dd>
             </div>
-            {order.cgstMinor > 0 && (
+            {order.cgstPaise > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
                 <dt>CGST / SGST</dt>
                 <dd>
-                  <Money amountMinor={order.cgstMinor} currency={order.currency} /> /{" "}
-                  <Money amountMinor={order.sgstMinor} currency={order.currency} />
+                  <Money amountPaise={order.cgstPaise} currency={order.currency} /> /{" "}
+                  <Money amountPaise={order.sgstPaise} currency={order.currency} />
                 </dd>
               </div>
             )}
-            {order.igstMinor > 0 && (
+            {order.igstPaise > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
                 <dt>IGST</dt>
-                <dd><Money amountMinor={order.igstMinor} currency={order.currency} /></dd>
+                <dd><Money amountPaise={order.igstPaise} currency={order.currency} /></dd>
               </div>
             )}
             <div className="flex justify-between">
               <dt className="text-muted-foreground">Shipping</dt>
               <dd>
-                {order.shippingMinor === 0 ? (
+                {order.shippingPaise === 0 ? (
                   "Free"
                 ) : (
-                  <Money amountMinor={order.shippingMinor} currency={order.currency} />
+                  <Money amountPaise={order.shippingPaise} currency={order.currency} />
                 )}
               </dd>
             </div>
             <div className="flex justify-between border-t border-border pt-2 font-semibold">
               <dt>Total paid</dt>
-              <dd><Money amountMinor={order.totalMinor} currency={order.currency} /></dd>
+              <dd><Money amountPaise={order.totalPaise} currency={order.currency} /></dd>
             </div>
           </dl>
         </Card>

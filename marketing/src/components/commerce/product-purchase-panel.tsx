@@ -215,9 +215,9 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
                     </span>
                   </span>
                   <Money
-                    amountMinor={variant.priceMinor}
+                    amountPaise={variant.pricePaise}
                     currency={variant.currency}
-                    compareAtMinor={variant.compareAtPriceMinor}
+                    compareAtPaise={variant.compareAtPricePaise}
                   />
                   {product.productType === "SUBSCRIPTION" && (
                     <span className="text-xs text-muted-foreground">
@@ -236,9 +236,9 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           <div>
             <p className="text-2xl font-bold">
               <Money
-                amountMinor={selected.priceMinor}
+                amountPaise={selected.pricePaise}
                 currency={selected.currency}
-                compareAtMinor={selected.compareAtPriceMinor}
+                compareAtPaise={selected.compareAtPricePaise}
               />
               {product.productType === "SUBSCRIPTION" && (
                 <span className="text-base font-normal text-muted-foreground">

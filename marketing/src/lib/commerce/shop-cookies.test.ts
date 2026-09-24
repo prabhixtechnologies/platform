@@ -21,14 +21,14 @@ describe("shop BFF cart payload", () => {
       cartViewSchema.parse({
         currency: "INR",
         items: [],
-        subtotalMinor: 0,
-        discountMinor: 0,
-        taxMinor: 0,
-        shippingMinor: 0,
-        totalMinor: 0,
+        subtotalPaise: 0,
+        discountPaise: 0,
+        taxPaise: 0,
+        shippingPaise: 0,
+        totalPaise: 0,
         expiresAt: "2026-12-31T00:00:00Z",
       }),
-    ).toMatchObject({ currency: "INR", totalMinor: 0 });
+    ).toMatchObject({ currency: "INR", totalPaise: 0 });
   });
 });
 

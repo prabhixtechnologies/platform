@@ -10,7 +10,7 @@ export type PendingCheckout = {
   razorpayOrderId: string;
   orderNumber: string;
   orderId: string;
-  totalMinor: number;
+  totalPaise: number;
   currency: string;
   razorpayKeyId: string;
   createdAt: number;

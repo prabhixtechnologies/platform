@@ -105,7 +105,7 @@ export function CheckoutClient() {
 
       const result = await openRazorpayCheckout({
         key: checkout.razorpayKeyId,
-        amount: checkout.totalMinor,
+        amount: checkout.totalPaise,
         currency: checkout.currency,
         name: "Prabhix Technologies",
         description: `Order ${checkout.orderNumber}`,
@@ -158,7 +158,7 @@ export function CheckoutClient() {
       if (allowsAnalytics(readUiConsent())) {
         trackEvent("commerce_purchase", {
           orderNumber: checkout.orderNumber,
-          totalMinor: checkout.totalMinor,
+          totalPaise: checkout.totalPaise,
         });
       }
 
@@ -222,7 +222,7 @@ export function CheckoutClient() {
         razorpayOrderId: checkout.razorpayOrderId,
         orderNumber: checkout.orderNumber,
         orderId: checkout.orderId,
-        totalMinor: checkout.totalMinor,
+        totalPaise: checkout.totalPaise,
         currency: checkout.currency,
         razorpayKeyId: checkout.razorpayKeyId,
         createdAt: Date.now(),
@@ -380,7 +380,7 @@ export function CheckoutClient() {
                   : "Preparing checkout…"}
             </>
           ) : (
-            `Pay securely — ₹${(cart.totalMinor / 100).toFixed(2)}`
+            `Pay securely — ₹${(cart.totalPaise / 100).toFixed(2)}`
           )}
         </Button>
         <p className="text-xs text-muted-foreground">
@@ -398,7 +398,7 @@ export function CheckoutClient() {
                   {item.productName} × {item.quantity}
                 </span>
                 <span className="tabular-nums">
-                  ₹{(item.lineTotalMinor / 100).toFixed(2)}
+                  ₹{(item.lineTotalPaise / 100).toFixed(2)}
                 </span>
               </li>
             ))}

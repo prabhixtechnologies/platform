@@ -85,10 +85,10 @@ export function ShopCatalog() {
     }
     switch (sort) {
       case "price-asc":
-        list.sort((a, b) => a.fromPriceMinor - b.fromPriceMinor);
+        list.sort((a, b) => a.fromPricePaise - b.fromPricePaise);
         break;
       case "price-desc":
-        list.sort((a, b) => b.fromPriceMinor - a.fromPriceMinor);
+        list.sort((a, b) => b.fromPricePaise - a.fromPricePaise);
         break;
       case "name":
         list.sort((a, b) => a.name.localeCompare(b.name));

@@ -43,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
         <p className="mt-auto pt-4 text-sm font-medium">
           From{" "}
-          <Money amountMinor={product.fromPriceMinor} currency={product.currency} />
+          <Money amountPaise={product.fromPricePaise} currency={product.currency} />
         </p>
       </Link>
       <Link

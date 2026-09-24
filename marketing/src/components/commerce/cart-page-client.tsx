@@ -86,7 +86,7 @@ export function CartPageClient() {
                   </Link>
                   <p className="text-sm text-muted-foreground">{item.variantName}</p>
                   <p className="mt-1 text-sm">
-                    <Money amountMinor={item.unitPriceMinor} currency={cart.currency} /> each
+                    <Money amountPaise={item.unitPricePaise} currency={cart.currency} /> each
                   </p>
                 </div>
                 <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
@@ -111,7 +111,7 @@ export function CartPageClient() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">
-                      <Money amountMinor={item.lineTotalMinor} currency={cart.currency} />
+                      <Money amountPaise={item.lineTotalPaise} currency={cart.currency} />
                     </p>
                     <button
                       type="button"

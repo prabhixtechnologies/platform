@@ -44,7 +44,7 @@ function shopProductJsonLd(product: Awaited<ReturnType<typeof fetchProduct>>) {
       ? {
           "@type": "Offer",
           priceCurrency: variant.currency,
-          price: (variant.priceMinor / 100).toFixed(2),
+          price: (variant.pricePaise / 100).toFixed(2),
           availability:
             variant.trackInventory && (variant.stockAvailable ?? 0) <= 0
               ? "https://schema.org/OutOfStock"

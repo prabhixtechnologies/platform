@@ -122,7 +122,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     </p>
                     <p className="mt-1 text-sm font-medium">
                       <Money
-                        amountMinor={item.lineTotalMinor}
+                        amountPaise={item.lineTotalPaise}
                         currency={cart.currency}
                       />
                     </p>
