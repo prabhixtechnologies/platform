@@ -52,27 +52,27 @@ async function main() {
   const headers = { Authorization: `Bearer ${TOKEN}` };
   await new Promise((r) => setTimeout(r, 1500));
 
-  const live = await fetch(`${API}/api/v1/visitors/live`, { headers }).then((r) => r.json());
+  const live = await fetch(`${API}/api/v1/oneops/visitors/live`, { headers }).then((r) => r.json());
   console.log("LIVE_VISITORS:", JSON.stringify(live, null, 2));
 
-  const visitors = await fetch(`${API}/api/v1/visitors`, { headers }).then((r) => r.json());
+  const visitors = await fetch(`${API}/api/v1/oneops/visitors`, { headers }).then((r) => r.json());
   const tracked = visitors.items?.find((v) => v.externalKey === trackingKey);
   console.log("TRACKING_KEY:", trackingKey);
   console.log("TRACKED_VISITOR:", JSON.stringify(tracked, null, 2));
 
   if (tracked?.id) {
-    const pvs = await fetch(`${API}/api/v1/visitors/${tracked.id}/page-views`, { headers }).then((r) => r.json());
-    const events = await fetch(`${API}/api/v1/visitors/${tracked.id}/events`, { headers }).then((r) => r.json());
+    const pvs = await fetch(`${API}/api/v1/oneops/visitors/page-views?id=${tracked.id}`, { headers }).then((r) => r.json());
+    const events = await fetch(`${API}/api/v1/oneops/visitors/events?id=${tracked.id}`, { headers }).then((r) => r.json());
     console.log("PAGE_VIEWS:", JSON.stringify(pvs, null, 2));
     console.log("EVENTS:", JSON.stringify(events, null, 2));
   }
 
-  const chats = await fetch(`${API}/api/v1/chat/conversations?queue=unassigned`, { headers }).then((r) => r.json());
+  const chats = await fetch(`${API}/api/v1/oneops/chat/conversations?queue=unassigned`, { headers }).then((r) => r.json());
   const chat = chats.items?.find((c) => c.visitorEmail === "final-verify@prabhixtest.in");
   console.log("CHAT:", JSON.stringify(chat, null, 2));
 
   if (chat?.id) {
-    await fetch(`${API}/api/v1/chat/conversations/${chat.id}/messages`, {
+    await fetch(`${API}/api/v1/oneops/chat/conversations/messages?id=${chat.id}`, {
       method: "POST",
       headers: { ...headers, "Content-Type": "application/json" },
       body: JSON.stringify({ body: "Agent reply — verification complete" }),

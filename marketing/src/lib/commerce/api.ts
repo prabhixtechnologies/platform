@@ -25,7 +25,7 @@ function orgBase(): string {
       message: "The shop is not configured yet.",
     });
   }
-  return `${getApiBaseUrl()}/v1/commerce/public/${encodeURIComponent(slug)}`;
+  return `${getApiBaseUrl()}/v1/oneops/commerce/public`;
 }
 
 async function parseError(response: Response): Promise<CommerceApiError> {
@@ -48,7 +48,10 @@ async function commerceFetch<T>(
   init: RequestInit,
   parse: (data: unknown) => T,
 ): Promise<T> {
-  const response = await fetch(`${orgBase()}${path}`, {
+  const base = orgBase();
+  const slug = encodeURIComponent(siteConfig.orgSlug);
+  const joiner = path.includes("?") ? "&" : "?";
+  const response = await fetch(`${base}${path}${joiner}orgSlug=${slug}`, {
     ...init,
     headers: {
       Accept: "application/json",

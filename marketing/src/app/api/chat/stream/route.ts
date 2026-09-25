@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     token,
   });
   const upstream = await fetch(
-    `${getApiBaseUrl()}/v1/chat/public/stream?${params.toString()}`,
+    `${getApiBaseUrl()}/v1/oneops/chat/public/stream?${params.toString()}`,
     { headers: { Accept: "text/event-stream" } },
   );
   return new Response(upstream.body, {

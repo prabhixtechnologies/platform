@@ -1,7 +1,7 @@
 import { siteConfig } from "./site-config";
 
 /**
- * Base for backend calls that callers extend with a versioned path like `/v1/commerce/...`.
+ * Base for backend calls that callers extend with a versioned path like `/v1/oneops/commerce/...`.
  *
  * In the browser this is the same-origin `/api/backend` prefix, which `next.config.ts` rewrites to
  * `${NEXT_PUBLIC_API_URL}/api/*`. Keeping browser traffic same-origin means no CORS preflight on

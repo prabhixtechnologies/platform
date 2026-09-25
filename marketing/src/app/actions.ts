@@ -68,7 +68,7 @@ export async function submitLead(
     };
   }
 
-  const result = await postToApi("/api/v1/site/leads", parsed.data);
+  const result = await postToApi("/api/v1/oneops/site/leads", parsed.data);
 
   if (!result.ok) {
     return {
@@ -101,7 +101,7 @@ export async function subscribeNewsletter(
     };
   }
 
-  const result = await postToApi("/api/v1/site/subscribers", parsed.data);
+  const result = await postToApi("/api/v1/oneops/site/subscribers", parsed.data);
 
   if (!result.ok) {
     return {
@@ -150,7 +150,7 @@ export async function submitApplication(
       new Blob([JSON.stringify(payload)], { type: "application/json" }),
     );
 
-    const response = await fetch(`${siteConfig.apiUrl}/api/v1/site/applications`, {
+    const response = await fetch(`${siteConfig.apiUrl}/api/v1/oneops/site/applications`, {
       method: "POST",
       body: formBody,
       cache: "no-store",

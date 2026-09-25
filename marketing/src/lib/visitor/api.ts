@@ -43,7 +43,7 @@ export function ingestBatch(
   body: BatchIngestRequest,
 ): Promise<IngestAck | null> {
   return postJson<IngestAck>(
-    `/v1/visitor/public/${encodeURIComponent(orgSlug)}/ingest`,
+    `/v1/oneops/visitor/public/ingest?orgSlug=${encodeURIComponent(orgSlug)}`,
     body,
   );
 }
@@ -78,7 +78,7 @@ export function identifyVisitor(
     return postJsonSameOrigin("/api/visitor/identify", body).then((result) => result !== null);
   }
   return postJson<unknown>(
-    `/v1/visitor/public/${encodeURIComponent(orgSlug)}/identify`,
+    `/v1/oneops/visitor/public/identify?orgSlug=${encodeURIComponent(orgSlug)}`,
     body,
   ).then((result) => result !== null);
 }

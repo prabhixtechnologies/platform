@@ -110,7 +110,7 @@ async function fetchApi<T>(path: string): Promise<T | null> {
 }
 
 export async function getCareers(): Promise<CareersFetchResult> {
-  const data = await fetchApi<ApiJobRoleSummary[]>("/api/v1/site/careers");
+  const data = await fetchApi<ApiJobRoleSummary[]>("/api/v1/oneops/site/careers");
 
   if (data === null) {
     return { roles: fallbackRoles, source: "fallback" };
@@ -130,7 +130,7 @@ export async function getCareerBySlug(slug: string): Promise<{
   role: CareerRole | null;
   source: "api" | "fallback" | "empty";
 }> {
-  const detail = await fetchApi<ApiJobRoleDetail>(`/api/v1/site/careers/${slug}`);
+  const detail = await fetchApi<ApiJobRoleDetail>(`/api/v1/oneops/site/careers?slug=${slug}`);
 
   if (detail) {
     return { role: mapDetailToCareerRole(detail), source: "api" };

@@ -98,7 +98,7 @@ export default function DocsPage() {
             {[
               "Create an organization in OneOps and invite your team.",
               "Generate an API token with the scopes your integration needs.",
-              "Call GET /api/v1/org with Authorization: Bearer <token> and X-Prabhix-Org set to your organization ID.",
+              "Call GET /api/v1/oneops/org with Authorization: Bearer <token> and X-Prabhix-Org set to your organization ID.",
             ].map((step, i) => (
               <li key={step} className="flex gap-4">
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">

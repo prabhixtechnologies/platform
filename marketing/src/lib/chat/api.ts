@@ -36,7 +36,7 @@ export function startConversation(
 ): Promise<StartConversationResponse | null> {
   if (!siteConfig.orgSlug) return Promise.resolve(null);
   return chatFetch<StartConversationResponse>(
-    `/v1/chat/public/${encodeURIComponent(siteConfig.orgSlug)}/conversations`,
+    `/v1/oneops/chat/public/conversations?orgSlug=${encodeURIComponent(siteConfig.orgSlug)}`,
     { method: "POST", body: JSON.stringify(body) },
   );
 }
@@ -51,7 +51,7 @@ export function fetchMessages(
   if (cursor) params.set("cursor", cursor);
   const qs = params.toString();
   return chatFetch<MessagePage>(
-    `/v1/chat/public/${encodeURIComponent(siteConfig.orgSlug)}/conversations/${conversationId}/messages${qs ? `?${qs}` : ""}`,
+    `/v1/oneops/chat/public/conversations/messages?id=${encodeURIComponent(conversationId)}${qs ? `&${qs}` : ""}`,
     { method: "GET", token },
   );
 }
@@ -63,7 +63,7 @@ export function sendMessage(
 ): Promise<MessageView | null> {
   if (!siteConfig.orgSlug) return Promise.resolve(null);
   return chatFetch<MessageView>(
-    `/v1/chat/public/${encodeURIComponent(siteConfig.orgSlug)}/conversations/${conversationId}/messages`,
+    `/v1/oneops/chat/public/conversations/messages?orgSlug=${encodeURIComponent(siteConfig.orgSlug)}&id=${encodeURIComponent(conversationId)}`,
     { method: "POST", body: JSON.stringify(body), token },
   );
 }
@@ -78,5 +78,5 @@ export function buildStreamUrl(
     conversationId,
     token,
   });
-  return `${getApiBaseUrl()}/v1/chat/public/stream?${params.toString()}`;
+  return `${getApiBaseUrl()}/v1/oneops/chat/public/stream?${params.toString()}`;
 }

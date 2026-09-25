@@ -39,7 +39,7 @@ function clearChatCookie(response: NextResponse) {
 function orgBase(): string | null {
   const slug = siteConfig.orgSlug;
   if (!slug) return null;
-  return `${getApiBaseUrl()}/v1/chat/public/${encodeURIComponent(slug)}`;
+  return `${getApiBaseUrl()}/v1/oneops/chat/public`;
 }
 
 async function backend(
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest, ctx: RouteCtx) {
   if (segments[0] === "conversations" && segments[1] && segments[2] === "messages") {
     const qs = request.nextUrl.searchParams.toString();
     const upstream = await backend(
-      `/conversations/${encodeURIComponent(segments[1])}/messages${qs ? `?${qs}` : ""}`,
+      `/conversations/messages?id=${encodeURIComponent(segments[1])}${qs ? `&${qs}` : ""}`,
       { method: "GET", token },
     );
     return new NextResponse(upstream.body, {
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       if (isVisitorKey(visitor) && !body.visitorKey) {
         body.visitorKey = visitor;
       }
-      const upstream = await backend("/conversations", {
+      const upstream = await backend(`/conversations?orgSlug=${encodeURIComponent(siteConfig.orgSlug ?? "")}`, {
         method: "POST",
         body: JSON.stringify(body),
       });
@@ -122,7 +122,9 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       if (!token) {
         return NextResponse.json({ message: "No chat session" }, { status: 401 });
       }
-      const upstream = await backend(`/conversations/${encodeURIComponent(segments[1])}/messages`, {
+      const upstream = await backend(
+        `/conversations/messages?orgSlug=${encodeURIComponent(siteConfig.orgSlug ?? "")}&id=${encodeURIComponent(segments[1])}`,
+        {
         method: "POST",
         body: JSON.stringify(await request.json()),
         token,

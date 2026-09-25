@@ -44,7 +44,7 @@ export const posts: BlogPost[] = [
       "Our billing module treats Razorpay webhooks as the single source of truth for payment state — not the browser callback.",
       "**Order creation is server-side only.** Amounts, plan IDs, and seat counts are computed on the server from the organization's subscription record. The client never sends a price.",
       "**Browser callback verifies signatures but doesn't mutate state.** When the user returns from Razorpay's checkout, we verify `HMAC-SHA256(order_id|payment_id, secret)` and show a confirmation UI. But we don't activate entitlements from this path alone.",
-      "**Webhooks drive state transitions.** Every Razorpay webhook hits `POST /api/v1/billing/webhooks/razorpay`. We verify `X-Razorpay-Signature` against the webhook secret, persist the raw payload to an `webhook_events` table, and process it idempotently on `event.id`.",
+      "**Webhooks drive state transitions.** Every Razorpay webhook hits `POST /api/v1/oneops/billing/webhooks/razorpay`. We verify `X-Razorpay-Signature` against the webhook secret, persist the raw payload to an `webhook_events` table, and process it idempotently on `event.id`.",
       "This pattern closes three gaps:",
       "1. **Lost redirects** — the webhook arrives regardless of browser behaviour.",
       "2. **Duplicate processing** — idempotency on `event.id` means retries are safe.",
