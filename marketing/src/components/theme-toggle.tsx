@@ -20,7 +20,10 @@ export function ThemeToggle({ className }: { className?: string }) {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
     localStorage.setItem("theme", next);
+    // Both, always: the class drives Tailwind's dark: variant, the attribute drives the
+    // generated colour tokens. Setting one alone gives dark utilities on light colours.
     document.documentElement.classList.toggle("dark", next === "dark");
+    document.documentElement.dataset.theme = next;
   }
 
   if (!mounted) {

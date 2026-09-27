@@ -1,72 +1,52 @@
 @import "tailwindcss";
-@import "@prabhix/brand/prabhix-tokens.css";
+@import "@prabhix/brand/tailwind-preset.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
-  Product extras on top of @prabhix/brand tokens.
-  Teal/cyan accent · Fraunces display · Source Sans 3 body.
+  The marketing site is the `technologies` token theme: cyan accent, indigo partner accent,
+  cool neutral surfaces. The brand attribute is set on <html> in layout.tsx.
+
+  No colour is defined in this file. Every value comes from
+  web-kit/packages/brand/tokens.json via the generated preset above. The dark theme used to
+  be twelve hand-written hex values here, which is why the site and the consoles drifted
+  apart; it is now the generated [data-theme="dark"] block.
+
+  Contract: Infra/docs/UX-STANDARD.md
 */
-:root {
-  --px-accent-strong: #0f766e;
-}
 
-.dark {
-  --px-bg: #071018;
-  --px-bg-accent: #0f2a36;
-  --px-surface: #0d1a24;
-  --px-ink: #e8eef4;
-  --px-muted: #8fa3b5;
-  --px-border: #1c3342;
-  --px-accent: #22d3ee;
-  --px-accent-ink: #042f2e;
-  --px-accent-strong: #67e8f9;
-  --px-danger: #f97066;
-  --px-success: #32d583;
-  --px-focus: #67e8f9;
-  --px-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-}
+/*
+  The `.dark` class stays because Tailwind's dark: variant above is keyed to it and
+  components use it, but the colours come from data-theme="dark" on <html>. Both are set
+  together in layout.tsx and theme-toggle.tsx; changing one without the other would give a
+  page dark-variant utilities on light tokens.
+*/
 
+/*
+  Bridge layer: the colour names this site used before the token system. Kept so existing
+  call sites keep working; new code should use the generated names directly.
+*/
 @theme {
-  --color-ink: var(--px-ink);
   --color-primary: var(--px-accent);
-  --color-primary-strong: var(--px-accent-strong);
+  --color-primary-strong: var(--px-accent-hover);
   --color-primary-foreground: var(--px-accent-ink);
-  --color-accent: #0891b2;
   --color-background: var(--px-bg);
   --color-foreground: var(--px-ink);
-  --color-muted: var(--px-muted);
-  --color-muted-foreground: var(--px-muted);
-  --color-border: var(--px-border);
-  --color-card: color-mix(in srgb, var(--px-surface) 92%, transparent);
+  --color-muted: var(--px-ink-muted);
+  --color-muted-foreground: var(--px-ink-muted);
+  --color-card: var(--px-surface);
   --color-card-border: var(--px-border);
-  --color-surface: var(--px-surface);
-  --color-danger: var(--px-danger);
-  --color-success: var(--px-success);
-  --color-focus: var(--px-focus);
+  --shadow-px: var(--px-elevation-4);
 
   --font-sans: var(--font-source-sans), "Source Sans 3", "Source Sans Pro", "Segoe UI", sans-serif;
   --font-display: var(--font-fraunces), "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
-
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 0.9rem;
-  --radius-2xl: 1.25rem;
-
-  --shadow-px: var(--px-shadow);
-}
-
-.dark {
-  --color-accent: #67e8f9;
-  --color-card: color-mix(in srgb, var(--px-surface) 88%, transparent);
 }
 
 @layer base {
   *,
   *::before,
   *::after {
-    border-color: var(--color-border);
+    border-color: var(--px-border);
   }
 
   html {
@@ -95,54 +75,57 @@
   ::selection {
     @apply bg-primary/20 text-foreground;
   }
+
+  /*
+    A control's boundary has to clear 3:1 to be identifiable (WCAG 1.4.11), which the
+    divider-weight `border` token deliberately does not.
+  */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    border-color: var(--px-border-strong);
+  }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-card backdrop-blur-xl border border-card-border;
+    @apply backdrop-blur-xl border;
+    background: color-mix(in srgb, var(--px-surface) 88%, transparent);
+    border-color: var(--px-border);
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-linear-to-r from-primary via-primary-strong to-accent;
+    background-image: var(--px-gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .font-display {
     font-family: var(--font-display);
   }
 
+  /*
+    The hero decoration now composes the theme's accent pair instead of four literal cyans,
+    so it is cyan-to-indigo here and would follow any other brand this stylesheet is given.
+  */
   .mesh-glow {
-    background:
-      radial-gradient(ellipse 80% 55% at 18% -8%, rgb(14 116 144 / 0.16), transparent 52%),
-      radial-gradient(ellipse 55% 40% at 88% 8%, rgb(8 145 178 / 0.12), transparent 48%),
-      radial-gradient(ellipse 50% 35% at 50% 100%, rgb(220 233 247 / 0.85), transparent 45%);
-  }
-
-  .dark .mesh-glow {
-    background:
-      radial-gradient(ellipse 80% 55% at 18% -8%, rgb(34 211 238 / 0.18), transparent 52%),
-      radial-gradient(ellipse 55% 40% at 88% 8%, rgb(103 232 249 / 0.1), transparent 48%),
-      radial-gradient(ellipse 50% 35% at 50% 100%, rgb(15 42 54 / 0.7), transparent 45%);
+    background-color: var(--px-bg);
+    background-image: var(--px-gradient-mesh);
   }
 
   .hero-aurora {
     background:
-      radial-gradient(ellipse 55% 45% at 18% 15%, rgb(14 116 144 / 0.28), transparent 55%),
-      radial-gradient(ellipse 50% 40% at 88% 10%, rgb(8 145 178 / 0.2), transparent 50%),
-      radial-gradient(ellipse 60% 50% at 50% 100%, rgb(220 233 247 / 0.95), transparent 55%);
+      radial-gradient(ellipse 55% 45% at 18% 15%, color-mix(in srgb, var(--px-accent) 30%, transparent), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 88% 10%, color-mix(in srgb, var(--px-accent-2) 24%, transparent), transparent 50%),
+      radial-gradient(ellipse 60% 50% at 50% 100%, color-mix(in srgb, var(--px-bg-accent) 92%, transparent), transparent 55%);
     filter: blur(2px);
     animation: hero-aurora-drift 20s ease-in-out infinite alternate;
   }
 
-  .dark .hero-aurora {
-    background:
-      radial-gradient(ellipse 55% 45% at 18% 15%, rgb(34 211 238 / 0.22), transparent 55%),
-      radial-gradient(ellipse 50% 40% at 88% 10%, rgb(103 232 249 / 0.14), transparent 50%),
-      radial-gradient(ellipse 60% 50% at 50% 100%, rgb(15 42 54 / 0.85), transparent 55%);
-  }
-
   .hero-orb {
     position: absolute;
-    border-radius: 999px;
+    border-radius: var(--px-radius-full);
     filter: blur(44px);
     opacity: 0.55;
     animation: hero-orb-float 16s ease-in-out infinite;
@@ -153,7 +136,7 @@
     height: 22rem;
     left: -5rem;
     top: 18%;
-    background: rgb(14 116 144 / 0.35);
+    background: color-mix(in srgb, var(--px-accent) 35%, transparent);
   }
 
   .hero-orb-b {
@@ -161,7 +144,7 @@
     height: 16rem;
     right: 8%;
     top: 6%;
-    background: rgb(8 145 178 / 0.3);
+    background: color-mix(in srgb, var(--px-accent-2) 30%, transparent);
     animation-delay: -5s;
   }
 
@@ -170,13 +153,9 @@
     height: 26rem;
     right: -8rem;
     bottom: 0;
-    background: rgb(103 232 249 / 0.18);
+    background: color-mix(in srgb, var(--px-accent-subtle) 90%, transparent);
     animation-delay: -9s;
   }
-
-  .dark .hero-orb-a { background: rgb(34 211 238 / 0.28); }
-  .dark .hero-orb-b { background: rgb(103 232 249 / 0.2); }
-  .dark .hero-orb-c { background: rgb(14 116 144 / 0.25); }
 
   @keyframes hero-aurora-drift {
     from { transform: translate3d(-2%, 0, 0) scale(1); }

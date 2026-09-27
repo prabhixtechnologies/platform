@@ -13,6 +13,7 @@ import { CTABand } from "@/components/cta-band";
 import { GradientMesh } from "@/components/gradient-mesh";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
+import { MobiStackPreview } from "@/components/product-preview";
 import { PRABHIX_ACRONYM } from "@/lib/constants";
 import { appUrls } from "@/lib/site-config";
 import { TestimonialsSection } from "@/components/testimonials-section";
@@ -189,22 +190,7 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <div
-              className="relative aspect-video overflow-hidden rounded-2xl bg-linear-to-br from-primary/25 via-surface to-accent/20"
-              aria-hidden
-            >
-              <div className="absolute inset-0 mesh-glow opacity-60" />
-              <div className="absolute inset-6 flex flex-col justify-end gap-3">
-                <div className="h-3 w-1/3 rounded bg-primary/40" />
-                <div className="h-2 w-full rounded bg-border/80" />
-                <div className="h-2 w-4/5 rounded bg-border/80" />
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  {[1, 2, 3].map((n) => (
-                    <div key={n} className="h-14 rounded-lg bg-surface/70" />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <MobiStackPreview />
           </div>
         </Reveal>
       </Section>

@@ -71,7 +71,10 @@ const themeScript = `
     var stored = localStorage.getItem('theme');
     var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     var theme = stored || (prefersDark ? 'dark' : 'light');
+    // Both, always: the class drives Tailwind's dark: variant, the attribute drives the
+    // generated colour tokens. Setting one alone gives dark utilities on light colours.
     if (theme === 'dark') document.documentElement.classList.add('dark');
+    document.documentElement.dataset.theme = theme;
     var consent = localStorage.getItem('prabhix_cookie_consent');
     if (consent === 'accepted' || consent === 'declined') {
       window.prabhixConsent = consent;
@@ -95,6 +98,9 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      // Selects the generated token theme in web-kit/packages/brand/tokens.json. The
+      // marketing site is the parent brand, so it carries the house cyan + indigo pair.
+      data-brand="technologies"
       className={`${fraunces.variable} ${sourceSans.variable}`}
       suppressHydrationWarning
     >
