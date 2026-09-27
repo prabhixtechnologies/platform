@@ -28,19 +28,52 @@ function orgBase(): string {
   return `${getApiBaseUrl()}/v1/oneops/commerce/public`;
 }
 
+function retryAfterSeconds(response: Response): number | undefined {
+  const raw = response.headers.get("Retry-After");
+  if (!raw) return undefined;
+  const seconds = Number.parseInt(raw, 10);
+  if (Number.isFinite(seconds) && seconds > 0) return seconds;
+  const date = Date.parse(raw);
+  if (Number.isFinite(date)) {
+    const delta = Math.ceil((date - Date.now()) / 1000);
+    return delta > 0 ? delta : undefined;
+  }
+  return undefined;
+}
+
 async function parseError(response: Response): Promise<CommerceApiError> {
+  const retry = retryAfterSeconds(response);
   try {
     const json = (await response.json()) as ApiErrorBody;
     if (json.code && json.message) {
-      return new CommerceApiError(response.status, json);
+      return new CommerceApiError(response.status, json, retry);
     }
   } catch {
     /* fall through */
   }
-  return new CommerceApiError(response.status, {
-    code: "UNKNOWN",
-    message: response.statusText || "Request failed",
-  });
+  return new CommerceApiError(
+    response.status,
+    {
+      code: "UNKNOWN",
+      message: response.statusText || "Request failed",
+    },
+    retry,
+  );
+}
+
+async function commerceFetchHeaders(init: RequestInit): Promise<Headers> {
+  const baseHeaders: HeadersInit = {
+    Accept: "application/json",
+    ...(init.body ? { "Content-Type": "application/json" } : {}),
+    ...init.headers,
+  };
+  if (typeof window === "undefined") {
+    // This module is shared with client components. Import the runtime-only implementation here;
+    // non-NEXT_PUBLIC environment values are never embedded in the browser bundle.
+    const { mergePublicUpstreamHeaders } = await import("@/lib/bff/public-upstream.logic");
+    return mergePublicUpstreamHeaders(baseHeaders);
+  }
+  return new Headers(baseHeaders);
 }
 
 async function commerceFetch<T>(
@@ -51,13 +84,10 @@ async function commerceFetch<T>(
   const base = orgBase();
   const slug = encodeURIComponent(siteConfig.orgSlug);
   const joiner = path.includes("?") ? "&" : "?";
+  const headers = await commerceFetchHeaders(init);
   const response = await fetch(`${base}${path}${joiner}orgSlug=${slug}`, {
     ...init,
-    headers: {
-      Accept: "application/json",
-      ...(init.body ? { "Content-Type": "application/json" } : {}),
-      ...init.headers,
-    },
+    headers,
   });
 
   if (!response.ok) {

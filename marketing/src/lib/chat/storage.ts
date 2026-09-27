@@ -1,4 +1,5 @@
 import { siteConfig } from "@/lib/site-config";
+import { clearChatSessionCookie } from "./chat-client";
 import type { StoredChatSession } from "./types";
 
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -52,23 +53,39 @@ export function clearChatSession(): void {
   }
 }
 
+/** Clears browser metadata and httpOnly chat cookie after an invalid or expired session. */
+export async function recoverExpiredChatSession(): Promise<void> {
+  clearChatSession();
+  try {
+    await clearChatSessionCookie();
+  } catch {
+    /* cookie may already be gone */
+  }
+}
+
 export async function migrateLegacyChatToken(): Promise<void> {
   const stored = readChatSession();
   const token = stored?.conversationToken;
-  if (!token) return;
+  if (!token || !stored) return;
   try {
-    await fetch("/api/chat/adopt", {
+    const response = await fetch("/api/chat/adopt", {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ conversationToken: token }),
     });
-    writeChatSession({
-      conversationId: stored.conversationId,
-      name: stored.name,
-      email: stored.email,
-      agentsAvailable: stored.agentsAvailable,
-    });
+    if (response.ok) {
+      writeChatSession({
+        conversationId: stored.conversationId,
+        name: stored.name,
+        email: stored.email,
+        agentsAvailable: stored.agentsAvailable,
+      });
+      return;
+    }
+    if (response.status === 400 || response.status === 403) {
+      await recoverExpiredChatSession();
+    }
   } catch {
     /* retry next load */
   }

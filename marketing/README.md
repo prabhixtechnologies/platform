@@ -26,6 +26,7 @@ Open [http://localhost:3000](http://localhost:3000).
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | Spring Boot backend base URL | `http://localhost:8080` |
 | `NEXT_PUBLIC_SITE_URL` | Canonical site URL for SEO/sitemap | `https://prabhixtechnologies.com` |
+| `PRABHIX_PUBLIC_BFF_CREDENTIAL` | Server-only shared secret sent as `X-Prabhix-Public-Bff` on BFF upstream calls (required in production) | unset |
 
 ## Scripts
 

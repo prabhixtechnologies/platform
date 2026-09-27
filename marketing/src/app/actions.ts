@@ -1,5 +1,6 @@
 "use server";
 
+import { fetchPublicUpstream } from "@/lib/bff/public-upstream";
 import { siteConfig } from "@/lib/utils";
 import {
   applicationSchema,
@@ -13,7 +14,7 @@ async function postToApi<T>(
   body: T,
 ): Promise<{ ok: true } | { ok: false; status?: number }> {
   try {
-    const response = await fetch(`${siteConfig.apiUrl}${path}`, {
+    const response = await fetchPublicUpstream(`${siteConfig.apiUrl}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -150,11 +151,14 @@ export async function submitApplication(
       new Blob([JSON.stringify(payload)], { type: "application/json" }),
     );
 
-    const response = await fetch(`${siteConfig.apiUrl}/api/v1/oneops/site/applications`, {
-      method: "POST",
-      body: formBody,
-      cache: "no-store",
-    });
+    const response = await fetchPublicUpstream(
+      `${siteConfig.apiUrl}/api/v1/oneops/site/applications`,
+      {
+        method: "POST",
+        body: formBody,
+        cache: "no-store",
+      },
+    );
 
     if (!response.ok) {
       return {

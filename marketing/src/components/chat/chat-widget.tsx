@@ -3,8 +3,18 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
 import { z } from "zod";
-import { fetchMessages, sendMessage, startConversation } from "@/lib/chat/chat-client";
-import { migrateLegacyChatToken, readChatSession, writeChatSession } from "@/lib/chat/storage";
+import {
+  fetchMessages,
+  sendMessage,
+  startConversation,
+} from "@/lib/chat/chat-client";
+import { ChatBffError, friendlyChatError } from "@/lib/chat/errors";
+import {
+  migrateLegacyChatToken,
+  readChatSession,
+  recoverExpiredChatSession,
+  writeChatSession,
+} from "@/lib/chat/storage";
 import { ChatStream } from "@/lib/chat/stream";
 import type { ConnectionState, MessageView } from "@/lib/chat/types";
 import type { PublicChatSession } from "@/lib/chat/storage";
@@ -33,6 +43,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
   const [sending, setSending] = useState(false);
   const [starting, setStarting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [sessionNotice, setSessionNotice] = useState<string | null>(null);
   const [preChat, setPreChat] = useState({ name: "", email: "", subject: "" });
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -43,32 +54,58 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
   const titleId = useId();
   const descId = useId();
 
-  const loadHistory = useCallback(async (active: PublicChatSession) => {
-    const page = await fetchMessages(active.conversationId);
-    if (!page?.items) return [];
-    const sorted = [...page.items].sort(
-      (a, b) =>
-        new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
-    );
-    for (const item of sorted) {
-      knownIds.current.add(item.id);
-    }
-    setMessages(sorted);
-    return sorted;
+  const resetChatSession = useCallback(async (message?: string) => {
+    streamRef.current?.disconnect();
+    await recoverExpiredChatSession();
+    setSession(null);
+    setMessages([]);
+    knownIds.current.clear();
+    setAgentTyping(false);
+    setConnectionState("idle");
+    if (message) setSessionNotice(message);
   }, []);
+
+  const loadHistory = useCallback(
+    async (active: PublicChatSession) => {
+      try {
+        const page = await fetchMessages(active.conversationId);
+        if (!page?.items) return [];
+        const sorted = [...page.items].sort(
+          (a, b) =>
+            new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
+        );
+        for (const item of sorted) {
+          knownIds.current.add(item.id);
+        }
+        setMessages(sorted);
+        return sorted;
+      } catch (err) {
+        if (err instanceof ChatBffError && (err.status === 401 || err.status === 403)) {
+          await resetChatSession(friendlyChatError(err));
+        }
+        return [];
+      }
+    },
+    [resetChatSession],
+  );
 
   const pollNewMessages = useCallback(async (): Promise<MessageView[]> => {
     if (!session) return [];
-    const page = await fetchMessages(
-      session.conversationId,
-    );
-    if (!page?.items) return [];
-    const fresh = page.items.filter((item) => !knownIds.current.has(item.id));
-    return fresh.sort(
-      (a, b) =>
-        new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
-    );
-  }, [session]);
+    try {
+      const page = await fetchMessages(session.conversationId);
+      if (!page?.items) return [];
+      const fresh = page.items.filter((item) => !knownIds.current.has(item.id));
+      return fresh.sort(
+        (a, b) =>
+          new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime(),
+      );
+    } catch (err) {
+      if (err instanceof ChatBffError && (err.status === 401 || err.status === 403)) {
+        await resetChatSession(friendlyChatError(err));
+      }
+      throw err;
+    }
+  }, [session, resetChatSession]);
 
   const appendMessage = useCallback(
     (message: MessageView) => {
@@ -168,14 +205,11 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
     setFormErrors({});
     setStarting(true);
     try {
+      setSessionNotice(null);
       const response = await startConversation({
         ...parsed.data,
         visitorKey: getVisitorKeyForChat() ?? undefined,
       });
-      if (!response) {
-        setFormErrors({ form: "Unable to start chat. Please try again." });
-        return;
-      }
       const nextSession: PublicChatSession = {
         conversationId: response.conversationId,
         name: parsed.data.name,
@@ -189,6 +223,8 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
       setMessages([]);
       await loadHistory(nextSession);
       startStream(nextSession);
+    } catch (err) {
+      setFormErrors({ form: friendlyChatError(err) });
     } finally {
       setStarting(false);
     }
@@ -205,8 +241,10 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
         session.conversationId,
         { body },
       );
-      if (sent) {
-        appendMessage(sent);
+      appendMessage(sent);
+    } catch (err) {
+      if (err instanceof ChatBffError && (err.status === 401 || err.status === 403)) {
+        await resetChatSession(friendlyChatError(err));
       }
     } finally {
       setSending(false);
@@ -286,6 +324,11 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
             onSubmit={handlePreChatSubmit}
             className="flex flex-1 flex-col gap-4 overflow-y-auto p-4"
           >
+            {sessionNotice && (
+              <p className="rounded-lg bg-surface px-3 py-2 text-sm text-muted-foreground" role="status">
+                {sessionNotice}
+              </p>
+            )}
             <PreChatField
               label="Name"
               name="name"

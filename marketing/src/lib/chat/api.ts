@@ -20,9 +20,14 @@ async function chatFetch<T>(
   }
 
   try {
+    let outbound = headers;
+    if (typeof window === "undefined") {
+      const { mergePublicUpstreamHeaders } = await import("@/lib/bff/public-upstream.logic");
+      outbound = mergePublicUpstreamHeaders(headers);
+    }
     const response = await fetch(`${getApiBaseUrl()}${path}`, {
       ...rest,
-      headers,
+      headers: outbound,
     });
     if (!response.ok) return null;
     return (await response.json()) as T;
@@ -68,15 +73,15 @@ export function sendMessage(
   );
 }
 
-export function buildStreamUrl(
-  conversationId: string,
-  token: string,
-): string | null {
-  if (!siteConfig.orgId || !siteConfig.orgSlug) return null;
+/**
+ * @deprecated Browser code must use same-origin `/api/chat/stream` (httpOnly cookie).
+ * Upstream SSE must receive `X-Chat-Token`, not a query token — see docs/BFF-ONEOPS-COUNTERPART.md.
+ */
+export function buildUpstreamStreamUrl(conversationId: string): string | null {
+  if (!siteConfig.orgId) return null;
   const params = new URLSearchParams({
     organizationId: siteConfig.orgId,
     conversationId,
-    token,
   });
   return `${getApiBaseUrl()}/v1/oneops/chat/public/stream?${params.toString()}`;
 }

@@ -6,9 +6,17 @@ async function postJson<T>(
   body: unknown,
 ): Promise<T | null> {
   try {
+    const baseHeaders: HeadersInit = { "Content-Type": "application/json" };
+    let headers: Headers;
+    if (typeof window === "undefined") {
+      const { mergePublicUpstreamHeaders } = await import("@/lib/bff/public-upstream.logic");
+      headers = mergePublicUpstreamHeaders(baseHeaders);
+    } else {
+      headers = new Headers(baseHeaders);
+    }
     const response = await fetch(`${getApiBaseUrl()}${path}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
       keepalive: true,
     });

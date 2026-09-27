@@ -121,7 +121,7 @@ jobs:
           context: ./marketing
           file: ./marketing/Dockerfile
           build-contexts: |
-            webkit=https://github.com/prabhixtechnologies/web-kit.git#main
+            webkit=https://github.com/prabhixtechnologies/web-kit.git#6841e45aab52e52d4fb970ee08f4540e71c6c447
           push: true
           # NEXT_PUBLIC_* is inlined at build time, so this is the only place the production
           # values can be set. ORG_SLUG and ORG_ID identify Prabhix's own tenant and are what

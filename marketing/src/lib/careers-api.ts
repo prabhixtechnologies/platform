@@ -1,4 +1,5 @@
 import { roles as fallbackRoles, type CareerRole } from "@/content/careers";
+import { fetchPublicUpstream } from "@/lib/bff/public-upstream";
 import { siteConfig } from "@/lib/site-config";
 
 export type ApiJobRoleSummary = {
@@ -99,7 +100,7 @@ function mapDetailToCareerRole(role: ApiJobRoleDetail): CareerRole {
 
 async function fetchApi<T>(path: string): Promise<T | null> {
   try {
-    const response = await fetch(`${siteConfig.apiUrl}${path}`, {
+    const response = await fetchPublicUpstream(`${siteConfig.apiUrl}${path}`, {
       next: { revalidate: 300 },
     });
     if (!response.ok) return null;

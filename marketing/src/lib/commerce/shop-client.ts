@@ -25,18 +25,32 @@ async function shopFetch<T>(
   });
 
   if (!response.ok) {
+    const retryHeader = response.headers.get("Retry-After");
+    let retryAfterSeconds: number | undefined;
+    if (retryHeader) {
+      const seconds = Number.parseInt(retryHeader, 10);
+      if (Number.isFinite(seconds) && seconds > 0) retryAfterSeconds = seconds;
+    }
     try {
-      const json = (await response.json()) as ApiErrorBody;
+      const json = (await response.json()) as ApiErrorBody & { retryAfterSeconds?: number };
       if (json.code && json.message) {
-        throw new CommerceApiError(response.status, json);
+        throw new CommerceApiError(
+          response.status,
+          json,
+          json.retryAfterSeconds ?? retryAfterSeconds,
+        );
       }
     } catch (err) {
       if (err instanceof CommerceApiError) throw err;
     }
-    throw new CommerceApiError(response.status, {
-      code: "UNKNOWN",
-      message: response.statusText || "Request failed",
-    });
+    throw new CommerceApiError(
+      response.status,
+      {
+        code: "UNKNOWN",
+        message: response.statusText || "Request failed",
+      },
+      retryAfterSeconds,
+    );
   }
 
   if (response.status === 204) {

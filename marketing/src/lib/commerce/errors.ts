@@ -8,13 +8,15 @@ export class CommerceApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly fieldErrors?: Record<string, string>;
+  readonly retryAfterSeconds?: number;
 
-  constructor(status: number, body: ApiErrorBody) {
+  constructor(status: number, body: ApiErrorBody, retryAfterSeconds?: number) {
     super(body.message);
     this.name = "CommerceApiError";
     this.status = status;
     this.code = body.code;
     this.fieldErrors = body.fieldErrors;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }
 
@@ -30,6 +32,8 @@ const FRIENDLY: Record<string, string> = {
   ORDER_NOT_FOUND: "No order found. If you completed a purchase, use the link from your confirmation email.",
   VARIANT_NOT_FOUND: "That product variant is no longer available.",
   RATE_LIMITED: "Too many requests. Please wait a moment and try again.",
+  TOKEN_EXPIRED: "Your session expired. Refresh the page to continue.",
+  TOKEN_INVALID: "Your session is no longer valid. Refresh the page to continue.",
   ORIGIN_NOT_ALLOWED: "This store cannot be accessed from this site.",
   PAYMENT_SIGNATURE_MISMATCH: "Payment verification failed. If you were charged, contact support with your payment ID.",
   ORDER_NOT_PAYABLE: "This order cannot be paid in its current state.",
@@ -37,6 +41,9 @@ const FRIENDLY: Record<string, string> = {
 
 export function friendlyCommerceError(err: unknown): string {
   if (err instanceof CommerceApiError) {
+    if (err.code === "RATE_LIMITED" && err.retryAfterSeconds) {
+      return `Too many requests. Try again in about ${err.retryAfterSeconds} seconds.`;
+    }
     return FRIENDLY[err.code] ?? err.message;
   }
   if (err instanceof Error) return err.message;

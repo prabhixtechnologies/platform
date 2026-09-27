@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { guardAdoptRequest } from "@/lib/bff/adopt-guard";
 import {
   addCartItem,
   applyDiscount,
@@ -40,9 +41,18 @@ function publicCart(cart: CartView) {
 
 function fail(err: unknown): NextResponse {
   if (err instanceof CommerceApiError) {
+    const headers: Record<string, string> = {};
+    if (err.status === 429 && err.retryAfterSeconds != null) {
+      headers["Retry-After"] = String(err.retryAfterSeconds);
+    }
     const response = NextResponse.json(
-      { code: err.code, message: err.message, fieldErrors: err.fieldErrors },
-      { status: err.status },
+      {
+        code: err.code,
+        message: err.message,
+        fieldErrors: err.fieldErrors,
+        ...(err.retryAfterSeconds != null ? { retryAfterSeconds: err.retryAfterSeconds } : {}),
+      },
+      { status: err.status, headers },
     );
     if (err.code === "CART_NOT_FOUND") {
       return clearCookie(response, CART_COOKIE);
@@ -174,14 +184,23 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       );
     }
     if (path === "cart/adopt") {
+      const blocked = guardAdoptRequest(request, "cart");
+      if (blocked) return blocked;
       const body = await jsonBody<{ cartToken?: string }>(request);
       if (readCookie(request, CART_COOKIE)) {
         return NextResponse.json({ ok: true });
       }
       if (!isOpaqueToken(body.cartToken)) {
-        return NextResponse.json({ ok: false }, { status: 400 });
+        return NextResponse.json(
+          { code: "TOKEN_INVALID", message: "Cart token is not valid" },
+          { status: 400 },
+        );
       }
-      await getCart(body.cartToken);
+      try {
+        await getCart(body.cartToken);
+      } catch (err) {
+        return fail(err);
+      }
       return withCartCookie(NextResponse.json({ ok: true }), body.cartToken);
     }
     if (path === "cart/items") {
@@ -232,14 +251,23 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       return clearCookie(response, CART_COOKIE);
     }
     if (path === "order/adopt") {
+      const blocked = guardAdoptRequest(request, "order");
+      if (blocked) return blocked;
       const body = await jsonBody<{ accessToken?: string }>(request);
       if (readCookie(request, ORDER_COOKIE)) {
         return NextResponse.json({ ok: true });
       }
       if (!isOpaqueToken(body.accessToken)) {
-        return NextResponse.json({ ok: false }, { status: 400 });
+        return NextResponse.json(
+          { code: "TOKEN_INVALID", message: "Order token is not valid" },
+          { status: 400 },
+        );
       }
-      await getOrder(body.accessToken);
+      try {
+        await getOrder(body.accessToken);
+      } catch (err) {
+        return fail(err);
+      }
       return withOrderCookie(NextResponse.json({ ok: true }), body.accessToken);
     }
     return NextResponse.json({ code: "NOT_FOUND", message: "Unknown shop path" }, { status: 404 });

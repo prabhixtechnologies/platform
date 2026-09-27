@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { siteConfig } from "@/lib/site-config";
+import { guardAdoptRequest } from "@/lib/bff/adopt-guard";
+import { forwardRetryAfter } from "@/lib/bff/security-response";
 import {
   CHAT_COOKIE,
   VISITOR_COOKIE,
@@ -9,6 +11,8 @@ import {
   isChatJwt,
   isVisitorKey,
 } from "@/lib/chat/bff-cookies";
+import { readChatJwtPayload } from "@/lib/chat/jwt-payload";
+import { fetchPublicUpstream } from "@/lib/bff/public-upstream";
 import { readHostCookie } from "@/lib/commerce/shop-cookies";
 
 export const runtime = "nodejs";
@@ -54,7 +58,7 @@ async function backend(
   headers.set("Accept", "application/json");
   if (init.body) headers.set("Content-Type", "application/json");
   if (init.token) headers.set("X-Chat-Token", init.token);
-  return fetch(`${base}${path}`, { ...init, headers });
+  return fetchPublicUpstream(`${base}${path}`, { ...init, headers });
 }
 
 function publicStart(data: Record<string, unknown>) {
@@ -63,11 +67,27 @@ function publicStart(data: Record<string, unknown>) {
   return rest;
 }
 
+async function validateConversationToken(token: string): Promise<boolean> {
+  const payload = readChatJwtPayload(token);
+  if (!payload?.conv) return false;
+  if (siteConfig.orgId && payload.org && payload.org !== siteConfig.orgId) {
+    return false;
+  }
+  const upstream = await backend(
+    `/conversations/messages?id=${encodeURIComponent(payload.conv)}&limit=1`,
+    { method: "GET", token },
+  );
+  return upstream.ok;
+}
+
 export async function GET(request: NextRequest, ctx: RouteCtx) {
   const segments = (await ctx.params).path ?? [];
   const token = readChatCookie(request);
   if (!token) {
-    return NextResponse.json({ message: "No chat session" }, { status: 401 });
+    return NextResponse.json(
+      { code: "NO_SESSION", message: "No chat session" },
+      { status: 401 },
+    );
   }
   if (segments[0] === "conversations" && segments[1] && segments[2] === "messages") {
     const qs = request.nextUrl.searchParams.toString();
@@ -77,7 +97,10 @@ export async function GET(request: NextRequest, ctx: RouteCtx) {
     );
     return new NextResponse(upstream.body, {
       status: upstream.status,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...forwardRetryAfter(upstream),
+      },
     });
   }
   return NextResponse.json({ message: "Unknown chat path" }, { status: 404 });
@@ -108,19 +131,33 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       return withChatCookie(NextResponse.json(publicStart(data)), chatToken);
     }
     if (path === "adopt") {
+      const blocked = guardAdoptRequest(request, "chat");
+      if (blocked) return blocked;
       const body = (await request.json()) as { conversationToken?: string };
       if (readChatCookie(request)) {
         return NextResponse.json({ ok: true });
       }
       if (!isChatJwt(body.conversationToken)) {
-        return NextResponse.json({ ok: false }, { status: 400 });
+        return NextResponse.json(
+          { code: "TOKEN_INVALID", message: "Conversation token is not valid" },
+          { status: 400 },
+        );
+      }
+      if (!(await validateConversationToken(body.conversationToken))) {
+        return NextResponse.json(
+          { code: "TOKEN_INVALID", message: "Conversation token is not valid" },
+          { status: 403 },
+        );
       }
       return withChatCookie(NextResponse.json({ ok: true }), body.conversationToken);
     }
     if (segments[0] === "conversations" && segments[1] && segments[2] === "messages") {
       const token = readChatCookie(request);
       if (!token) {
-        return NextResponse.json({ message: "No chat session" }, { status: 401 });
+        return NextResponse.json(
+          { code: "NO_SESSION", message: "No chat session" },
+          { status: 401 },
+        );
       }
       const upstream = await backend(
         `/conversations/messages?orgSlug=${encodeURIComponent(siteConfig.orgSlug ?? "")}&id=${encodeURIComponent(segments[1])}`,
@@ -131,7 +168,10 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
       });
       return new NextResponse(upstream.body, {
         status: upstream.status,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...forwardRetryAfter(upstream),
+        },
       });
     }
     return NextResponse.json({ message: "Unknown chat path" }, { status: 404 });
