@@ -23,7 +23,13 @@ export function StatBand({ stats }: StatBandProps) {
               <dt className="text-sm font-medium text-muted-foreground">
                 {stat.label}
               </dt>
-              <dd className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              {/* Each figure takes the next series colour. These are large bold text, so
+                  the 3:1 the categorical palette is asserted at is the applicable floor,
+                  and the label above carries the meaning either way. */}
+              <dd
+                className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl"
+                style={{ color: `var(--px-cat-${(i % 10) + 1})` }}
+              >
                 {stat.value}
               </dd>
             </Reveal>

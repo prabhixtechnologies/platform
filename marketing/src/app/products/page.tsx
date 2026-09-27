@@ -1,12 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { ComponentType } from "react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
 import { CTABand } from "@/components/cta-band";
+import {
+  MailroomPreview,
+  MobiStackPreview,
+  OneOpsPreview,
+} from "@/components/product-preview";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { productAppUrl, products } from "@/content/products";
+
+/**
+ * The preview for a product, keyed by slug.
+ *
+ * Each one renders in its own product's accent pair, which is the whole argument the page
+ * is making: these are separate products, not one product with three names. A page that
+ * described three distinct experiences entirely in prose was asking to be taken on faith.
+ * Modules have no preview because they have no interface of their own.
+ */
+const PREVIEWS: Record<string, ComponentType<{ className?: string }>> = {
+  oneops: OneOpsPreview,
+  mobistack: MobiStackPreview,
+  mailroom: MailroomPreview,
+};
 
 export const metadata: Metadata = {
   title: "Products",
@@ -29,6 +49,7 @@ export default function ProductsPage() {
         <div className="grid gap-8">
           {products.map((product, i) => {
             const appUrl = productAppUrl(product);
+            const Preview = PREVIEWS[product.slug];
             return (
             <Reveal key={product.slug} delay={i * 0.1}>
               <Card hover className="group">
@@ -86,6 +107,12 @@ export default function ProductsPage() {
                     )}
                   </div>
                 </div>
+
+                {Preview ? (
+                  <div className="mt-8 border-t border-border/60 pt-8">
+                    <Preview />
+                  </div>
+                ) : null}
               </Card>
             </Reveal>
             );
