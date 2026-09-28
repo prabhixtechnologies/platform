@@ -161,11 +161,17 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
     };
   }, [enabled, loadHistory, startStream]);
 
+  // Cleared at the moment the panel opens, which is the only moment that can matter: the count
+  // is only ever incremented above while it is closed. The old version cleared it again on
+  // every message that arrived while it was open, which could not change anything.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (wasOpen !== open) {
+    setWasOpen(open);
+    if (open) setUnread(0);
+  }
+
   useEffect(() => {
-    if (open) {
-      setUnread(0);
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [open, messages]);
 
   useEffect(() => {

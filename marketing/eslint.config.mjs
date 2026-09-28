@@ -56,34 +56,6 @@ const config = [
       ],
     },
   },
-  {
-    rules: {
-      // A warning, not an error, and this is a deliberate downgrade of a rule that is finding
-      // real problems — not a claim that it is wrong.
-      //
-      // The rule ships with the React Compiler lint set that eslint-config-next 16 turned on. It
-      // fires in six places that all predate it, because until this file existed the linter did
-      // not run at all:
-      //
-      //   src/components/theme-toggle.tsx:12             read the stored theme on mount
-      //   src/components/consent-banner.tsx:49           read the stored consent on mount
-      //   src/components/commerce/cart-provider.tsx:86   hydrate the cart from localStorage
-      //   src/components/commerce/shop-catalog.tsx:54    sync filters out of the URL
-      //   src/components/site-header.tsx:43              close the menus when the route changes
-      //   src/components/chat/chat-widget.tsx:166
-      //
-      // Each wants a different fix — useSyncExternalStore for the three that read a browser
-      // store, derived state or a key for the other three — and one of them is the cart on a
-      // live storefront. That is its own change with its own testing, not a detour inside a
-      // design-token pass. Leaving them as errors would mean either doing that work here or
-      // leaving CI red, and a red gate teaches people to ignore gates.
-      //
-      // Delete this block when the six are fixed. Nothing else here suppresses a finding: the
-      // three rules turned off above are turned off because they were wrong, and every other
-      // rule is a hard failure.
-      "react-hooks/set-state-in-effect": "warn",
-    },
-  },
 ];
 
 export default config;

@@ -39,11 +39,17 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    closeMobile();
+  // Closed as the route changes, during render rather than in an effect afterwards. An effect
+  // here rendered the new page once with the old page's menu still over it, then closed it -
+  // brief, but a real flash of the wrong thing. This is React's documented way to adjust state
+  // when something it derives from changes.
+  const [navigatedFrom, setNavigatedFrom] = useState(pathname);
+  if (navigatedFrom !== pathname) {
+    setNavigatedFrom(pathname);
+    setMobileOpen(false);
     setProductsOpen(false);
     setSignInOpen(false);
-  }, [pathname, closeMobile]);
+  }
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {

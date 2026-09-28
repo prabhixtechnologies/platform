@@ -61,9 +61,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [variantMeta, setVariantMeta] = useState<VariantMeta>({});
 
-  const refresh = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  // The fetch, without the two lines that announce it is starting. Split out so the first load
+  // can call it directly: `isLoading` already starts true and `error` already starts null, so
+  // on mount those two were setting state to the value it was about to have anyway - a no-op
+  // that still counted as a state update inside an effect.
+  const load = useCallback(async () => {
     try {
       await migrateLegacySecrets();
       const next = await shopGetCart();
@@ -82,9 +84,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // What every caller outside this file gets: a reload that puts the cart back into its loading
+  // state first, because by then the screen is showing the previous one.
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    await load();
+  }, [load]);
+
+  // Awaited inside the effect rather than called from it. The two run identically - `load` is
+  // async either way, so nothing in it happens before the first await - but only this shape can
+  // be read as asynchronous by the compiler's set-state-in-effect rule, which stops at a call to
+  // a function reference and assumes the worst. Writing it this way keeps the rule enforced over
+  // the rest of the file instead of turning it off.
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void (async () => {
+      await load();
+    })();
+  }, [load]);
 
   const trackCommerce = useCallback(
     (name: string, properties?: Record<string, unknown>) => {

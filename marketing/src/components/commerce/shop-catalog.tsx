@@ -30,10 +30,10 @@ export function ShopCatalog() {
   const [sort, setSort] = useState<SortKey>("featured");
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const loadPage = useCallback(async (nextCursor: string | null, append: boolean) => {
-    if (append) setLoadingMore(true);
-    else setLoading(true);
-    setError(null);
+  // The fetch on its own, without the flags that say it has begun. The first page needs it that
+  // way: `loading` already starts true and `error` already starts null, so setting them on
+  // mount changed nothing and still counted as a state update inside an effect.
+  const fetchPage = useCallback(async (nextCursor: string | null, append: boolean) => {
     try {
       const page = await listProducts({
         cursor: nextCursor ?? undefined,
@@ -50,9 +50,23 @@ export function ShopCatalog() {
     }
   }, []);
 
+  // Every page after the first, where a spinner has to appear before the request goes out.
+  const loadPage = useCallback(
+    async (nextCursor: string | null, append: boolean) => {
+      if (append) setLoadingMore(true);
+      else setLoading(true);
+      setError(null);
+      await fetchPage(nextCursor, append);
+    },
+    [fetchPage],
+  );
+
+  // Awaited rather than called, for the reason given at the same place in cart-provider.tsx.
   useEffect(() => {
-    void loadPage(null, false);
-  }, [loadPage]);
+    void (async () => {
+      await fetchPage(null, false);
+    })();
+  }, [fetchPage]);
 
   useEffect(() => {
     const el = sentinelRef.current;

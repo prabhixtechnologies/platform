@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Button } from "./Button";
 import { Container } from "./Container";
 
 const CONSENT_KEY = "prabhix_cookie_consent";
+type Consent = "accepted" | "declined" | "pending";
 
 declare global {
   interface Window {
@@ -25,31 +26,48 @@ function setConsent(value: "accepted" | "declined") {
   }
 }
 
+// The answer is in localStorage and `setConsent` already announces every change on the event
+// below, so the banner can read the store directly instead of copying it into state. Accepting
+// or declining now hides this by changing the thing it renders from, rather than by a second
+// setState next to the one that wrote the value.
+function subscribe(onChange: () => void) {
+  window.addEventListener("prabhix-consent-change", onChange);
+  // Another tab deciding counts too - two banners open at once was possible before.
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener("prabhix-consent-change", onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function read(): Consent {
+  try {
+    const stored = localStorage.getItem(CONSENT_KEY);
+    if (stored === "accepted" || stored === "declined") return stored;
+  } catch {
+    // Storage disabled. Undecided is the safe reading: it asks rather than assumes.
+  }
+  return "pending";
+}
+
+// Nothing is rendered on the server, as before: the banner appeared only after mount, because
+// the decision cannot be known while generating the page.
+const readOnServer = () => undefined;
+
 /**
  * In-document strip, not a modal. Tab must reach the rest of the page; trapping
  * focus here used to be correct only while this sat over the hero as a dialog.
  */
 export function ConsentBanner() {
-  const [visible, setVisible] = useState(false);
+  const consent = useSyncExternalStore(subscribe, read, readOnServer);
 
+  // Still an effect, because publishing the value on `window` is a side effect and not
+  // something render may do. What it no longer does is set state.
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(CONSENT_KEY) as
-        | "accepted"
-        | "declined"
-        | null;
-      if (stored === "accepted" || stored === "declined") {
-        window.prabhixConsent = stored;
-        return;
-      }
-    } catch {
-      /* ignore */
-    }
-    window.prabhixConsent = "pending";
-    setVisible(true);
-  }, []);
+    if (consent) window.prabhixConsent = consent;
+  }, [consent]);
 
-  if (!visible) return null;
+  if (consent !== "pending") return null;
 
   return (
     <div
@@ -77,7 +95,6 @@ export function ConsentBanner() {
             type="button"
             onClick={() => {
               setConsent("declined");
-              setVisible(false);
             }}
             className="min-h-11 rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-surface"
           >
@@ -86,7 +103,6 @@ export function ConsentBanner() {
           <Button
             onClick={() => {
               setConsent("accepted");
-              setVisible(false);
             }}
           >
             Accept all
