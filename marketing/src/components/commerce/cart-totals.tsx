@@ -22,7 +22,7 @@ export function CartTotals({ cart, className }: CartTotalsProps) {
           </dd>
         </div>
         {cart.discountPaise > 0 && (
-          <div className="flex justify-between gap-4 text-emerald-600 dark:text-emerald-400">
+          <div className="flex justify-between gap-4 text-success-subtle-ink">
             <dt>
               Discount{cart.discountCode ? ` (${cart.discountCode})` : ""}
             </dt>

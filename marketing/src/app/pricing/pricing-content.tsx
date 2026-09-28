@@ -330,7 +330,7 @@ export function PricingContent() {
           >
             <span
               className={cn(
-                "absolute top-0.5 size-6 rounded-full bg-white transition-transform",
+                "absolute top-0.5 size-6 rounded-full border border-border bg-surface transition-transform",
                 annual ? "left-5" : "left-0.5",
               )}
             />

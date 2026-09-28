@@ -101,7 +101,7 @@ export default function DocsPage() {
               "Call GET /api/v1/oneops/org with Authorization: Bearer <token> and X-Prabhix-Org set to your organization ID.",
             ].map((step, i) => (
               <li key={step} className="flex gap-4">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                   {i + 1}
                 </span>
                 <p className="pt-1 text-muted-foreground">{step}</p>

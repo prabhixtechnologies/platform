@@ -358,7 +358,7 @@ export function CheckoutClient() {
             role="status"
             className={`rounded-xl border px-4 py-3 text-sm ${
               phase === "cancelled" || phase === "failed" || phase === "network_error"
-                ? "border-amber-500/40 bg-amber-500/10"
+                ? "border-warning-subtle-border bg-warning-subtle"
                 : "border-border bg-surface"
             }`}
           >

@@ -67,7 +67,7 @@ export function OrderConfirmationClient() {
     <div className="mx-auto max-w-3xl space-y-8">
       <div className="text-center">
         {paid ? (
-          <CheckCircle2 className="mx-auto size-14 text-emerald-500" aria-hidden />
+          <CheckCircle2 className="mx-auto size-14 text-success" aria-hidden />
         ) : (
           <Loader2 className="mx-auto size-14 animate-spin text-accent-text" aria-hidden />
         )}
@@ -79,7 +79,7 @@ export function OrderConfirmationClient() {
           {order.customerEmail && <> — confirmation sent to {order.customerEmail}</>}
         </p>
         {!paid && (
-          <p className="mt-2 text-sm text-amber-600 dark:text-amber-400" role="status">
+          <p className="mt-2 text-sm text-warning-subtle-ink" role="status">
             Payment is being processed. Refresh this page in a moment if status does not update.
           </p>
         )}
@@ -115,7 +115,7 @@ export function OrderConfirmationClient() {
               <dd><Money amountPaise={order.subtotalPaise} currency={order.currency} /></dd>
             </div>
             {order.discountPaise > 0 && (
-              <div className="flex justify-between text-emerald-600">
+              <div className="flex justify-between text-success-subtle-ink">
                 <dt>Discount</dt>
                 <dd>−<Money amountPaise={order.discountPaise} currency={order.currency} /></dd>
               </div>

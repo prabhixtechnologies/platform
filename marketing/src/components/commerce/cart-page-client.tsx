@@ -150,7 +150,7 @@ export function CartPageClient() {
             </p>
           )}
           {cart.discountCode && (
-            <p className="mt-3 text-sm text-emerald-600 dark:text-emerald-400">
+            <p className="mt-3 text-sm text-success-subtle-ink">
               Code <strong>{cart.discountCode}</strong> applied.{" "}
               <button type="button" className="underline" onClick={() => void removeCode()}>
                 Remove
