@@ -84,7 +84,7 @@ export default async function ShopProductPage({ params }: Props) {
               className="flex aspect-square items-center justify-center rounded-2xl bg-linear-to-br from-primary/15 via-surface to-accent/10"
               aria-hidden
             >
-              <span className="text-6xl font-bold text-primary/25">
+              <span className="text-6xl font-bold text-accent-text/25">
                 {product.name.charAt(0)}
               </span>
             </div>
@@ -101,7 +101,7 @@ export default async function ShopProductPage({ params }: Props) {
               {product.name}
             </h1>
             {product.tagline && (
-              <p className="mt-3 text-lg text-primary">{product.tagline}</p>
+              <p className="mt-3 text-lg text-accent-text">{product.tagline}</p>
             )}
             {product.description && (
               <div className="prose prose-neutral mt-6 max-w-none dark:prose-invert">

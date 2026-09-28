@@ -31,6 +31,25 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
+      # This is the only ESLint in the portfolio and it had never run: the repository carried
+      # ESLint 9 with a legacy .eslintrc.json, which ESLint 9 does not read, and this job ran
+      # typecheck, test and build but never lint. The config is now flat, the accessibility rules
+      # are errors rather than Next's default warnings, and the six pre-existing
+      # react-hooks/set-state-in-effect findings are listed by file in eslint.config.mjs.
+      - name: Lint
+        run: npm run lint
+
+      # Colours come from the generated tokens or they do not ship. The checker lives in web-kit
+      # beside the tokens it enforces and is already cloned by the install step above.
+      #
+      # Marketing has the most legitimate exceptions of any app, and all of them are recorded in
+      # the source with a `px-allow-literal:` comment: the theme-color meta tags, the icon and
+      # Open Graph routes that Next renders to an image on the server with no stylesheet, and the
+      # Razorpay checkout, which runs in its own iframe and takes a hex string.
+      - name: No hard-coded colours
+        working-directory: ${{ github.workspace }}/../web-kit/packages/brand
+        run: node scripts/check-literals.mjs
+
       - name: Test
         run: npm run test
 

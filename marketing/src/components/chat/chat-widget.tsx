@@ -267,12 +267,19 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
 
   return (
     <>
+      {/*
+        The scrim behind the panel on phones. Decorative: it has no content and no name, so it
+        is out of the accessibility tree in both states rather than only while closed. Tapping it
+        closes the panel, which is a convenience for a thumb; the keyboard route is Escape, wired
+        up in the effect above along with the tab trap.
+      */}
       <div
         className={cn(
           "fixed inset-0 z-[70] bg-ink/40 transition-opacity sm:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
-        aria-hidden={!open}
+        role="presentation"
+        aria-hidden="true"
         onClick={() => setOpen(false)}
       />
 
@@ -500,7 +507,7 @@ function PreChatField({
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-primary"> *</span>}
+        {required && <span className="text-accent-text"> *</span>}
       </label>
       <input
         id={id}

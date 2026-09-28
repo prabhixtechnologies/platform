@@ -49,7 +49,7 @@ export function LogoMark({ className, showWordmark = true }: LogoMarkProps) {
       </svg>
       {showWordmark && (
         <span className="hidden min-[360px]:flex flex-col leading-none">
-          <span className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+          <span className="text-base font-bold tracking-tight text-foreground group-hover:text-accent-text transition-colors">
             Prabhix
           </span>
           <span className="text-[11px] font-medium uppercase tracking-widest text-foreground/70">

@@ -62,7 +62,7 @@ export default async function ContactPage({ searchParams }: Props) {
             <div className="space-y-6">
               <Card>
                 <div className="flex gap-4">
-                  <Calendar className="size-6 shrink-0 text-primary" aria-hidden />
+                  <Calendar className="size-6 shrink-0 text-accent-text" aria-hidden />
                   <div>
                     <h2 className="font-semibold">Book a demo</h2>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -83,12 +83,12 @@ export default async function ContactPage({ searchParams }: Props) {
 
               <Card>
                 <div className="flex gap-4">
-                  <Mail className="size-6 shrink-0 text-primary" aria-hidden />
+                  <Mail className="size-6 shrink-0 text-accent-text" aria-hidden />
                   <div>
                     <h2 className="font-semibold">Email</h2>
                     <a
                       href={`mailto:${siteConfig.email}`}
-                      className="mt-2 block text-sm text-primary hover:underline"
+                      className="mt-2 block text-sm text-accent-text hover:underline"
                     >
                       {siteConfig.email}
                     </a>
@@ -101,7 +101,7 @@ export default async function ContactPage({ searchParams }: Props) {
 
               <Card>
                 <div className="flex gap-4">
-                  <MapPin className="size-6 shrink-0 text-primary" aria-hidden />
+                  <MapPin className="size-6 shrink-0 text-accent-text" aria-hidden />
                   <div>
                     <h2 className="font-semibold">Office</h2>
                     <p className="mt-2 text-sm text-muted-foreground">

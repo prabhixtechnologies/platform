@@ -27,7 +27,7 @@ export function Accordion({ items, className }: AccordionProps) {
             <h3>
               <button
                 type="button"
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground transition-colors hover:text-primary"
+                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground transition-colors hover:text-accent-text"
                 aria-expanded={isOpen}
                 aria-controls={`panel-${item.id}`}
                 id={`heading-${item.id}`}

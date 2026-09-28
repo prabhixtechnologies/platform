@@ -40,7 +40,7 @@ export default function CaseStudiesPage() {
                     <div className="mt-4 flex flex-wrap gap-4">
                       {study.metrics.slice(0, 3).map((m) => (
                         <div key={m.label}>
-                          <span className="text-lg font-bold text-primary">
+                          <span className="text-lg font-bold text-accent-text">
                             {m.value}
                           </span>
                           <span className="ml-2 text-sm text-muted-foreground">
@@ -52,7 +52,7 @@ export default function CaseStudiesPage() {
                   </div>
                   <Link
                     href={`/case-studies/${study.slug}`}
-                    className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                    className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
                   >
                     Read case study
                     <ArrowRight className="size-4" aria-hidden />

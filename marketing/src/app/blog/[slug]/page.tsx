@@ -54,7 +54,7 @@ export default async function BlogPostPage({ params }: Props) {
         <Reveal>
           <Link
             href="/blog"
-            className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+            className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent-text"
           >
             <ArrowLeft className="size-4" aria-hidden />
             Back to blog

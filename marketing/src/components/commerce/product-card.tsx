@@ -21,19 +21,19 @@ export function ProductCard({ product }: ProductCardProps) {
           className="mb-4 flex aspect-[4/3] items-center justify-center rounded-xl bg-linear-to-br from-primary/10 via-surface to-accent/10"
           aria-hidden
         >
-          <span className="text-4xl font-bold text-primary/30">
+          <span className="text-4xl font-bold text-accent-text/30">
             {product.name.charAt(0)}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <ProductTypeBadge type={product.productType} />
           {product.featured && (
-            <span className="text-xs font-semibold uppercase tracking-wide text-primary">
+            <span className="text-xs font-semibold uppercase tracking-wide text-accent-text">
               Featured
             </span>
           )}
         </div>
-        <h2 className="mt-3 font-display text-xl font-semibold tracking-tight group-hover:text-primary">
+        <h2 className="mt-3 font-display text-xl font-semibold tracking-tight group-hover:text-accent-text">
           {product.name}
         </h2>
         {product.tagline && (
@@ -48,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
       <Link
         href={href}
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-text hover:underline"
       >
         View product
         <ArrowRight className="size-4" aria-hidden />

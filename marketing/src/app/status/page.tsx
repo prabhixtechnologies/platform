@@ -61,7 +61,7 @@ export default function StatusPage() {
           <Card>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="size-6 text-primary" aria-hidden />
+                <CheckCircle2 className="size-6 text-accent-text" aria-hidden />
                 <div>
                   <h2 className="text-lg font-semibold">All systems operational</h2>
                   <p className="text-sm text-muted-foreground">
@@ -78,7 +78,7 @@ export default function StatusPage() {
                   className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
                 >
                   <span className="font-medium">{service.name}</span>
-                  <span className="inline-flex items-center gap-1.5 text-sm text-primary">
+                  <span className="inline-flex items-center gap-1.5 text-sm text-accent-text">
                     <CheckCircle2 className="size-4" aria-hidden />
                     Operational
                   </span>
@@ -108,19 +108,19 @@ export default function StatusPage() {
           <div className="flex flex-wrap gap-4">
             <a
               href="/legal/security"
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-accent-text"
             >
               Security overview
             </a>
             <a
               href="/legal/privacy"
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-accent-text"
             >
               Privacy policy
             </a>
             <a
               href="/legal/dpa"
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-accent-text"
             >
               Data processing agreement
             </a>

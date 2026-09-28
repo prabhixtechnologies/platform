@@ -48,7 +48,7 @@ export function ApplicationForm({ roleSlug, roleTitle }: ApplicationFormProps) {
 
       <div>
         <label htmlFor="coverLetter" className="mb-1.5 block text-sm font-medium text-foreground">
-          Cover letter <span className="text-primary">*</span>
+          Cover letter <span className="text-accent-text">*</span>
         </label>
         <textarea
           id="coverLetter"
@@ -105,7 +105,7 @@ function Field({
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-primary"> *</span>}
+        {required && <span className="text-accent-text"> *</span>}
       </label>
       <input
         id={id}

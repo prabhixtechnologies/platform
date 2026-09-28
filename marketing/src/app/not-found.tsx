@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="relative flex min-h-[60vh] items-center justify-center overflow-hidden py-24">
       <GradientMesh />
       <Container className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+        <p className="text-sm font-semibold uppercase tracking-wider text-accent-text">
           404
         </p>
         <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
@@ -21,7 +21,7 @@ export default function NotFound() {
           <Button href="/">Back to home</Button>
           <Link
             href="/contact"
-            className="text-sm font-semibold text-primary hover:underline"
+            className="text-sm font-semibold text-accent-text hover:underline"
           >
             Contact support
           </Link>

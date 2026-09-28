@@ -104,7 +104,7 @@ export default function HomePage() {
                   {product.status === "live" ? "Live" : "Coming soon"}
                 </Badge>
                 <h3 className="text-xl font-semibold">{product.name}</h3>
-                <p className="mt-2 text-primary">{product.tagline}</p>
+                <p className="mt-2 text-accent-text">{product.tagline}</p>
                 <p className="mt-3 text-sm text-muted-foreground line-clamp-3">
                   {product.description}
                 </p>
@@ -143,7 +143,7 @@ export default function HomePage() {
           {pillars.map((pillar, i) => (
             <Reveal key={pillar.title} delay={i * 0.1}>
               <Card hover>
-                <pillar.icon className="size-8 text-primary" aria-hidden />
+                <pillar.icon className="size-8 text-accent-text" aria-hidden />
                 <h3 className="mt-4 text-xl font-semibold">{pillar.title}</h3>
                 <p className="mt-2 text-muted-foreground">{pillar.description}</p>
               </Card>
@@ -205,7 +205,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             {acronymParts.map((part, i) => (
               <div key={part.letter} className="flex items-center gap-3">
-                <span className="glass inline-flex size-10 items-center justify-center rounded-xl text-sm font-bold text-primary">
+                <span className="glass inline-flex size-10 items-center justify-center rounded-xl text-sm font-bold text-accent-text">
                   {part.letter}
                 </span>
                 <span className="text-sm font-medium text-foreground">

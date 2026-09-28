@@ -148,7 +148,7 @@ export default function AboutPage() {
               ["eXperience", "Interfaces that field teams actually adopt"],
             ].map(([term, desc]) => (
               <div key={term} className="glass rounded-xl p-4">
-                <h3 className="font-semibold text-primary">{term}</h3>
+                <h3 className="font-semibold text-accent-text">{term}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
               </div>
             ))}

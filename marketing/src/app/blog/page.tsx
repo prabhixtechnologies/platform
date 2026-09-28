@@ -41,7 +41,7 @@ export default function BlogPage() {
                   <h2 className="mt-4 text-2xl font-bold">
                     <Link
                       href={`/blog/${post.slug}`}
-                      className="hover:text-primary transition-colors"
+                      className="hover:text-accent-text transition-colors"
                     >
                       {post.title}
                     </Link>
@@ -53,7 +53,7 @@ export default function BlogPage() {
                     </p>
                     <Link
                       href={`/blog/${post.slug}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
                     >
                       Read article
                       <ArrowRight className="size-4" aria-hidden />

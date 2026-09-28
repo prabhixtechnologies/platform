@@ -73,7 +73,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                      className="text-sm text-muted-foreground transition-colors hover:text-accent-text"
                     >
                       {link.label}
                     </Link>
@@ -123,7 +123,7 @@ export function SiteFooter() {
           {state && (
             <p
               id="newsletter-error"
-              className={`mt-3 text-sm ${state.ok ? "text-primary" : "text-danger"}`}
+              className={`mt-3 text-sm ${state.ok ? "text-accent-text" : "text-danger"}`}
               role={state.ok ? "status" : "alert"}
               aria-live="polite"
             >

@@ -80,7 +80,7 @@ export function CartPageClient() {
                 <div className="flex-1 min-w-0">
                   <Link
                     href={variantMeta[item.variantId]?.slug ? `/shop/${variantMeta[item.variantId].slug}` : "/shop"}
-                    className="font-medium hover:text-primary"
+                    className="font-medium hover:text-accent-text"
                   >
                     {item.productName}
                   </Link>

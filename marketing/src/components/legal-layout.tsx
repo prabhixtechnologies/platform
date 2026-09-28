@@ -15,7 +15,7 @@ export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) 
           Last updated: {lastUpdated}
         </p>
       </header>
-      <div className="legal-content max-w-3xl space-y-10 text-muted-foreground [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_li]:mt-2 [&_p]:mt-4 [&_p]:leading-relaxed [&_section]:scroll-mt-24 [&_a]:text-primary [&_a]:hover:underline [&_table]:mt-4 [&_table]:w-full [&_table]:text-sm [&_th]:border-b [&_th]:border-border [&_th]:pb-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground [&_td]:border-b [&_td]:border-border/50 [&_td]:py-2 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6">
+      <div className="legal-content max-w-3xl space-y-10 text-muted-foreground [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_li]:mt-2 [&_p]:mt-4 [&_p]:leading-relaxed [&_section]:scroll-mt-24 [&_a]:text-accent-text [&_a]:hover:underline [&_table]:mt-4 [&_table]:w-full [&_table]:text-sm [&_th]:border-b [&_th]:border-border [&_th]:pb-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground [&_td]:border-b [&_td]:border-border/50 [&_td]:py-2 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6">
         {children}
       </div>
     </Container>

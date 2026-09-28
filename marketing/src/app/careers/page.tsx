@@ -41,7 +41,7 @@ export default async function CareersPage() {
               </p>
               <Link
                 href="/contact?intent=careers"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
               >
                 General application
                 <ArrowRight className="size-4" aria-hidden />
@@ -68,7 +68,7 @@ export default async function CareersPage() {
                     </div>
                     <Link
                       href={`/careers/${role.slug}`}
-                      className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                      className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
                     >
                       View role
                       <ArrowRight className="size-4" aria-hidden />

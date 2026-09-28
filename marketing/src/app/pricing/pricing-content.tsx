@@ -181,7 +181,7 @@ function CellValue({ value }: { value: boolean | string }) {
     return <span className="text-sm text-foreground">{value}</span>;
   }
   return value ? (
-    <Check className="mx-auto size-5 text-primary" aria-label="Included" />
+    <Check className="mx-auto size-5 text-accent-text" aria-label="Included" />
   ) : (
     <X className="mx-auto size-5 text-muted" aria-label="Not included" />
   );
@@ -231,7 +231,7 @@ function TierGrid({
             <ul className="mt-6 flex-1 space-y-3">
               {tier.features.map((f) => (
                 <li key={f} className="flex gap-2 text-sm text-muted-foreground">
-                  <Check className="size-4 shrink-0 text-primary" aria-hidden />
+                  <Check className="size-4 shrink-0 text-accent-text" aria-hidden />
                   {f}
                 </li>
               ))}

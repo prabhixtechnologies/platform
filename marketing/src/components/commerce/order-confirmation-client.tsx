@@ -69,7 +69,7 @@ export function OrderConfirmationClient() {
         {paid ? (
           <CheckCircle2 className="mx-auto size-14 text-emerald-500" aria-hidden />
         ) : (
-          <Loader2 className="mx-auto size-14 animate-spin text-primary" aria-hidden />
+          <Loader2 className="mx-auto size-14 animate-spin text-accent-text" aria-hidden />
         )}
         <h1 className="mt-4 text-2xl font-bold sm:text-3xl">
           {paid ? "Thank you for your order!" : "Order received"}
@@ -180,13 +180,13 @@ export function OrderConfirmationClient() {
       {digitalItems.length > 0 && paid && (
         <Card className="space-y-3">
           <h2 className="flex items-center gap-2 font-semibold">
-            <Download className="size-5 text-primary" aria-hidden />
+            <Download className="size-5 text-accent-text" aria-hidden />
             Digital downloads
           </h2>
           <p className="text-sm text-muted-foreground">
             Download links are issued separately and expire after a limited time and number of downloads.
             Check your email for secure download links, or contact{" "}
-            <a href="mailto:hello@prabhixtechnologies.com" className="text-primary underline">
+            <a href="mailto:hello@prabhixtechnologies.com" className="text-accent-text underline">
               hello@prabhixtechnologies.com
             </a>{" "}
             with order {order.orderNumber} if you need assistance.
@@ -203,7 +203,7 @@ export function OrderConfirmationClient() {
 
       {physicalItems.length > 0 && paid && (
         <Card className="flex gap-3">
-          <Package className="size-5 shrink-0 text-primary" aria-hidden />
+          <Package className="size-5 shrink-0 text-accent-text" aria-hidden />
           <div>
             <p className="font-medium">Physical shipment</p>
             <p className="text-sm text-muted-foreground">

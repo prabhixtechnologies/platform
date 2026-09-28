@@ -163,7 +163,7 @@ function Field({
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-primary"> *</span>}
+        {required && <span className="text-accent-text"> *</span>}
       </label>
       <input
         id={id}
@@ -203,7 +203,7 @@ function SelectField({
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-primary"> *</span>}
+        {required && <span className="text-accent-text"> *</span>}
       </label>
       <select
         id={id}
@@ -246,7 +246,7 @@ function TextareaField({
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
-        {required && <span className="text-primary"> *</span>}
+        {required && <span className="text-accent-text"> *</span>}
       </label>
       <textarea
         id={id}

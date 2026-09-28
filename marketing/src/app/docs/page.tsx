@@ -74,14 +74,14 @@ export default function DocsPage() {
           {docSections.map((section, i) => (
             <Reveal key={section.title} delay={i * 0.08}>
               <Card hover className="flex h-full flex-col">
-                <section.icon className="size-6 text-primary" aria-hidden />
+                <section.icon className="size-6 text-accent-text" aria-hidden />
                 <h2 className="mt-4 text-xl font-semibold">{section.title}</h2>
                 <p className="mt-2 flex-1 text-sm text-muted-foreground">
                   {section.description}
                 </p>
                 <Link
                   href={section.href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
                 >
                   Request access
                   <ArrowRight className="size-4" aria-hidden />

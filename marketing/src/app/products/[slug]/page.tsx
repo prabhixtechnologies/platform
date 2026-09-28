@@ -111,7 +111,7 @@ export default async function ProductDetailPage({ params }: Props) {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
             {product.name}
           </h1>
-          <p className="mt-4 text-lg text-primary sm:text-xl">{product.tagline}</p>
+          <p className="mt-4 text-lg text-accent-text sm:text-xl">{product.tagline}</p>
           <p className="mt-6 max-w-3xl text-base text-muted-foreground sm:text-lg">
             {product.description}
           </p>
@@ -142,7 +142,7 @@ export default async function ProductDetailPage({ params }: Props) {
           {product.features.map((feature, i) => (
             <Reveal key={feature} delay={i * 0.05}>
               <Card className="flex gap-3">
-                <Check className="size-5 shrink-0 text-primary" aria-hidden />
+                <Check className="size-5 shrink-0 text-accent-text" aria-hidden />
                 <p className="text-sm text-muted-foreground">{feature}</p>
               </Card>
             </Reveal>
@@ -161,7 +161,7 @@ export default async function ProductDetailPage({ params }: Props) {
               {oneOpsModules.map((mod, i) => (
                 <Reveal key={mod.title} delay={i * 0.05}>
                   <Card hover>
-                    <mod.icon className="size-6 text-primary" aria-hidden />
+                    <mod.icon className="size-6 text-accent-text" aria-hidden />
                     <h3 className="mt-4 font-semibold">{mod.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {mod.description}

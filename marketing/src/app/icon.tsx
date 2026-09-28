@@ -14,6 +14,8 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          // px-allow-literal: Satori rasterises this to a PNG on the server, where no
+          // stylesheet exists. --px-accent for the technologies theme.
           background: "#0e7490",
           borderRadius: 8,
         }}
@@ -30,6 +32,7 @@ export default function Icon() {
           />
           <path
             d="M22.5 12h3.5l5 12h-3.7l-.9-2.3h-4.5l-.9 2.3H17l5.5-12zm2.2 7.1l-1.5-3.8-1.5 3.8h3z"
+            /* px-allow-literal: same server-rendered image; --px-cyan-200. */
             fill="#A5F3FC"
           />
         </svg>

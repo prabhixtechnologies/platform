@@ -57,9 +57,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // px-allow-literal: Next serialises these into <meta name="theme-color"> and the browser
+  // paints the address bar from them before any stylesheet is consulted, so they cannot be
+  // var(). They are --px-bg for the technologies theme in each mode; they were near-misses of
+  // those values before, which showed as the address bar not quite matching the page.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3f6fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#071018" },
+    // px-allow-literal: see above.
+    { media: "(prefers-color-scheme: light)", color: "#eef2f7" },
+    // px-allow-literal: see above.
+    { media: "(prefers-color-scheme: dark)", color: "#0c1524" },
   ],
   width: "device-width",
   initialScale: 1,

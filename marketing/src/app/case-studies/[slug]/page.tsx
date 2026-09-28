@@ -43,7 +43,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
           {study.metrics.map((m, i) => (
             <Reveal key={m.label} delay={i * 0.05}>
               <Card className="text-center">
-                <p className="text-3xl font-bold text-primary">{m.value}</p>
+                <p className="text-3xl font-bold text-accent-text">{m.value}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{m.label}</p>
               </Card>
             </Reveal>

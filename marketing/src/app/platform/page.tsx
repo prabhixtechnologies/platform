@@ -77,7 +77,7 @@ export default function PlatformPage() {
           {practices.map((item, i) => (
             <Reveal key={item.title} delay={i * 0.05}>
               <Card hover>
-                <item.icon className="size-6 text-primary" aria-hidden />
+                <item.icon className="size-6 text-accent-text" aria-hidden />
                 <h3 className="mt-4 font-semibold">{item.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {item.description}

@@ -99,7 +99,7 @@ export default function ServicesPage() {
                 <div className="flex flex-col gap-6 lg:flex-row">
                   <div className="shrink-0">
                     <div className="inline-flex size-12 items-center justify-center rounded-xl bg-primary/10">
-                      <service.icon className="size-6 text-primary" aria-hidden />
+                      <service.icon className="size-6 text-accent-text" aria-hidden />
                     </div>
                   </div>
                   <div className="flex-1">

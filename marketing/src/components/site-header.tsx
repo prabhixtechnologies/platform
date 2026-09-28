@@ -142,9 +142,9 @@ export function SiteHeader() {
               <button
                 type="button"
                 className={cn(
-                  "inline-flex min-h-11 items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
+                  "inline-flex min-h-11 items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-accent-text lg:px-3",
                   pathname.startsWith("/products")
-                    ? "text-primary"
+                    ? "text-accent-text"
                     : "text-muted-foreground",
                 )}
                 aria-expanded={productsOpen}
@@ -187,9 +187,9 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "inline-flex min-h-11 items-center rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-primary lg:px-3",
+                  "inline-flex min-h-11 items-center rounded-lg px-2.5 py-2 text-sm font-medium transition-colors hover:text-accent-text lg:px-3",
                   pathname === link.href || pathname.startsWith(`${link.href}/`)
-                    ? "text-primary"
+                    ? "text-accent-text"
                     : "text-muted-foreground",
                 )}
               >
@@ -203,7 +203,7 @@ export function SiteHeader() {
             <div className="relative hidden lg:block" ref={signInRef}>
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary lg:px-3"
+                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-accent-text lg:px-3"
                 aria-expanded={signInOpen}
                 aria-haspopup="true"
                 onClick={() => {

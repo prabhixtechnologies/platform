@@ -35,7 +35,7 @@ function TypeHighlights({ product }: { product: ProductDetail }) {
   if (product.productType === "PHYSICAL") {
     return (
       <Card className="flex gap-3">
-        <Truck className="size-5 shrink-0 text-primary" aria-hidden />
+        <Truck className="size-5 shrink-0 text-accent-text" aria-hidden />
         <div>
           <p className="font-medium">Ships across India</p>
           <p className="text-sm text-muted-foreground">
@@ -51,7 +51,7 @@ function TypeHighlights({ product }: { product: ProductDetail }) {
   if (product.productType === "DIGITAL") {
     return (
       <Card className="flex gap-3">
-        <Icon className="size-5 shrink-0 text-primary" aria-hidden />
+        <Icon className="size-5 shrink-0 text-accent-text" aria-hidden />
         <div>
           <p className="font-medium">Instant digital delivery</p>
           <p className="text-sm text-muted-foreground">
@@ -65,7 +65,7 @@ function TypeHighlights({ product }: { product: ProductDetail }) {
   if (product.productType === "SERVICE") {
     return (
       <Card className="flex gap-3">
-        <Clock className="size-5 shrink-0 text-primary" aria-hidden />
+        <Clock className="size-5 shrink-0 text-accent-text" aria-hidden />
         <div>
           <p className="font-medium">Professional service delivery</p>
           <p className="text-sm text-muted-foreground">
@@ -80,7 +80,7 @@ function TypeHighlights({ product }: { product: ProductDetail }) {
 
   return (
     <Card className="flex gap-3">
-      <Icon className="size-5 shrink-0 text-primary" aria-hidden />
+      <Icon className="size-5 shrink-0 text-accent-text" aria-hidden />
       <div>
         <p className="font-medium">Flexible subscription</p>
         <p className="text-sm text-muted-foreground">
@@ -296,11 +296,11 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
 
       <ul className="space-y-2 border-t border-border pt-4 text-sm text-muted-foreground">
         <li className="flex items-center gap-2">
-          <ShieldCheck className="size-4 shrink-0 text-primary" aria-hidden />
+          <ShieldCheck className="size-4 shrink-0 text-accent-text" aria-hidden />
           Secure checkout via Razorpay
         </li>
         <li className="flex items-center gap-2">
-          <Check className="size-4 shrink-0 text-primary" aria-hidden />
+          <Check className="size-4 shrink-0 text-accent-text" aria-hidden />
           GST-compliant invoice included
         </li>
       </ul>

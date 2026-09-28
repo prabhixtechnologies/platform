@@ -191,7 +191,7 @@ export function ShopCatalog() {
           </p>
           <Link
             href="/shop"
-            className="mt-6 inline-flex min-h-11 items-center justify-center font-semibold text-primary hover:underline"
+            className="mt-6 inline-flex min-h-11 items-center justify-center font-semibold text-accent-text hover:underline"
             onClick={() => {
               setSearch("");
               setTypeFilter("ALL");

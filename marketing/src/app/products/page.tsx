@@ -64,7 +64,7 @@ export default function ProductsPage() {
                         <Badge variant="outline">Part of OneOps</Badge>
                       )}
                     </div>
-                    <p className="mt-2 text-lg text-primary">{product.tagline}</p>
+                    <p className="mt-2 text-lg text-accent-text">{product.tagline}</p>
                     <p className="mt-4 text-muted-foreground">{product.description}</p>
                     <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                       {product.features.slice(0, 4).map((f) => (
@@ -77,7 +77,7 @@ export default function ProductsPage() {
                   <div className="flex shrink-0 flex-col gap-3">
                     <Link
                       href={`/products/${product.slug}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-accent-text hover:underline"
                     >
                       View details
                       <ArrowRight className="size-4" aria-hidden />

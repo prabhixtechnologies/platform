@@ -111,6 +111,9 @@ export function CheckoutClient() {
         description: `Order ${checkout.orderNumber}`,
         order_id: checkout.razorpayOrderId,
         prefill: { name, email, contact: phone || undefined },
+        // px-allow-literal: Razorpay's checkout runs in its own iframe and takes a hex string
+        // in its options object, so it cannot read our stylesheet. --px-accent for the
+        // technologies theme, which is the right one here: this is the Prabhix storefront.
         theme: { color: "#0e7490" },
       });
 

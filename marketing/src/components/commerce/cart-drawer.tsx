@@ -193,7 +193,7 @@ export function CartButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="relative inline-flex size-11 items-center justify-center rounded-lg border border-border transition-colors hover:border-primary hover:text-primary"
+        className="relative inline-flex size-11 items-center justify-center rounded-lg border border-border transition-colors hover:border-primary hover:text-accent-text"
         aria-label={`Open cart${itemCount > 0 ? `, ${itemCount} items` : ""}`}
       >
         <ShoppingBag className="size-5" aria-hidden />
