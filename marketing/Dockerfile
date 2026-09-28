@@ -4,7 +4,7 @@
 # Docker Official Images, mirrored by AWS, and the move takes Docker Hub's anonymous pull
 # limit off the build path: a rate-limited base image fails the build for a reason that has
 # nothing to do with the change being built.
-FROM public.ecr.aws/docker/library/node:22-alpine AS base
+FROM public.ecr.aws/docker/library/node:26-alpine AS base
 WORKDIR /app
 # Marketing only needs brand tokens. Copying all of web-kit pulls @prabhix/ui into tsc.
 COPY --from=webkit packages/brand ./vendor/web-kit/packages/brand
