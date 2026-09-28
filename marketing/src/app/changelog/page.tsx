@@ -16,7 +16,7 @@ export const metadata: Metadata = pageMetadata({
 export default function ChangelogPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Changelog"
         title="Release notes"
         description="What shipped on the Prabhix platform and products — documented for operators and developers."

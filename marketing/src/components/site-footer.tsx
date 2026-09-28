@@ -109,7 +109,7 @@ export function SiteFooter() {
                 aria-describedby={
                   state?.fieldErrors?.email ? "newsletter-error" : undefined
                 }
-                className="h-11 flex-1 rounded-lg border border-border bg-background px-4 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
+                className="h-11 flex-1 rounded-lg border border-border bg-background px-4 text-sm text-foreground placeholder:text-muted focus:border-primary"
               />
               <button
                 type="submit"

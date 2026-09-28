@@ -103,8 +103,10 @@ export default async function ShopProductPage({ params }: Props) {
             {product.tagline && (
               <p className="mt-3 text-lg text-accent-text">{product.tagline}</p>
             )}
+            {/* No `dark:prose-invert`: prose is on the tokens in globals.css, which already
+                flip with data-theme. Inverting on top would swap them back. */}
             {product.description && (
-              <div className="prose prose-neutral mt-6 max-w-none dark:prose-invert">
+              <div className="prose mt-6 max-w-none">
                 <p className="whitespace-pre-wrap text-muted-foreground">
                   {product.description}
                 </p>

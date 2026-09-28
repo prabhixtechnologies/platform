@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function CaseStudiesPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Case Studies"
         title="Results from the field"
         description="Real outcomes from organizations using Prabhix products. Metrics reflect measured improvements during deployment — not projections."

@@ -58,17 +58,17 @@ export function ApplicationForm({ roleSlug, roleTitle }: ApplicationFormProps) {
           placeholder="Tell us why you're a fit for this role and what you've built recently."
           aria-invalid={!!state?.fieldErrors?.coverLetter}
           aria-describedby={state?.fieldErrors?.coverLetter ? "cover-error" : undefined}
-          className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-primary"
         />
         {state?.fieldErrors?.coverLetter && (
-          <p id="cover-error" className="mt-1.5 text-sm text-red-500" role="alert">
+          <p id="cover-error" className="mt-1.5 text-sm text-danger-subtle-ink" role="alert">
             {state.fieldErrors.coverLetter}
           </p>
         )}
       </div>
 
       {state && !state.ok && !state.fieldErrors && (
-        <p className="text-sm text-red-500" role="alert">
+        <p className="text-sm text-danger-subtle-ink" role="alert">
           {state.message}
         </p>
       )}
@@ -114,10 +114,10 @@ function Field({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:outline-none"
+        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground focus:border-primary"
       />
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger-subtle-ink" role="alert">
           {error}
         </p>
       )}

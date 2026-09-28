@@ -84,6 +84,14 @@ jobs:
       - name: "@prabhix/ui peers declared by every app"
         working-directory: ${{ github.workspace }}/../web-kit/packages/brand
         run: node scripts/check-peers.mjs
+
+      # Sixteen of thirty pages rendered no h1, so their document started at level two and a
+      # screen reader's heading list opened with no title. Section defaults titleAs to h2, so
+      # this is the default rather than a mistake anybody made, and a check is the only thing
+      # that keeps it fixed.
+      - name: Every page has one top-level heading
+        working-directory: marketing
+        run: node scripts/check-headings.mjs
       - name: Test
         run: npm run test
 

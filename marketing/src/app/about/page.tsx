@@ -75,7 +75,7 @@ const leadership = [
 export default function AboutPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="About"
         title="Software that respects how business actually works"
         description="Prabhix Technologies builds enterprise platforms and vertical products for teams that can't afford fragile tooling."

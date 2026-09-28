@@ -13,6 +13,8 @@ import { CTABand } from "@/components/cta-band";
 import { GradientMesh } from "@/components/gradient-mesh";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
+import { StatBand } from "@/components/stat-band";
+import { integrations } from "@/content/integrations";
 import { MobiStackPreview } from "@/components/product-preview";
 import { PRABHIX_ACRONYM } from "@/lib/constants";
 import { appUrls } from "@/lib/site-config";
@@ -28,6 +30,19 @@ export const metadata: Metadata = pageMetadata({
   path: "/",
   ogTitle: "Prabhix Technologies — Building software that simplifies business",
 });
+
+/*
+  Counted from the site's own content rather than typed in, so the band cannot drift from the
+  pages it summarises — adding a product or an integration moves the figure. The uptime line is
+  the same commitment /status publishes; a marketing number that contradicts the status page is
+  worse than no number.
+*/
+const homeStats = [
+  { value: String(productApps.length), label: "Products shipping" },
+  { value: String(integrations.length), label: "Integrations" },
+  { value: "99.9%", label: "Uptime SLA" },
+  { value: "One", label: "Sign-in for all of them" },
+];
 
 const pillars = [
   {
@@ -91,6 +106,8 @@ export default function HomePage() {
         </Container>
       </section>
 
+      <StatBand stats={homeStats} />
+
       <Section
         eyebrow="Products"
         title="What we ship"
@@ -108,9 +125,12 @@ export default function HomePage() {
                 <p className="mt-3 text-sm text-muted-foreground line-clamp-3">
                   {product.description}
                 </p>
+                {/* Named rather than "Learn more" and "Sign in". This block renders once per
+                    product, so the generic labels gave the page a link list of identical
+                    entries — the view someone using a screen reader navigates by. */}
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button href={`/products/${product.slug}`} size="sm">
-                    Learn more
+                    Explore {product.name}
                   </Button>
                   <Button
                     href={appUrls[product.app]}
@@ -118,7 +138,7 @@ export default function HomePage() {
                     size="sm"
                     external
                   >
-                    Sign in
+                    Sign in to {product.name}
                   </Button>
                 </div>
               </Card>

@@ -133,7 +133,7 @@ export function ContactForm({
       />
 
       {state && !state.ok && !state.fieldErrors && (
-        <p className="text-sm text-red-500" role="alert">
+        <p className="text-sm text-danger-subtle-ink" role="alert">
           {state.message}
         </p>
       )}
@@ -172,10 +172,10 @@ function Field({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
+        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground placeholder:text-muted focus:border-primary"
       />
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger-subtle-ink" role="alert">
           {error}
         </p>
       )}
@@ -212,7 +212,7 @@ function SelectField({
         defaultValue={defaultValue ?? ""}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:outline-none"
+        className="h-11 w-full rounded-lg border border-border bg-background px-4 text-sm text-foreground focus:border-primary"
       >
         {!required && <option value="">Select…</option>}
         {options.map((opt) => (
@@ -222,7 +222,7 @@ function SelectField({
         ))}
       </select>
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger-subtle-ink" role="alert">
           {error}
         </p>
       )}
@@ -255,10 +255,10 @@ function TextareaField({
         rows={5}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
+        className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-primary"
       />
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-danger-subtle-ink" role="alert">
           {error}
         </p>
       )}

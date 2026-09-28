@@ -14,8 +14,14 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const href = `/shop/${product.slug}`;
 
+  // The link suppresses its own outline so the ring traces the whole card rather than the
+  // link's ragged flex box. That second half was never written, so tabbing the shop grid
+  // showed no focus at all; `has-[:focus-visible]` puts it back on the card.
   return (
-    <Card hover className="flex h-full flex-col">
+    <Card
+      hover
+      className="flex h-full flex-col has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
+    >
       <Link href={href} className="group flex flex-1 flex-col focus-visible:outline-none" data-testid="shop-product">
         <div
           className="mb-4 flex aspect-[4/3] items-center justify-center rounded-xl bg-linear-to-br from-primary/10 via-surface to-accent/10"

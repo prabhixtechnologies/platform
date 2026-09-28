@@ -280,6 +280,7 @@ export function PricingContent() {
     <>
       <Section
         eyebrow="Pricing"
+        titleAs="h1"
         title="Plans by product"
         description="OneOps and MobiStack are priced separately. Pick the product you need — there is no single “platform” fee that covers everything."
         centered

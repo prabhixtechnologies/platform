@@ -48,7 +48,7 @@ const commitments = [
 export default function StatusPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Trust center"
         title="Status & reliability"
         description="Current platform health, our uptime commitments, and where to find security documentation."

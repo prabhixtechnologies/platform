@@ -64,7 +64,7 @@ const practices = [
 export default function PlatformPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Engineering"
         title="How we build"
         description="Prabhix is a company that ships products. This page is about the engineering practices behind them — not a claim that one console is the whole business."

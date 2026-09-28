@@ -21,7 +21,7 @@ export default async function CareersPage() {
 
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Careers"
         title="Build software that simplifies business"
         description="We're a small, focused team building multi-tenant platforms and vertical products. Remote-friendly across India."

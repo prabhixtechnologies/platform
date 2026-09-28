@@ -371,7 +371,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
               error={formErrors.subject}
             />
             {formErrors.form && (
-              <p className="text-sm text-red-500" role="alert">
+              <p className="text-sm text-danger-subtle-ink" role="alert">
                 {formErrors.form}
               </p>
             )}
@@ -423,7 +423,7 @@ export function ChatWidget({ enabled }: ChatWidgetProps) {
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder="Type your message…"
                   data-testid="chat-visitor-composer"
-                  className="max-h-32 min-h-[44px] flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none"
+                  className="max-h-32 min-h-[44px] flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary"
                 />
                 <button
                   type="submit"
@@ -524,10 +524,10 @@ function PreChatField({
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:border-primary focus:outline-none"
+        className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:border-primary"
       />
       {error && (
-        <p id={`${id}-error`} className="mt-1 text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="mt-1 text-sm text-danger-subtle-ink" role="alert">
           {error}
         </p>
       )}

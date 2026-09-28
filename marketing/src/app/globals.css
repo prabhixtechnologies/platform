@@ -1,7 +1,44 @@
 @import "tailwindcss";
 @import "@prabhix/brand/tailwind-preset.css";
 
+/*
+  Long-form pages — /about, /blog/[slug], /shop/[slug] — have carried `prose prose-lg` since
+  they were written, with the plugin that defines those classes never installed. The markup
+  said "typeset this" and Tailwind emitted nothing, so the blog rendered as unstyled runs of
+  text: no paragraph spacing, no list markers, no heading rhythm.
+
+  Installing the plugin is the smaller change of the two available. Deleting the classes would
+  have meant hand-writing the same rules back for three pages that genuinely need them.
+*/
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  `prose` ships its own greys, which are not this site's greys and do not follow data-theme.
+  Pointing its variables at the tokens keeps long-form text on the same palette as everything
+  else, and makes `dark:prose-invert` unnecessary — the tokens already flip.
+*/
+@layer components {
+  .prose {
+    --tw-prose-body: var(--px-ink-muted);
+    --tw-prose-headings: var(--px-ink);
+    --tw-prose-lead: var(--px-ink-muted);
+    --tw-prose-links: var(--px-accent-text);
+    --tw-prose-bold: var(--px-ink);
+    --tw-prose-counters: var(--px-ink-muted);
+    --tw-prose-bullets: var(--px-border-strong);
+    --tw-prose-hr: var(--px-border);
+    --tw-prose-quotes: var(--px-ink);
+    --tw-prose-quote-borders: var(--px-accent);
+    --tw-prose-captions: var(--px-ink-muted);
+    --tw-prose-code: var(--px-ink);
+    --tw-prose-pre-code: var(--px-ink);
+    --tw-prose-pre-bg: var(--px-surface-sunken);
+    --tw-prose-th-borders: var(--px-border-strong);
+    --tw-prose-td-borders: var(--px-border);
+  }
+}
 
 /*
   The marketing site is the `technologies` token theme: cyan accent, indigo partner accent,

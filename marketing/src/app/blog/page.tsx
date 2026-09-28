@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Blog"
         title="Engineering & product insights"
         description="Technical writing from the team building the Prabhix platform and MobiStack."

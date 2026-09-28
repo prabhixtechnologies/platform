@@ -61,7 +61,7 @@ const docSections = [
 export default function DocsPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Developers"
         title="Build on the Prabhix platform"
         description="API-first architecture with documented endpoints, predictable error codes, and tenant isolation you can verify."

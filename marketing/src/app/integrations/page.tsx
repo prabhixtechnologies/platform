@@ -18,7 +18,7 @@ export const metadata: Metadata = pageMetadata({
 export default function IntegrationsPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Integrations"
         title="Connect your stack"
         description="Prabhix integrates with the payment, infrastructure, and communication tools Indian enterprises already use."

@@ -83,7 +83,7 @@ const services = [
 export default function ServicesPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Services"
         title="Expertise beyond the platform"
         description="We partner with organizations to build custom software, deploy infrastructure, and integrate AI — on the Prabhix stack or yours."

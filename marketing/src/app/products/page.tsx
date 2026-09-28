@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function ProductsPage() {
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Products"
         title="Products from Prabhix Technologies"
         description="Each product solves a specific job. Shared identity and engineering practices underneath — distinct experiences on top."

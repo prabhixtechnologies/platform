@@ -35,7 +35,7 @@ export default async function ContactPage({ searchParams }: Props) {
 
   return (
     <>
-      <Section
+      <Section titleAs="h1"
         eyebrow="Contact"
         title={isDemo ? "Book a demo" : "Get in touch"}
         description={
