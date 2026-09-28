@@ -63,7 +63,12 @@
   Bridge layer: the colour names this site used before the token system. Kept so existing
   call sites keep working; new code should use the generated names directly.
 */
-@theme {
+/*
+  `inline`, for the reason spelled out in build-tokens.mjs: a plain @theme resolves
+  `var(--px-accent)` once on :root, so `bg-primary` inside a `[data-brand]` scope paints the
+  root's accent. This page shows three products at once, and every card was the same teal.
+*/
+@theme inline {
   --color-primary: var(--px-accent);
   --color-primary-strong: var(--px-accent-hover);
   --color-primary-foreground: var(--px-accent-ink);
@@ -73,6 +78,9 @@
   --color-muted-foreground: var(--px-ink-muted);
   --color-card: var(--px-surface);
   --color-card-border: var(--px-border);
+}
+
+@theme {
   --shadow-px: var(--px-elevation-4);
 
   --font-sans: var(--font-source-sans), "Source Sans 3", "Source Sans Pro", "Segoe UI", sans-serif;

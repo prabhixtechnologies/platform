@@ -116,7 +116,7 @@ export default function HomePage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {productApps.map((product, i) => (
             <Reveal key={product.slug} delay={i * 0.1}>
-              <Card hover className="h-full">
+              <Card hover className="h-full" brand={product.app}>
                 <Badge className="mb-3">
                   {product.status === "live" ? "Live" : "Coming soon"}
                 </Badge>
