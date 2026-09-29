@@ -1,5 +1,5 @@
 /**
- * Storefront commerce types and Zod parsers. Source of truth is `@prabhix/oneops-api`.
+ * Storefront commerce types and Zod parsers. Source of truth is `@prabhixtechnologies/oneops-api`.
  */
 export {
   cartViewSchema,
@@ -19,4 +19,4 @@ export {
   type ProductSummary,
   type ProductType,
   type VariantView,
-} from "@prabhix/oneops-api";
+} from "@prabhixtechnologies/oneops-api";

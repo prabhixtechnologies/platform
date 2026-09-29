@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
 
 const apiOrigin = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 const configDir = path.dirname(fileURLToPath(import.meta.url));
-// Laptop and CI keep @prabhix/brand in the sibling web-kit checkout. The image build
+// Laptop and CI keep @prabhixtechnologies/brand in the sibling web-kit checkout. The image build
 // copies that package under vendor/ and the sibling is not there, so the root stays
 // this app. Turbopack refuses a CSS import that leaves its root.
 const siblingWebKit = path.resolve(configDir, "../../web-kit");
@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
   poweredByHeader: false,
-  transpilePackages: ["@prabhix/oneops-api", "@prabhix/brand"],
+  transpilePackages: ["@prabhixtechnologies/oneops-api", "@prabhixtechnologies/brand"],
   // Put <title>, the description, og: tags, canonical and the manifest link in <head> for every
   // request instead of streaming them into <body>.
   //

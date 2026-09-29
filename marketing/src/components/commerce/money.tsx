@@ -1,4 +1,4 @@
-import { formatMoney } from "@prabhix/oneops-api";
+import { formatMoney } from "@prabhixtechnologies/oneops-api";
 
 interface MoneyProps {
   amountPaise: number;

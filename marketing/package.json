@@ -1,5 +1,5 @@
 {
-  "name": "@prabhix/marketing",
+  "name": "@prabhixtechnologies/marketing",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@prabhix/brand": "file:../../web-kit/packages/brand",
-    "@prabhix/oneops-api": "file:./vendor/oneops-api",
+    "@prabhixtechnologies/brand": "file:../../web-kit/packages/brand",
+    "@prabhixtechnologies/oneops-api": "file:./vendor/oneops-api",
     "framer-motion": "13.4.4",
     "lucide-react": "0.475.0",
     "next": "^16.3.6",
