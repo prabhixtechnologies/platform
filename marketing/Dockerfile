@@ -6,20 +6,29 @@
 # nothing to do with the change being built.
 FROM public.ecr.aws/docker/library/node:26-alpine AS base
 WORKDIR /app
-# Marketing only needs brand tokens. Copying all of web-kit pulls @prabhixtechnologies/ui into tsc.
-COPY --from=webkit packages/brand ./vendor/web-kit/packages/brand
 
 FROM base AS deps
-COPY package.json ./
-# Host lockfiles are npm 8 / lockfileVersion 2. node:22-alpine ships npm 10, which
-# rejects those on `npm ci` and crashes on `npm install` if the old lock is present.
-RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));if(p.dependencies?.['@prabhixtechnologies/brand']?.startsWith('file:'))p.dependencies['@prabhixtechnologies/brand']='file:./vendor/web-kit/packages/brand';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
-RUN npm install --no-audit --no-fund
+# .npmrc maps the @prabhixtechnologies scope to GitHub Packages. It holds no credential; see the
+# file itself.
+COPY package.json package-lock.json .npmrc ./
+# `npm ci`, where this used to be `npm install` against no lockfile at all. The reason was that
+# the committed lock was lockfileVersion 2, written by the npm 8 that is still installed on the
+# development machine, and npm 8 records neither a resolved URL nor an integrity hash — so there
+# was nothing for `npm ci` to verify and the alpine image's newer npm would not take it.
+# Regenerated with npm 11 the lock is v3 and complete, so the image now installs exactly the
+# tree the tests ran against.
+#
+# The token is mounted for this layer only. GitHub Packages demands one even though the package
+# is public, and writing it into the image would put a credential in a layer that gets pushed to
+# ECR, so the file is created and deleted inside a single RUN.
+RUN --mount=type=secret,id=gh_token \
+    printf '//npm.pkg.github.com/:_authToken=%s\n' "$(cat /run/secrets/gh_token)" > /root/.npmrc \
+ && npm ci --no-audit --no-fund \
+ && rm -f /root/.npmrc
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));if(p.dependencies?.['@prabhixtechnologies/brand']?.startsWith('file:'))p.dependencies['@prabhixtechnologies/brand']='file:./vendor/web-kit/packages/brand';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Next inlines NEXT_PUBLIC_* at build time, so these have to be present here — setting them on the

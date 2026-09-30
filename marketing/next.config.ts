@@ -1,22 +1,22 @@
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
 const apiOrigin = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 const configDir = path.dirname(fileURLToPath(import.meta.url));
-// Laptop and CI keep @prabhixtechnologies/brand in the sibling web-kit checkout. The image build
-// copies that package under vendor/ and the sibling is not there, so the root stays
-// this app. Turbopack refuses a CSS import that leaves its root.
-const siblingWebKit = path.resolve(configDir, "../../web-kit");
-const turbopackRoot = fs.existsSync(siblingWebKit) ? path.resolve(configDir, "../..") : configDir;
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  // Next requires these two to match. The image build vendors brand inside this app, so both
-  // stay on configDir there. A laptop or CI build widens both to the checkout that holds web-kit.
-  outputFileTracingRoot: turbopackRoot,
-  turbopack: { root: turbopackRoot },
+  // Next requires these two to match, and this app is the root of both.
+  //
+  // They used to be computed: @prabhixtechnologies/brand was a `file:` link into a sibling
+  // web-kit checkout, which is outside this directory, and Turbopack refuses a CSS import that
+  // leaves its root — so the root widened to the parent whenever that sibling existed. It does
+  // not exist inside the image, which vendored the package instead, so the value differed
+  // between a laptop and a build. The package is an ordinary dependency in node_modules now, so
+  // it is inside the root everywhere and there is nothing left to detect.
+  outputFileTracingRoot: configDir,
+  turbopack: { root: configDir },
   // Allow a parallel dist when Cursor/tsserver locks `.next/standalone` on Windows.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
