@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 // The theme already lives on <html>, put there by the inline script in the layout before
 // anything paints. Reading it back from there rather than working it out from localStorage a
 // second time means the button cannot disagree with the page it sits on, and it keeps up when
-// something else changes the theme - another tab, or the OS switching over at sunset.
+// something else changes the theme, including the same choice in another tab.
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);
   observer.observe(document.documentElement, { attributeFilter: ["data-theme"] });
@@ -35,6 +35,8 @@ export function ThemeToggle({ className }: { className?: string }) {
     // generated colour tokens. Setting one alone gives dark utilities on light colours.
     document.documentElement.classList.toggle("dark", next === "dark");
     document.documentElement.dataset.theme = next;
+    const bar = document.querySelector('meta[name="theme-color"]');
+    if (bar) bar.setAttribute("content", next === "dark" ? "#0c1524" : "#eef2f7");
   }
 
   if (!theme) {

@@ -59,14 +59,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   // px-allow-literal: Next serialises these into <meta name="theme-color"> and the browser
   // paints the address bar from them before any stylesheet is consulted, so they cannot be
-  // var(). They are --px-bg for the technologies theme in each mode; they were near-misses of
-  // those values before, which showed as the address bar not quite matching the page.
-  themeColor: [
-    // px-allow-literal: see above.
-    { media: "(prefers-color-scheme: light)", color: "#eef2f7" },
-    // px-allow-literal: see above.
-    { media: "(prefers-color-scheme: dark)", color: "#0c1524" },
-  ],
+  // var(). This is --px-bg for the technologies light theme, which is the default. The boot
+  // script and the theme toggle replace it when a saved choice is dark.
+  themeColor: "#eef2f7",
   width: "device-width",
   initialScale: 1,
 };
@@ -75,12 +70,15 @@ const themeScript = `
 (function() {
   try {
     var stored = localStorage.getItem('theme');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = stored || (prefersDark ? 'dark' : 'light');
+    var theme = stored === 'dark' ? 'dark' : 'light';
     // Both, always: the class drives Tailwind's dark: variant, the attribute drives the
     // generated colour tokens. Setting one alone gives dark utilities on light colours.
     if (theme === 'dark') document.documentElement.classList.add('dark');
     document.documentElement.dataset.theme = theme;
+    if (theme === 'dark') {
+      var bar = document.querySelector('meta[name="theme-color"]');
+      if (bar) bar.setAttribute('content', '#0c1524');
+    }
     var consent = localStorage.getItem('prabhix_cookie_consent');
     if (consent === 'accepted' || consent === 'declined') {
       window.prabhixConsent = consent;
@@ -107,6 +105,7 @@ export default async function RootLayout({
       // Selects the generated token theme in web-kit/packages/brand/tokens.json. The
       // marketing site is the parent brand, so it carries the house cyan + indigo pair.
       data-brand="technologies"
+      data-theme="light"
       className={`${fraunces.variable} ${sourceSans.variable}`}
       suppressHydrationWarning
     >
