@@ -36,6 +36,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     document.documentElement.classList.toggle("dark", next === "dark");
     document.documentElement.dataset.theme = next;
     const bar = document.querySelector('meta[name="theme-color"]');
+    // px-allow-literal: theme-color meta; --px-bg for the technologies theme in each mode.
     if (bar) bar.setAttribute("content", next === "dark" ? "#0c1524" : "#eef2f7");
   }
 

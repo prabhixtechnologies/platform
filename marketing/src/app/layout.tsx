@@ -77,6 +77,7 @@ const themeScript = `
     document.documentElement.dataset.theme = theme;
     if (theme === 'dark') {
       var bar = document.querySelector('meta[name="theme-color"]');
+      // px-allow-literal: theme-color meta, read before any stylesheet; --px-bg dark.
       if (bar) bar.setAttribute('content', '#0c1524');
     }
     var consent = localStorage.getItem('prabhix_cookie_consent');
