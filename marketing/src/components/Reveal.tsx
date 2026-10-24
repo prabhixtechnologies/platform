@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type RevealProps = {
@@ -14,9 +14,18 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
 
-  if (prefersReducedMotion) {
-    return <div className={cn(className)}>{children}</div>;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || prefersReducedMotion) {
+    return (
+      <div ref={ref} className={cn(className)}>
+        {children}
+      </div>
+    );
   }
 
   return (

@@ -2,7 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { siteConfig } from "@/lib/site-config";
 import { guardAdoptRequest } from "@/lib/bff/adopt-guard";
-import { forwardRetryAfter } from "@/lib/bff/security-response";
+import { forwardRetryAfter, originRejected, rateLimited } from "@/lib/bff/security-response";
+import { isSameOriginBrowserRequest } from "@/lib/bff/same-origin";
+import { checkRateLimit, clientIp } from "@/lib/bff/rate-limit";
 import {
   CHAT_COOKIE,
   VISITOR_COOKIE,
@@ -107,10 +109,18 @@ export async function GET(request: NextRequest, ctx: RouteCtx) {
 }
 
 export async function POST(request: NextRequest, ctx: RouteCtx) {
+  if (!isSameOriginBrowserRequest(request)) {
+    return originRejected();
+  }
   const segments = (await ctx.params).path ?? [];
   const path = segments.join("/");
   try {
     if (path === "conversations") {
+      const ip = clientIp(request);
+      const limited = checkRateLimit(`chat:conv:${ip}`, 15, 60_000);
+      if (!limited.allowed) {
+        return rateLimited(limited.retryAfterSeconds);
+      }
       const body = (await request.json()) as Record<string, unknown>;
       const visitor = readHostCookie(request.cookies, VISITOR_COOKIE);
       if (isVisitorKey(visitor) && !body.visitorKey) {

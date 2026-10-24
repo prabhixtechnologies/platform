@@ -6,6 +6,7 @@ type PageMetaOptions = {
   description: string;
   path: string;
   ogTitle?: string;
+  robots?: Metadata["robots"];
 };
 
 export function pageMetadata({
@@ -13,12 +14,14 @@ export function pageMetadata({
   description,
   path,
   ogTitle,
+  robots,
 }: PageMetaOptions): Metadata {
   const url = `${siteConfig.url}${path}`;
   return {
     title,
     description,
     alternates: { canonical: url },
+    ...(robots ? { robots } : {}),
     openGraph: {
       title: ogTitle ?? title,
       description,
@@ -39,7 +42,7 @@ export function organizationJsonLd() {
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/icon`,
+    logo: `${siteConfig.url}/favicon.png`,
     description: siteConfig.tagline,
     email: siteConfig.email,
     address: {

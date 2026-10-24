@@ -1,4 +1,3 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
 import { CommerceApiError } from "./errors";
 import { migrateLegacySecrets, shopGetCart } from "./shop-client";
 

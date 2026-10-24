@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { guardAdoptRequest } from "@/lib/bff/adopt-guard";
+import { isSameOriginBrowserRequest } from "@/lib/bff/same-origin";
+import { originRejected } from "@/lib/bff/security-response";
 import {
   addCartItem,
   applyDiscount,
@@ -162,6 +164,9 @@ export async function GET(request: NextRequest, ctx: RouteCtx) {
 }
 
 export async function POST(request: NextRequest, ctx: RouteCtx) {
+  if (!isSameOriginBrowserRequest(request)) {
+    return originRejected();
+  }
   const path = ((await ctx.params).path ?? []).join("/");
   try {
     if (path === "cart") {
@@ -277,6 +282,9 @@ export async function POST(request: NextRequest, ctx: RouteCtx) {
 }
 
 export async function PUT(request: NextRequest, ctx: RouteCtx) {
+  if (!isSameOriginBrowserRequest(request)) {
+    return originRejected();
+  }
   const segments = (await ctx.params).path ?? [];
   try {
     if (segments[0] === "cart" && segments[1] === "items" && segments[2]) {
@@ -291,6 +299,9 @@ export async function PUT(request: NextRequest, ctx: RouteCtx) {
 }
 
 export async function DELETE(request: NextRequest, ctx: RouteCtx) {
+  if (!isSameOriginBrowserRequest(request)) {
+    return originRejected();
+  }
   const segments = (await ctx.params).path ?? [];
   const path = segments.join("/");
   try {

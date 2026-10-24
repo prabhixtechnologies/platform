@@ -1,4 +1,3 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
 import { ChatBffError } from "./errors";
 import { fetchMessages, startConversation } from "./chat-client";
 

@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import { isSameOriginBrowserRequest } from "./same-origin";
 

@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 import { CartTotals } from "@/components/commerce/cart-totals";
 import type { CartView } from "@/lib/commerce/schemas";
 

@@ -1,4 +1,3 @@
-import { afterEach, describe, expect, it } from "vitest";
 import { checkRateLimit, resetRateLimitsForTests } from "./rate-limit";
 
 describe("checkRateLimit", () => {

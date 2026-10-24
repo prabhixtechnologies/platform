@@ -11,6 +11,9 @@ import {
   visitorCookieOptions,
 } from "@/lib/chat/bff-cookies";
 import { readHostCookie } from "@/lib/commerce/shop-cookies";
+import { isSameOriginBrowserRequest } from "@/lib/bff/same-origin";
+import { checkRateLimit, clientIp } from "@/lib/bff/rate-limit";
+import { originRejected, rateLimited } from "@/lib/bff/security-response";
 
 export const runtime = "nodejs";
 
@@ -46,6 +49,14 @@ function resolveKey(request: NextRequest, claimed: string | undefined): string {
 }
 
 export async function POST(request: NextRequest) {
+  if (!isSameOriginBrowserRequest(request)) {
+    return originRejected();
+  }
+  const ip = clientIp(request);
+  const limited = checkRateLimit(`visitor:${ip}`, 60, 60_000);
+  if (!limited.allowed) {
+    return rateLimited(limited.retryAfterSeconds);
+  }
   if (!siteConfig.orgSlug) {
     return NextResponse.json({ ok: false }, { status: 503 });
   }

@@ -8,6 +8,7 @@ export const metadata: Metadata = pageMetadata({
   description: "Your order confirmation and receipt details.",
   path: "/shop/order",
   ogTitle: "Order confirmation",
+  robots: { index: false, follow: false },
 });
 
 export default function OrderPage() {

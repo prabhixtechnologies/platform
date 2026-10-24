@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { cartViewSchema } from "./schemas";
 import { isOpaqueToken, secretCookieOptions } from "./shop-cookies";
 

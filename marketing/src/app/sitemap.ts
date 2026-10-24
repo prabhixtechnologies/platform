@@ -6,6 +6,8 @@ import { listProducts } from "@/lib/commerce/api";
 import { getCareerSlugs } from "@/lib/careers-api";
 import { siteConfig } from "@/lib/site-config";
 
+const STABLE_BUILD_DATE = new Date(process.env.BUILD_DATE ?? "2026-10-24T00:00:00.000Z");
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
 
@@ -50,19 +52,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticRoutes.map((path) => ({
       url: `${base}${path}`,
-      lastModified: new Date(),
+      lastModified: STABLE_BUILD_DATE,
       changeFrequency: "weekly" as const,
       priority: path === "" ? 1 : 0.8,
     })),
     ...products.map((p) => ({
       url: `${base}/products/${p.slug}`,
-      lastModified: new Date(),
+      lastModified: STABLE_BUILD_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
     ...shopProducts.map((p) => ({
       url: `${base}/shop/${p.slug}`,
-      lastModified: new Date(),
+      lastModified: STABLE_BUILD_DATE,
       changeFrequency: "weekly" as const,
       priority: 0.85,
     })),
@@ -74,13 +76,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...caseStudies.map((c) => ({
       url: `${base}/case-studies/${c.slug}`,
-      lastModified: new Date(),
+      lastModified: STABLE_BUILD_DATE,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     ...careerSlugs.map((slug) => ({
       url: `${base}/careers/${slug}`,
-      lastModified: new Date(),
+      lastModified: STABLE_BUILD_DATE,
       changeFrequency: "weekly" as const,
       priority: 0.6,
     })),

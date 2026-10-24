@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import axe from "axe-core";
-import { describe, expect, it } from "vitest";
 import ErrorPage from "@/app/error";
 import { Button } from "@/components/Button";
 import { CartTotals } from "@/components/commerce/cart-totals";

@@ -1,5 +1,7 @@
 "use server";
 
+import { headers } from "next/headers";
+import { checkRateLimit, clientIp } from "@/lib/bff/rate-limit";
 import { fetchPublicUpstream } from "@/lib/bff/public-upstream";
 import { siteConfig } from "@/lib/utils";
 import {
@@ -50,6 +52,15 @@ export async function submitLead(
   _prev: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
+  const headerStore = await headers();
+  const ip = clientIp({ headers: headerStore });
+  const limited = checkRateLimit(`lead:${ip}`, 5, 60_000);
+  if (!limited.allowed) {
+    return {
+      ok: false,
+      message: "Too many submissions. Please wait a moment and try again.",
+    };
+  }
   const parsed = leadSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -89,6 +100,15 @@ export async function subscribeNewsletter(
   _prev: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
+  const headerStore = await headers();
+  const ip = clientIp({ headers: headerStore });
+  const limited = checkRateLimit(`newsletter:${ip}`, 5, 60_000);
+  if (!limited.allowed) {
+    return {
+      ok: false,
+      message: "Too many requests. Please wait a moment and try again.",
+    };
+  }
   const parsed = subscriberSchema.safeParse({
     email: formData.get("email"),
     source: formData.get("source") || "newsletter",
@@ -122,6 +142,15 @@ export async function submitApplication(
   _prev: ActionResult | null,
   formData: FormData,
 ): Promise<ActionResult> {
+  const headerStore = await headers();
+  const ip = clientIp({ headers: headerStore });
+  const limited = checkRateLimit(`career:${ip}`, 5, 60_000);
+  if (!limited.allowed) {
+    return {
+      ok: false,
+      message: "Too many submissions. Please wait a moment and try again.",
+    };
+  }
   const parsed = applicationSchema.safeParse({
     roleSlug: formData.get("roleSlug"),
     name: formData.get("name"),

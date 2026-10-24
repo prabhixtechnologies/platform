@@ -1,7 +1,10 @@
 /// <reference types="vitest/globals" />
 import "@testing-library/jest-dom/vitest";
+import * as matchers from "@testing-library/jest-dom/matchers";
+
+expect.extend(matchers);
 import { cleanup } from "@testing-library/react";
-import { afterEach, vi } from "vitest";
+import { vi } from "vitest";
 
 // jsdom implements no IntersectionObserver, and <Reveal> — which wraps most of the marketing site —
 // calls framer-motion's useInView on mount. Without this, rendering any section of a real page
@@ -46,6 +49,4 @@ class ImmediateIntersectionObserver implements IntersectionObserver {
 
 vi.stubGlobal("IntersectionObserver", ImmediateIntersectionObserver);
 
-afterEach(() => {
-  cleanup();
-});
+// cleanup() is registered automatically by @testing-library/react

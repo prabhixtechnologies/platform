@@ -1,4 +1,3 @@
-import { afterEach, describe, expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import { guardAdoptRequest } from "./adopt-guard";
 import { resetRateLimitsForTests } from "./rate-limit";

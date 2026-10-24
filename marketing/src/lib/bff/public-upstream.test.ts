@@ -1,7 +1,6 @@
 /**
  * @vitest-environment node
  */
-import { describe, expect, it, vi } from "vitest";
 import { PUBLIC_BFF_HEADER } from "./public-bff-credential.logic";
 
 describe("public upstream headers", () => {
