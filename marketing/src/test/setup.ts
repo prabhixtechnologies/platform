@@ -3,7 +3,6 @@ import "@testing-library/jest-dom/vitest";
 import * as matchers from "@testing-library/jest-dom/matchers";
 
 expect.extend(matchers);
-import { cleanup } from "@testing-library/react";
 import { vi } from "vitest";
 
 // jsdom implements no IntersectionObserver, and <Reveal> — which wraps most of the marketing site —
@@ -48,5 +47,3 @@ class ImmediateIntersectionObserver implements IntersectionObserver {
 }
 
 vi.stubGlobal("IntersectionObserver", ImmediateIntersectionObserver);
-
-// cleanup() is registered automatically by @testing-library/react
